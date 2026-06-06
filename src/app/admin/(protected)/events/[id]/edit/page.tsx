@@ -227,72 +227,90 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
           <CardHeader>
             <CardTitle className="text-xl">Informasi Dasar</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8 pt-6">
             {error && (
               <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 border border-red-200">
                 {error}
               </div>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Section 1: Informasi Utama */}
+            <div className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-gray-700">Nama Event <span className="text-red-500">*</span></Label>
-                <Input id="title" name="title" required value={formData.title} onChange={handleChange} className="bg-gray-50 focus:bg-white transition-colors" />
+                <Label htmlFor="title" className="text-gray-700 font-semibold">Nama Event <span className="text-red-500">*</span></Label>
+                <Input id="title" name="title" required value={formData.title} onChange={handleChange} className="bg-gray-50 focus:bg-white transition-colors text-lg py-6" placeholder="Contoh: Seminar Nasional Teknologi 2026" />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100 mt-4">
+              <div className="space-y-2">
+                <Label htmlFor="registration_slug" className="text-gray-700 font-semibold">Slug URL Link <span className="text-red-500">*</span></Label>
+                <Input id="registration_slug" name="registration_slug" required value={formData.registration_slug} onChange={handleChange} placeholder="e.g. seminar-it-2026" className="bg-gray-50 font-mono text-sm" />
+                <p className="text-xs text-gray-500">Link pendaftaran akan menjadi: event.kubahtimah.com/<strong>{formData.registration_slug || '...'}</strong></p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="banner" className="text-gray-700">Upload Banner / Flyer Baru</Label>
+                  <Label htmlFor="type" className="text-gray-700 font-semibold">Tipe Event <span className="text-red-500">*</span></Label>
+                  <Input id="type" name="type" required value={formData.type} onChange={handleChange} className="bg-gray-50" placeholder="Contoh: Seminar, Workshop, dll" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="quota" className="text-gray-700 font-semibold">Kuota Maksimal Peserta</Label>
+                  <Input id="quota" name="quota" type="number" min="1" value={formData.quota} onChange={handleChange} placeholder="Kosongkan jika tidak terbatas" className="bg-gray-50" />
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-gray-100" />
+
+            {/* Section 2: Waktu & Tempat */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900">Waktu & Tempat Pelaksanaan</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="start_datetime" className="text-gray-700 font-semibold">Tanggal & Waktu Mulai <span className="text-red-500">*</span></Label>
+                  <Input id="start_datetime" name="start_datetime" type="datetime-local" required value={formData.start_datetime} onChange={handleChange} className="bg-gray-50" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="end_datetime" className="text-gray-700 font-semibold">Tanggal & Waktu Selesai</Label>
+                  <Input id="end_datetime" name="end_datetime" type="datetime-local" value={formData.end_datetime} onChange={handleChange} className="bg-gray-50" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location" className="text-gray-700 font-semibold">Nama Lokasi / Tempat <span className="text-red-500">*</span></Label>
+                <Input id="location" name="location" required value={formData.location} onChange={handleChange} className="bg-gray-50" placeholder="Contoh: Gedung Serbaguna Kubah Timah" />
+              </div>
+            </div>
+
+            <hr className="border-gray-100" />
+
+            {/* Section 3: Media & Gambar */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900">Media Promosi</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                <div className="space-y-2">
+                  <Label htmlFor="banner" className="text-gray-700 font-semibold">Banner / Flyer Baru</Label>
                   <Input 
                     id="banner" 
                     type="file" 
                     accept="image/*" 
                     onChange={(e) => handleFileChange(e, 'banner')} 
-                    className="bg-gray-50 cursor-pointer" 
+                    className="bg-white cursor-pointer" 
                   />
-                  <p className="text-xs text-gray-500">Kosongkan jika tidak ingin mengubah banner saat ini.</p>
+                  <p className="text-xs text-gray-500">Kosongkan jika tidak ingin mengubah banner saat ini. Format: JPG/PNG. Maks 2MB.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="logo" className="text-gray-700">Upload Logo Penyelenggara Baru</Label>
+                  <Label htmlFor="logo" className="text-gray-700 font-semibold">Logo Penyelenggara Baru</Label>
                   <Input 
                     id="logo" 
                     type="file" 
                     accept="image/*" 
                     onChange={(e) => handleFileChange(e, 'logo')} 
-                    className="bg-gray-50 cursor-pointer" 
+                    className="bg-white cursor-pointer" 
                   />
                   <p className="text-xs text-gray-500">Kosongkan jika tidak ingin mengubah logo saat ini.</p>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="type">Tipe Event * (e.g. Seminar)</Label>
-                  <Input id="type" name="type" required value={formData.type} onChange={handleChange} className="bg-white/50" />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="registration_slug">Slug URL Link * (unik, tanpa spasi)</Label>
-              <Input id="registration_slug" name="registration_slug" required value={formData.registration_slug} onChange={handleChange} placeholder="e.g. seminar-it-2026" className="bg-white/50 font-mono text-sm" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="start_datetime">Tanggal & Waktu Mulai *</Label>
-                <Input id="start_datetime" name="start_datetime" type="datetime-local" required value={formData.start_datetime} onChange={handleChange} className="bg-white/50" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="end_datetime">Tanggal & Waktu Selesai</Label>
-                <Input id="end_datetime" name="end_datetime" type="datetime-local" value={formData.end_datetime} onChange={handleChange} className="bg-white/50" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="location">Nama Lokasi Tempat *</Label>
-              <Input id="location" name="location" required value={formData.location} onChange={handleChange} className="bg-white/50" />
             </div>
 
             <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-4">
