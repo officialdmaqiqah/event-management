@@ -27,6 +27,33 @@ export default async function EventDetailPage({ params }: { params: { id: string
     .eq("event_id", params.id)
     .order("created_at", { ascending: false })
 
+  const getWIBDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric', month: 'short', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+      hour12: false
+    };
+    const parts = new Intl.DateTimeFormat('id-ID', options).formatToParts(d);
+    const day = parts.find(p => p.type === 'day')?.value;
+    const month = parts.find(p => p.type === 'month')?.value;
+    const year = parts.find(p => p.type === 'year')?.value;
+    const hour = parts.find(p => p.type === 'hour')?.value;
+    const minute = parts.find(p => p.type === 'minute')?.value;
+    return `${day} ${month} ${year}, ${hour}:${minute}`;
+  }
+
+  const getWIBTime = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Asia/Jakarta',
+      hour: '2-digit', minute: '2-digit',
+      hour12: false
+    };
+    return new Intl.DateTimeFormat('id-ID', options).format(d).replace('.', ':');
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -62,8 +89,8 @@ export default async function EventDetailPage({ params }: { params: { id: string
             </div>
             <div>
               <strong>Waktu:</strong><br />
-              {format(new Date(event.start_datetime), "dd MMM yyyy, HH:mm")}
-              {event.end_datetime && ` - ${format(new Date(event.end_datetime), "HH:mm")}`}
+              {getWIBDate(event.start_datetime)}
+              {event.end_datetime && ` - ${getWIBTime(event.end_datetime)}`}
             </div>
             <div>
               <strong>Lokasi:</strong><br />

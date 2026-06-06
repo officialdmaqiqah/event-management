@@ -24,19 +24,37 @@ export default async function AdminDashboard() {
     console.error("Error fetching events:", error)
   }
 
-  return (
-    <div className="space-y-6 pb-10">
+  const getWIBDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric', month: 'short', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+      hour12: false
+    };
+    const parts = new Intl.DateTimeFormat('id-ID', options).formatToParts(d);
+    const day = parts.find(p => p.type === 'day')?.value;
+    const month = parts.find(p => p.type === 'month')?.value;
+    const year = parts.find(p => p.type === 'year')?.value;
+    const hour = parts.find(p => p.type === 'hour')?.value;
+    const minute = parts.find(p => p.type === 'minute')?.value;
+    return `${day} ${month} ${year}, ${hour}:${minute}`;
+  }
 
-      <div className="flex justify-between items-center">
+  return (
+    <div className="space-y-6">
+
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Daftar Event</h1>
         <Link href="/admin/events/new">
-          <Button>Buat Event Baru</Button>
+          <Button>+ Buat Event Baru</Button>
         </Link>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Semua Event</CardTitle>
+          <CardTitle>Event Anda</CardTitle>
+          <CardDescription>Kelola semua event yang telah Anda buat</CardDescription>
         </CardHeader>
         <CardContent>
           {events && events.length > 0 ? (
@@ -44,9 +62,9 @@ export default async function AdminDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="whitespace-nowrap">Nama Event</TableHead>
-                    <TableHead className="whitespace-nowrap">Tanggal</TableHead>
-                    <TableHead className="whitespace-nowrap">Lokasi</TableHead>
+                    <TableHead>Nama Event</TableHead>
+                    <TableHead className="whitespace-nowrap">Waktu</TableHead>
+                    <TableHead>Lokasi</TableHead>
                     <TableHead className="whitespace-nowrap">Status</TableHead>
                     <TableHead className="text-right whitespace-nowrap">Aksi</TableHead>
                   </TableRow>
@@ -58,7 +76,7 @@ export default async function AdminDashboard() {
                       <TableCell className="whitespace-nowrap">
                         <div className="flex items-center text-gray-500">
                           <Calendar className="mr-2 h-4 w-4" />
-                          {format(new Date(event.start_datetime), "dd MMM yyyy, HH:mm")}
+                          {getWIBDate(event.start_datetime)}
                         </div>
                       </TableCell>
                       <TableCell className="min-w-[150px]">
