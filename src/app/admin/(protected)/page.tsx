@@ -26,17 +26,6 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6 pb-10">
-      <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div>
-          <h2 className="text-indigo-900 font-semibold flex items-center gap-2">
-            <Heart className="w-5 h-5 text-pink-500 fill-pink-500" /> Dukung Acaraku.id
-          </h2>
-          <p className="text-sm text-indigo-700">Aplikasi ini 100% gratis. Jika bermanfaat, Anda bisa memberikan apresiasi untuk mendukung pengembangan selanjutnya.</p>
-        </div>
-        <Link href="https://www.pengenbayar.online/" target="_blank">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap">Berikan Apresiasi</Button>
-        </Link>
-      </div>
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-tight">Daftar Event</h1>
