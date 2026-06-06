@@ -59,7 +59,7 @@ export default function DeleteEventButton({ eventId, eventTitle }: { eventId: st
                 
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Hapus Event Permanen</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                  Anda akan menghapus event <span className="font-semibold text-gray-900">"{eventTitle}"</span>. 
+                  Anda akan menghapus event <span className="font-semibold text-gray-900">&quot;{eventTitle}&quot;</span>. 
                   Semua data pendaftaran dan peserta yang terhubung akan ikut terhapus. Aksi ini tidak dapat dikembalikan.
                 </p>
 
