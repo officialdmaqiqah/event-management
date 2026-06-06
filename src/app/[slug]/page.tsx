@@ -64,7 +64,7 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
     const { count } = await supabase
       .from('participants')
       .select('*', { count: 'exact', head: true })
-      .eq('event_id', eventData.id)
+      .eq('event_id', (eventData as any).id)
 
     setEvent({ ...eventData, current_participants: count || 0 })
     setLoading(false)
