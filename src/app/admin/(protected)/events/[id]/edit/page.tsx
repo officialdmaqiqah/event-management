@@ -41,6 +41,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
 
   const [bannerFile, setBannerFile] = useState<File | null>(null)
   const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [deleteBanner, setDeleteBanner] = useState(false)
+  const [deleteLogo, setDeleteLogo] = useState(false)
 
   const [customFields, setCustomFields] = useState<{ id: string, name: string, label: string, type: string, required: boolean }[]>([])
 
@@ -166,6 +168,14 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       checkin_start_datetime: formData.checkin_start_datetime ? new Date(formData.checkin_start_datetime).toISOString() : null,
       checkin_end_datetime: formData.checkin_end_datetime ? new Date(formData.checkin_end_datetime).toISOString() : null,
       custom_fields: customFields,
+    }
+
+    if (deleteBanner && !bannerFile) {
+      updatePayload.banner_url = null
+    }
+
+    if (deleteLogo && !logoFile) {
+      updatePayload.logo_url = null
     }
 
     // Upload Banner
@@ -297,13 +307,22 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                       <a href={formData.banner_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Banner Saat Ini</a>
                     )}
                   </div>
-                  {formData.banner_url && !bannerFile && (
-                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 relative">
+                  {formData.banner_url && !bannerFile && !deleteBanner && (
+                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 relative group">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={formData.banner_url} alt="Current Banner" className="object-cover w-full h-full opacity-60" />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">Sudah Ada File</span>
                       </div>
+                      <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button type="button" variant="destructive" size="sm" className="h-6 text-[10px] px-2 shadow-sm" onClick={() => setDeleteBanner(true)}>Hapus File</Button>
+                      </div>
+                    </div>
+                  )}
+                  {deleteBanner && !bannerFile && (
+                    <div className="w-full p-2 bg-red-50 border border-red-200 rounded-lg mb-2 flex justify-between items-center text-xs text-red-600">
+                      <span>Gambar akan dihapus.</span>
+                      <Button type="button" variant="outline" size="sm" className="h-5 text-[10px] px-2" onClick={() => setDeleteBanner(false)}>Batal Hapus</Button>
                     </div>
                   )}
                   <Input 
@@ -323,13 +342,22 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                       <a href={formData.logo_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Logo Saat Ini</a>
                     )}
                   </div>
-                  {formData.logo_url && !logoFile && (
-                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 flex items-center justify-center p-2 relative">
+                  {formData.logo_url && !logoFile && !deleteLogo && (
+                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 flex items-center justify-center p-2 relative group">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={formData.logo_url} alt="Current Logo" className="object-contain w-full h-full opacity-60" />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">Sudah Ada File</span>
                       </div>
+                      <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button type="button" variant="destructive" size="sm" className="h-6 text-[10px] px-2 shadow-sm" onClick={() => setDeleteLogo(true)}>Hapus File</Button>
+                      </div>
+                    </div>
+                  )}
+                  {deleteLogo && !logoFile && (
+                    <div className="w-full p-2 bg-red-50 border border-red-200 rounded-lg mb-2 flex justify-between items-center text-xs text-red-600">
+                      <span>Logo akan dihapus.</span>
+                      <Button type="button" variant="outline" size="sm" className="h-5 text-[10px] px-2" onClick={() => setDeleteLogo(false)}>Batal Hapus</Button>
                     </div>
                   )}
                   <Input 

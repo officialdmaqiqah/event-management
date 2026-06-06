@@ -124,8 +124,10 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
       return
     }
 
-    // Format Nama (Title Case)
+    // Format Nama (Title Case & hapus spasi berlebih)
     const formattedName = formData.full_name
+      .trim()
+      .replace(/\s+/g, ' ')
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ')
