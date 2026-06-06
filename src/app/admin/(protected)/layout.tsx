@@ -25,7 +25,7 @@ export default async function AdminLayout({
             Event Management
           </Link>
           <div className="flex items-center gap-4">
-            {user.email?.startsWith('yahya') && (
+            {user.email === 'officialsiyoyok@gmail.com' && (
               <Link href="/admin/users">
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600">
                   Kelola Pengguna
