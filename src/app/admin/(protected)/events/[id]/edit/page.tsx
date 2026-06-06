@@ -73,6 +73,14 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
     fetchEvent()
   }, [])
 
+  const toLocalDatetimeString = (utcString: string | null) => {
+    if (!utcString) return ""
+    const d = new Date(utcString)
+    if (isNaN(d.getTime())) return ""
+    const tzOffset = d.getTimezoneOffset() * 60000
+    return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16)
+  }
+
   const fetchEvent = async () => {
     const { data, error } = await supabase
       .from('events')
@@ -94,8 +102,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       description: data.description || "",
       agenda: data.agenda || "",
       location: data.location || "",
-      start_datetime: data.start_datetime ? new Date(data.start_datetime).toISOString().slice(0, 16) : "",
-      end_datetime: data.end_datetime ? new Date(data.end_datetime).toISOString().slice(0, 16) : "",
+      start_datetime: toLocalDatetimeString(data.start_datetime),
+      end_datetime: toLocalDatetimeString(data.end_datetime),
       quota: data.quota ? data.quota.toString() : "",
       status: data.status || "draft",
       registration_slug: data.registration_slug || "",
@@ -103,8 +111,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       latitude: data.latitude ? data.latitude.toString() : "",
       longitude: data.longitude ? data.longitude.toString() : "",
       radius_meters: data.radius_meters ? data.radius_meters.toString() : "100",
-      checkin_start_datetime: data.checkin_start_datetime ? new Date(data.checkin_start_datetime).toISOString().slice(0, 16) : "",
-      checkin_end_datetime: data.checkin_end_datetime ? new Date(data.checkin_end_datetime).toISOString().slice(0, 16) : "",
+      checkin_start_datetime: toLocalDatetimeString(data.checkin_start_datetime),
+      checkin_end_datetime: toLocalDatetimeString(data.checkin_end_datetime),
       banner_url: data.banner_url || "",
       logo_url: data.logo_url || "",
     })
