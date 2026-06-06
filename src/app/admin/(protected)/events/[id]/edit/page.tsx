@@ -35,7 +35,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
     radius_meters: "100",
     checkin_start_datetime: "",
     checkin_end_datetime: "",
-    checkin_end_datetime: "",
+    banner_url: "",
+    logo_url: "",
   })
 
   const [bannerFile, setBannerFile] = useState<File | null>(null)
@@ -102,6 +103,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       radius_meters: data.radius_meters ? data.radius_meters.toString() : "100",
       checkin_start_datetime: data.checkin_start_datetime ? new Date(data.checkin_start_datetime).toISOString().slice(0, 16) : "",
       checkin_end_datetime: data.checkin_end_datetime ? new Date(data.checkin_end_datetime).toISOString().slice(0, 16) : "",
+      banner_url: data.banner_url || "",
+      logo_url: data.logo_url || "",
     })
     if (data.custom_fields && Array.isArray(data.custom_fields)) {
       setCustomFields(data.custom_fields)
@@ -288,7 +291,21 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
               <h3 className="text-lg font-semibold text-gray-900">Media Promosi</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 border border-slate-100 rounded-xl">
                 <div className="space-y-2">
-                  <Label htmlFor="banner" className="text-gray-700 font-semibold">Banner / Flyer Baru</Label>
+                  <div className="flex justify-between items-end">
+                    <Label htmlFor="banner" className="text-gray-700 font-semibold">Banner / Flyer Baru</Label>
+                    {formData.banner_url && (
+                      <a href={formData.banner_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Banner Saat Ini</a>
+                    )}
+                  </div>
+                  {formData.banner_url && !bannerFile && (
+                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={formData.banner_url} alt="Current Banner" className="object-cover w-full h-full opacity-60" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">Sudah Ada File</span>
+                      </div>
+                    </div>
+                  )}
                   <Input 
                     id="banner" 
                     type="file" 
@@ -300,7 +317,21 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="logo" className="text-gray-700 font-semibold">Logo Penyelenggara Baru</Label>
+                  <div className="flex justify-between items-end">
+                    <Label htmlFor="logo" className="text-gray-700 font-semibold">Logo Penyelenggara Baru</Label>
+                    {formData.logo_url && (
+                      <a href={formData.logo_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Logo Saat Ini</a>
+                    )}
+                  </div>
+                  {formData.logo_url && !logoFile && (
+                    <div className="w-full h-24 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden mb-2 flex items-center justify-center p-2 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={formData.logo_url} alt="Current Logo" className="object-contain w-full h-full opacity-60" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">Sudah Ada File</span>
+                      </div>
+                    </div>
+                  )}
                   <Input 
                     id="logo" 
                     type="file" 
