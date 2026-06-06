@@ -122,7 +122,7 @@ export default function SettingsPage() {
               <p className="text-amber-800 text-sm mb-4">
                 Layanan ini tersedia dengan biaya hanya <strong>Rp 250.000 / Tahun</strong>. Semua fitur premium akan langsung aktif untuk akun Anda.
               </p>
-              <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20upgrade%20akun%20Acaraku.id%20saya%20ke%20Premium." target="_blank" rel="noreferrer">
+              <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20upgrade%20akun%20Kubah%20Timah%20Events%20saya%20ke%20Premium." target="_blank" rel="noreferrer">
                 <Button className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto">
                   Hubungi Admin via WA
                 </Button>

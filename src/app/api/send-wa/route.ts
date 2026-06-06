@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       sender: activeConfig.sender,
       number: formattedNumber,
       message: messageBody,
-      footer: footer || "Acaraku.id Platform"
+      footer: footer || "event.kubahtimah.com Platform"
     }
 
     const response = await fetch('https://xsender.id/api/send-message', {
