@@ -9,7 +9,7 @@ export default function Home() {
       <header className="px-6 lg:px-14 h-16 flex items-center border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex gap-2 items-center font-bold text-xl tracking-tight text-indigo-600">
           <Calendar className="h-6 w-6" />
-          <span>Acaraku.id</span>
+          <span>Kubah Timah Events</span>
         </div>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:text-indigo-600 transition-colors flex items-center" href="#features">
@@ -34,13 +34,13 @@ export default function Home() {
           
           <div className="container px-4 md:px-6 relative z-10 text-center max-w-4xl mx-auto">
             <div className="inline-block rounded-full bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-800 mb-6">
-              100% Gratis Selamanya
+              Sistem Manajemen Acara Terpadu
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-8 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-              Kelola Event Anda dengan <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Sangat Mudah</span>
+              Pusat Informasi & Registrasi <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Kubah Timah</span>
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-2xl/relaxed mb-10">
-              Sistem registrasi, E-Ticket QR Code, hingga Check-in cerdas berbasis GPS. Buat event Anda terlihat profesional dalam hitungan menit tanpa biaya apapun.
+              Platform resmi untuk mengelola dan mendaftar acara di Masjid Agung Kubah Timah. Tersedia untuk pihak internal maupun eksternal: Kajian rutin, Rapat Internal, Musyawarah, hingga Seminar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
@@ -56,14 +56,14 @@ export default function Home() {
         <section id="features" className="w-full py-20 bg-white">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">Fitur Lengkap untuk Semua Kebutuhan</h2>
-              <p className="text-gray-500 max-w-2xl mx-auto text-lg">Semua alat yang Anda butuhkan untuk menyelenggarakan acara dengan lancar.</p>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">Kenapa Menggunakan Layanan Ini?</h2>
+              <p className="text-gray-500 max-w-2xl mx-auto text-lg">Solusi digital untuk memudahkan setiap kegiatan di lingkungan Masjid Agung Kubah Timah.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { icon: QrCode, title: "E-Ticket & QR Scanner", desc: "Peserta mendapatkan E-Ticket otomatis. Admin bisa scan QR di lokasi menggunakan HP." },
-                { icon: MapPin, title: "Geotagging Check-in", desc: "Fitur self check-in canggih berbasis GPS. Peserta hanya bisa absen jika berada di radius lokasi." },
-                { icon: Users, title: "Daftar Tanpa Ribet", desc: "Sistem registrasi online instan. Tersedia mode Langsung Absen tanpa perlu mendaftar sebelumnya." },
+                { icon: QrCode, title: "E-Ticket & QR Scanner", desc: "Cocok untuk kajian besar atau seminar. Peserta mendapatkan E-Ticket otomatis untuk check-in cepat di lokasi." },
+                { icon: MapPin, title: "Absensi Rapat & Musyawarah", desc: "Fitur check-in pintar berbasis GPS memastikan peserta rapat / musyawarah benar-benar hadir di area Masjid Kubah Timah." },
+                { icon: Users, title: "Terbuka untuk Umum", desc: "Dapat dimanfaatkan oleh internal pengurus masjid maupun komunitas eksternal yang ingin menyelenggarakan acara." },
               ].map((f, i) => (
                 <div key={i} className="flex flex-col items-center text-center p-6 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="h-16 w-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6">
@@ -79,7 +79,7 @@ export default function Home() {
       </main>
 
       <footer className="w-full py-6 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between px-6 lg:px-14">
-        <p className="text-sm text-gray-500">© 2026 Acaraku.id Platform. All rights reserved.</p>
+        <p className="text-sm text-gray-500">© 2026 Masjid Agung Kubah Timah. All rights reserved.</p>
         <div className="flex gap-4 mt-4 sm:mt-0">
           <Link className="text-sm text-gray-500 hover:text-gray-900" href="#">Syarat & Ketentuan</Link>
           <Link className="text-sm text-gray-500 hover:text-gray-900" href="#">Privasi</Link>
