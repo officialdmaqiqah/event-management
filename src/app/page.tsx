@@ -6,21 +6,22 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* Navbar */}
-      <header className="px-6 lg:px-14 h-16 flex items-center border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex gap-2 items-center font-bold text-xl tracking-tight text-indigo-600">
-          <Calendar className="h-6 w-6" />
-          <span>Kubah Timah Events</span>
+      <header className="px-4 sm:px-6 lg:px-14 min-h-[4rem] py-2 flex flex-wrap items-center border-b bg-white/80 backdrop-blur-md sticky top-0 z-50 gap-2">
+        <div className="flex gap-2 items-center font-bold text-lg sm:text-xl tracking-tight text-indigo-600">
+          <Calendar className="h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="hidden min-[400px]:inline-block">Kubah Timah Events</span>
+          <span className="inline-block min-[400px]:hidden">Kubah Timah</span>
         </div>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:text-indigo-600 transition-colors flex items-center" href="#features">
+        <nav className="ml-auto flex items-center gap-2 sm:gap-6">
+          <Link className="text-sm font-medium hover:text-indigo-600 transition-colors hidden sm:flex items-center" href="#features">
             Fitur
           </Link>
-          <div className="flex items-center gap-2 ml-4">
+          <div className="flex items-center gap-2 ml-0 sm:ml-4">
             <Link href="/admin/login">
-              <Button variant="outline" size="sm">Masuk</Button>
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Masuk</Button>
             </Link>
             <Link href="/signup">
-              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">Daftar Gratis</Button>
+              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-xs sm:text-sm px-2 sm:px-3">Daftar</Button>
             </Link>
           </div>
         </nav>
