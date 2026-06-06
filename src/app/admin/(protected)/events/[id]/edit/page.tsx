@@ -313,7 +313,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                     onChange={(e) => handleFileChange(e, 'banner')} 
                     className="bg-white cursor-pointer" 
                   />
-                  <p className="text-xs text-gray-500">Kosongkan jika tidak ingin mengubah banner saat ini. Format: JPG/PNG. Maks 2MB.</p>
+                  <p className="text-xs text-gray-500">Kosongkan jika tidak ingin mengubah banner saat ini. Format: JPG/PNG. Maks 2MB. Rekomendasi: Rasio 16:9 (cth: 1920x1080px).</p>
                 </div>
 
                 <div className="space-y-2">

@@ -280,13 +280,14 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
       <div className="max-w-4xl mx-auto space-y-10 relative z-10">
         
         {/* Banner Section */}
+        {/* Banner Section */}
         {event.banner_url && (
-          <div className="w-full h-64 md:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-2xl relative">
+          <div className="w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900/5 flex justify-center items-center border border-white/50 backdrop-blur-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={event.banner_url} 
               alt="Event Banner" 
-              className="w-full h-full object-cover"
+              className="max-h-[300px] md:max-h-[500px] w-full object-contain"
             />
           </div>
         )}

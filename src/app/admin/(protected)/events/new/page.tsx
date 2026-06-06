@@ -252,7 +252,7 @@ export default function NewEventPage() {
                     onChange={(e) => handleFileChange(e, 'banner')} 
                     className="bg-white cursor-pointer" 
                   />
-                  <p className="text-xs text-gray-500">Format: JPG/PNG. Maksimal 2MB. Rasio Landscape disarankan.</p>
+                  <p className="text-xs text-gray-500">Format: JPG/PNG. Maks 2MB. Rekomendasi: Rasio 16:9 (cth: 1920x1080px).</p>
                 </div>
 
                 <div className="space-y-2">
