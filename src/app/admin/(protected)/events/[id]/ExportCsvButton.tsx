@@ -2,11 +2,33 @@
 
 import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
+import { useState } from "react"
+import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 
 export default function ExportCsvButton({ participants, eventTitle, eventCustomFields = [] }: { participants: any[], eventTitle: string, eventCustomFields?: any[] }) {
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    type: DialogType;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    type: 'alert',
+    title: '',
+    message: ''
+  })
+
+  const showDialog = (type: DialogType, title: string, message: string) => {
+    setDialogState({ isOpen: true, type, title, message })
+  }
+
+  const closeDialog = () => {
+    setDialogState(prev => ({ ...prev, isOpen: false }))
+  }
+
   const handleExport = () => {
     if (!participants || participants.length === 0) {
-      alert("Tidak ada data peserta untuk diexport.")
+      showDialog('error', 'Gagal', 'Tidak ada data peserta untuk diexport.')
       return
     }
 
@@ -65,14 +87,25 @@ export default function ExportCsvButton({ participants, eventTitle, eventCustomF
   }
 
   return (
-    <Button 
-      variant="outline" 
-      size="sm" 
-      onClick={handleExport}
-      className="flex items-center gap-2"
-    >
-      <Download className="h-4 w-4" />
-      Export CSV
-    </Button>
+    <>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={handleExport}
+        className="flex items-center gap-2"
+      >
+        <Download className="h-4 w-4" />
+        Export CSV
+      </Button>
+
+      <CustomDialog 
+        isOpen={dialogState.isOpen}
+        type={dialogState.type}
+        title={dialogState.title}
+        message={dialogState.message}
+        onCancel={closeDialog}
+        onConfirm={closeDialog}
+      />
+    </>
   )
 }

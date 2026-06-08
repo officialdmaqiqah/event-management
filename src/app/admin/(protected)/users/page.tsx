@@ -5,11 +5,32 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ShieldAlert, ShieldCheck, User } from "lucide-react"
+import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 
 export default function UsersManagementPage() {
   const supabase = createClient()
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    type: DialogType;
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: 'alert',
+    title: '',
+    message: ''
+  })
+
+  const showDialog = (type: DialogType, title: string, message: string, onConfirm?: () => void) => {
+    setDialogState({ isOpen: true, type, title, message, onConfirm })
+  }
+
+  const closeDialog = () => {
+    setDialogState(prev => ({ ...prev, isOpen: false }))
+  }
 
   useEffect(() => {
     fetchUsers()
@@ -37,7 +58,7 @@ export default function UsersManagementPage() {
     if (!error) {
       setUsers(users.map(u => u.user_id === userId ? { ...u, is_premium: !currentStatus } : u))
     } else {
-      alert("Gagal mengupdate status: " + error.message)
+      showDialog('error', 'Gagal', "Gagal mengupdate status: " + error.message)
     }
   }
 
@@ -50,21 +71,28 @@ export default function UsersManagementPage() {
     if (!error) {
       setUsers(users.map(u => u.user_id === userId ? { ...u, is_approved: !currentStatus } : u))
     } else {
-      alert("Gagal mengupdate persetujuan: " + error.message)
+      showDialog('error', 'Gagal', "Gagal mengupdate persetujuan: " + error.message)
     }
   }
 
+  const confirmDeleteUser = (userId: string) => {
+    showDialog(
+      'confirm', 
+      'Hapus Akun', 
+      'Apakah Anda yakin ingin menghapus akun ini secara permanen?\nSemua event dan partisipan yang dikelola oleh akun ini akan terhapus.', 
+      () => deleteUser(userId)
+    )
+  }
+
   const deleteUser = async (userId: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus akun ini secara permanen? Semua event dan partisipan yang dikelola oleh akun ini akan terhapus.")) return;
-    
     setLoading(true);
     const { error } = await supabase.rpc('delete_user_by_admin', { target_user_id: userId });
     
     if (!error) {
       setUsers(users.filter(u => u.user_id !== userId));
-      alert("Akun berhasil dihapus.");
+      showDialog('success', 'Berhasil', 'Akun berhasil dihapus.');
     } else {
-      alert("Gagal menghapus akun: " + error.message);
+      showDialog('error', 'Gagal', "Gagal menghapus akun: " + error.message);
     }
     setLoading(false);
   }
@@ -126,7 +154,7 @@ export default function UsersManagementPage() {
                 </div>
 
                 <div className="flex justify-end pt-2 mt-2 border-t border-slate-50">
-                   <Button size="sm" variant="destructive" className="w-full text-xs" onClick={() => deleteUser(user.user_id)}>
+                   <Button size="sm" variant="destructive" className="w-full text-xs" onClick={() => confirmDeleteUser(user.user_id)}>
                      Hapus Akun
                    </Button>
                 </div>
@@ -140,6 +168,18 @@ export default function UsersManagementPage() {
           </div>
         )}
       </div>
+
+      <CustomDialog 
+        isOpen={dialogState.isOpen}
+        type={dialogState.type}
+        title={dialogState.title}
+        message={dialogState.message}
+        onCancel={closeDialog}
+        onConfirm={dialogState.onConfirm ? () => {
+          closeDialog();
+          dialogState.onConfirm!();
+        } : undefined}
+      />
     </div>
   )
 }
