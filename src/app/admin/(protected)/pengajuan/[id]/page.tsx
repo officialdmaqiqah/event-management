@@ -18,6 +18,13 @@ import ParticipantTab from "./ParticipantTab"
 import NotulenTab from "./NotulenTab"
 import DokumentasiTab from "./DokumentasiTab"
 import LaporanTab from "./LaporanTab"
+import { 
+  sendWhatsAppNotification, 
+  tplPengajuanDisetujui, 
+  tplPengajuanDitolak, 
+  tplPengajuanRevisi, 
+  tplNotifikasiApprover 
+} from "@/app/actions/notification"
 
 type Pengajuan = {
   id: string
@@ -416,6 +423,53 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
       // Close inputs
       setShowReasonInput(false)
+      
+      // --- WhatsApp Notifications Hook ---
+      try {
+        const appUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
+        const statusUrl = `${appUrl}/cek-status?nomor=${pengajuan.nomor_pengajuan}`
+        const adminUrl = `${appUrl}/admin/pengajuan/${pengajuan.id}`
+        const waNumber = pengajuan.whatsapp
+
+        if (waNumber) {
+          if (nextStatus === 'approved') {
+            sendWhatsAppNotification({
+              recipient_name: pengajuan.nama_pemohon,
+              recipient_whatsapp: waNumber,
+              message: await tplPengajuanDisetujui(pengajuan.nomor_pengajuan, pengajuan.nama_event, pengajuan.tanggal_mulai),
+              related_event_request_id: pengajuan.id
+            })
+          } else if (nextStatus === 'rejected') {
+            sendWhatsAppNotification({
+              recipient_name: pengajuan.nama_pemohon,
+              recipient_whatsapp: waNumber,
+              message: await tplPengajuanDitolak(pengajuan.nomor_pengajuan, pengajuan.nama_event, reasonText),
+              related_event_request_id: pengajuan.id
+            })
+          } else if (nextStatus === 'revision_requested') {
+            sendWhatsAppNotification({
+              recipient_name: pengajuan.nama_pemohon,
+              recipient_whatsapp: waNumber,
+              message: await tplPengajuanRevisi(pengajuan.nomor_pengajuan, pengajuan.nama_event, reasonText, statusUrl),
+              related_event_request_id: pengajuan.id
+            })
+          }
+        }
+        
+        if (nextStatus === 'under_review') {
+          // Send to approver (simulated static number for demo, ideally fetched from user_profiles of the approver)
+          const approverPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_NUMBER || "081234567890"
+          sendWhatsAppNotification({
+            recipient_name: "Approver MAKT",
+            recipient_whatsapp: approverPhone,
+            message: await tplNotifikasiApprover(pengajuan.nama_event, pengajuan.jenis_event, pengajuan.nama_pemohon, pengajuan.tanggal_mulai, reasonText, adminUrl),
+            related_event_request_id: pengajuan.id
+          })
+        }
+      } catch (waErr) {
+        console.error("Gagal mengirim WA dari client:", waErr)
+      }
+      // --- End Hook ---
       
       // Re-fetch data
       await fetchUserAndData()
