@@ -2,7 +2,7 @@ import * as React from "react"
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "outline" | "ghost" | "destructive"
+  variant?: "default" | "outline" | "ghost" | "destructive" | "custom"
   size?: "default" | "sm" | "lg"
 }
 
@@ -23,6 +23,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         break
       case "ghost":
         variantStyles = "hover:bg-gray-100 hover:text-gray-900"
+        break
+      case "custom":
+        variantStyles = ""
         break
     }
 

@@ -104,12 +104,12 @@ export default async function Home() {
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
               <Link href="/ajukan-peminjaman" className="w-full sm:w-auto group">
-                <Button size="lg" className="w-full h-14 px-8 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold text-base rounded-full shadow-[0_0_40px_-10px_rgba(245,158,11,0.5)] transition-all duration-300 group-hover:shadow-[0_0_60px_-15px_rgba(245,158,11,0.7)] group-hover:-translate-y-1">
+                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold text-base rounded-full shadow-[0_0_40px_-10px_rgba(245,158,11,0.5)] transition-all duration-300 group-hover:shadow-[0_0_60px_-15px_rgba(245,158,11,0.7)] group-hover:-translate-y-1">
                   <FileText className="h-5 w-5 mr-2" /> Ajukan Peminjaman
                 </Button>
               </Link>
               <Link href="/kalender" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full h-14 px-8 bg-emerald-900/20 border-emerald-700/50 backdrop-blur-md text-emerald-50 hover:bg-emerald-800/50 hover:text-white font-medium text-base rounded-full transition-all duration-300 hover:border-emerald-500/50">
+                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-emerald-900/20 border border-emerald-700/50 backdrop-blur-md text-emerald-50 hover:bg-emerald-800/50 hover:text-white font-medium text-base rounded-full transition-all duration-300 hover:border-emerald-500/50">
                   <CalendarIcon className="h-5 w-5 mr-2" /> Lihat Kalender
                 </Button>
               </Link>
@@ -233,7 +233,7 @@ export default async function Home() {
               Manfaatkan fasilitas terbaik kami untuk mendukung kesuksesan kegiatan Islami Anda. Proses mudah, transparan, dan terpercaya.
             </p>
             <Link href="/ajukan-peminjaman">
-              <Button size="lg" className="h-14 px-10 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-black text-base shadow-xl rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(245,158,11,0.6)]">
+              <Button variant="custom" size="lg" className="h-14 px-10 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-black text-base shadow-xl rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(245,158,11,0.6)]">
                 Mulai Pengajuan Sekarang
               </Button>
             </Link>
