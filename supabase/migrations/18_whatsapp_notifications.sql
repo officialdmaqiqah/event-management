@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.notification_logs (
 -- RLS
 ALTER TABLE public.notification_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Admin view notification logs" ON public.notification_logs;
 CREATE POLICY "Admin view notification logs" 
 ON public.notification_logs FOR SELECT 
 USING (
@@ -26,10 +27,12 @@ USING (
   )
 );
 
+DROP POLICY IF EXISTS "System insert notification logs" ON public.notification_logs;
 CREATE POLICY "System insert notification logs" 
 ON public.notification_logs FOR INSERT 
 WITH CHECK (true); -- Dibolehkan karena ini di-trigger dari backend (Service Role / API). Bisa diubah jika perlu.
 
+DROP POLICY IF EXISTS "System update notification logs" ON public.notification_logs;
 CREATE POLICY "System update notification logs" 
 ON public.notification_logs FOR UPDATE 
 USING (true);
