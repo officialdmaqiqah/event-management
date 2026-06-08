@@ -580,6 +580,31 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
     return "Admin"
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (errorMsg || !pengajuan) {
+    return (
+      <div className="p-10">
+        <Card className="border-red-100 bg-red-50 text-red-950 p-4">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-red-600" />
+            <span className="font-semibold text-sm">{errorMsg || "Data pengajuan tidak ditemukan."}</span>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  const activeStatus = STATUS_CONFIG[pengajuan.status] || { label: pengajuan.status, color: "bg-slate-100 text-slate-700", icon: AlertCircle }
+  const StatusIcon = activeStatus.icon
+  const escalateToEventUrl = `/admin/events/new?from_pengajuan=${pengajuan.id}`
+
   return (
     <div className="space-y-6">
       {/* Top Bar Navigation */}
@@ -684,7 +709,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Nomor WhatsApp</span>
                 <a 
-                  href={`https://wa.me/${pengajuan.whatsapp.replace(/[^0-9]/g, '')}`} 
+                  href={`https://wa.me/${(pengajuan.whatsapp || '').replace(/[^0-9]/g, '')}`} 
                   target="_blank" 
                   className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
                 >
@@ -773,7 +798,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Fasilitas / Area Masjid yang Dipinjam</span>
                 <div className="flex flex-wrap gap-1.5 mt-1">
-                  {pengajuan.area_fasilitas.map((f, idx) => (
+                  {(pengajuan.area_fasilitas || []).map((f, idx) => (
                     <span key={idx} className="bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1">
                       <MapPin className="h-3 w-3 text-indigo-500" />
                       {f}

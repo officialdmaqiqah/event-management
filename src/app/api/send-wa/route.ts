@@ -7,10 +7,25 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function POST(req: Request) {
   try {
-    const { number, nama, event_id, event_title, link_tiket, footer } = await req.json()
+    const { 
+      number, 
+      nama, 
+      event_id, 
+      event_title, 
+      link_tiket, 
+      footer,
+      template_type, // 'registration' | 'approval_request' | 'approval_result' | 'reminder' | 'minutes'
+      // Additional variables for other templates
+      nama_approver,
+      pemohon,
+      link_approval,
+      status_pengajuan,
+      catatan,
+      link_notulen
+    } = await req.json()
 
-    if (!number || !nama) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    if (!number) {
+      return NextResponse.json({ error: 'Missing phone number' }, { status: 400 })
     }
 
     // Default Config System
@@ -18,6 +33,10 @@ export async function POST(req: Request) {
       api_key: "",
       sender: "",
       message_template: "",
+      approval_request_template: "",
+      approval_result_template: "",
+      reminder_template: "",
+      minutes_template: "",
       is_enabled: false
     }
 
@@ -35,9 +54,12 @@ export async function POST(req: Request) {
         if (userProfile.wa_api_key && userProfile.wa_sender_id) {
           activeConfig.api_key = userProfile.wa_api_key
           activeConfig.sender = userProfile.wa_sender_id
-          if (userProfile.wa_message_template) {
-            activeConfig.message_template = userProfile.wa_message_template
-          }
+          if (userProfile.wa_message_template) activeConfig.message_template = userProfile.wa_message_template
+          if (userProfile.wa_approval_request_template) activeConfig.approval_request_template = userProfile.wa_approval_request_template
+          if (userProfile.wa_approval_result_template) activeConfig.approval_result_template = userProfile.wa_approval_result_template
+          if (userProfile.wa_reminder_template) activeConfig.reminder_template = userProfile.wa_reminder_template
+          if (userProfile.wa_minutes_template) activeConfig.minutes_template = userProfile.wa_minutes_template
+          
           console.log("Using Premium Custom WA Config for event:", event_id)
         }
       }
@@ -55,21 +77,54 @@ export async function POST(req: Request) {
       formattedNumber = '62' + formattedNumber.substring(1)
     }
 
-    // Default template jika belum diatur di database
-    const defaultTemplate = "*Pendaftaran Sukses!*\n\nHalo {{nama}},\nTerima kasih telah mendaftar di acara *{{event}}*.\n\nBerikut adalah tautan E-Ticket Anda:\n{{link_tiket}}\n\nMohon simpan pesan ini dan klik tautan di atas untuk melakukan absen (check-in) saat acara berlangsung.\n\nTerima kasih."
-    
-    // Ganti variabel pada template
-    let messageBody = activeConfig.message_template || defaultTemplate
-    messageBody = messageBody.replace(/\{\{nama\}\}/g, nama)
-    messageBody = messageBody.replace(/\{\{event\}\}/g, event_title || "")
-    messageBody = messageBody.replace(/\{\{link_tiket\}\}/g, link_tiket || "")
+    // Pilih Template Berdasarkan template_type
+    const type = template_type || 'registration'
+    let messageBody = ""
+
+    if (type === 'registration') {
+      const defaultTpl = "*Pendaftaran Sukses!*\n\nHalo {{nama}},\nTerima kasih telah mendaftar di acara *{{event}}*.\n\nBerikut adalah tautan E-Ticket Anda:\n{{link_tiket}}\n\nMohon simpan pesan ini dan klik tautan di atas untuk melakukan absen (check-in) saat acara berlangsung.\n\nTerima kasih."
+      messageBody = activeConfig.message_template || defaultTpl
+      messageBody = messageBody.replace(/\{\{nama\}\}/g, nama || "")
+      messageBody = messageBody.replace(/\{\{event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{link_tiket\}\}/g, link_tiket || "")
+
+    } else if (type === 'approval_request') {
+      const defaultTpl = "*Pemberitahuan Approval Baru*\n\nHalo {{nama_approver}},\nTerdapat pengajuan baru untuk kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang memerlukan persetujuan Anda.\n\nSilakan periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
+      messageBody = activeConfig.approval_request_template || defaultTpl
+      messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")
+      messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{pemohon\}\}/g, pemohon || "")
+      messageBody = messageBody.replace(/\{\{link_approval\}\}/g, link_approval || "")
+
+    } else if (type === 'approval_result') {
+      const defaultTpl = "*Informasi Status Pengajuan*\n\nHalo {{nama_pemohon}},\nPengajuan kegiatan *{{nama_event}}* Anda telah berstatus: *{{status_pengajuan}}*.\n\nCatatan: {{catatan}}\n\nSilakan cek detail lengkapnya di sini:\n{{link_status}}\n\nTerima kasih."
+      messageBody = activeConfig.approval_result_template || defaultTpl
+      messageBody = messageBody.replace(/\{\{nama_pemohon\}\}/g, pemohon || "")
+      messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{status_pengajuan\}\}/g, status_pengajuan || "")
+      messageBody = messageBody.replace(/\{\{catatan\}\}/g, catatan || "-")
+      messageBody = messageBody.replace(/\{\{link_status\}\}/g, link_tiket || "")
+
+    } else if (type === 'reminder') {
+      const defaultTpl = "*Pengingat Acara BESOK*\n\nHalo {{nama}},\nKami mengingatkan bahwa acara *{{nama_event}}* akan berlangsung esok hari.\n\nMohon siapkan tiket Anda untuk absensi:\n{{link_tiket}}\n\nSampai jumpa di lokasi!"
+      messageBody = activeConfig.reminder_template || defaultTpl
+      messageBody = messageBody.replace(/\{\{nama\}\}/g, nama || "")
+      messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{link_tiket\}\}/g, link_tiket || "")
+
+    } else if (type === 'minutes') {
+      const defaultTpl = "*Publikasi Notulen Rapat*\n\nPemberitahuan: Notulen hasil rapat *{{nama_event}}* telah diterbitkan secara resmi.\n\nSilakan baca selengkapnya dan tindak lanjuti hasil keputusannya melalui tautan berikut:\n{{link_notulen}}\n\nTerima kasih."
+      messageBody = activeConfig.minutes_template || defaultTpl
+      messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{link_notulen\}\}/g, link_notulen || "")
+    }
 
     const payload = {
       api_key: activeConfig.api_key,
       sender: activeConfig.sender,
       number: formattedNumber,
       message: messageBody,
-      footer: footer || "event.kubahtimah.com Platform"
+      footer: footer || "MAKT System"
     }
 
     const response = await fetch('https://xsender.id/api/send-message', {

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ShieldCheck, Lock, Smartphone, Send, KeyRound } from "lucide-react"
+import { ShieldCheck, Lock, Smartphone, Send, KeyRound, MessageSquare, Users, FileText, Settings } from "lucide-react"
 
 export default function SettingsPage() {
   const supabase = createClient()
@@ -15,11 +15,16 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [activeTab, setActiveTab] = useState<"api" | "pemohon" | "internal">("api")
 
   const [formData, setFormData] = useState({
     wa_api_key: "",
     wa_sender_id: "",
-    wa_message_template: ""
+    wa_message_template: "",
+    wa_approval_request_template: "",
+    wa_approval_result_template: "",
+    wa_reminder_template: "",
+    wa_minutes_template: ""
   })
 
   useEffect(() => {
@@ -42,7 +47,11 @@ export default function SettingsPage() {
         setFormData({
           wa_api_key: data.wa_api_key || "",
           wa_sender_id: data.wa_sender_id || "",
-          wa_message_template: data.wa_message_template || "*Pendaftaran Sukses!*\n\nHalo {{nama}},\nTerima kasih telah mendaftar di acara *{{event}}*.\n\nBerikut adalah tautan tiket Anda:\n{{link_tiket}}\n\nTerima kasih."
+          wa_message_template: data.wa_message_template || "*Pendaftaran Sukses!*\n\nHalo {{nama}},\nTerima kasih telah mendaftar di acara *{{event}}*.\n\nBerikut adalah tautan tiket Anda:\n{{link_tiket}}\n\nTerima kasih.",
+          wa_approval_request_template: data.wa_approval_request_template || "*Pemberitahuan Approval Baru*\n\nHalo {{nama_approver}},\nTerdapat pengajuan baru untuk kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang memerlukan persetujuan Anda.\n\nSilakan periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih.",
+          wa_approval_result_template: data.wa_approval_result_template || "*Informasi Status Pengajuan*\n\nHalo {{nama_pemohon}},\nPengajuan kegiatan *{{nama_event}}* Anda telah berstatus: *{{status_pengajuan}}*.\n\nCatatan: {{catatan}}\n\nSilakan cek detail lengkapnya di sini:\n{{link_status}}\n\nTerima kasih.",
+          wa_reminder_template: data.wa_reminder_template || "*Pengingat Acara BESOK*\n\nHalo {{nama}},\nKami mengingatkan bahwa acara *{{nama_event}}* akan berlangsung esok hari.\n\nMohon siapkan tiket Anda untuk absensi:\n{{link_tiket}}\n\nSampai jumpa di lokasi!",
+          wa_minutes_template: data.wa_minutes_template || "*Publikasi Notulen Rapat*\n\nPemberitahuan: Notulen hasil rapat *{{nama_event}}* telah diterbitkan secara resmi.\n\nSilakan baca selengkapnya dan tindak lanjuti hasil keputusannya melalui tautan berikut:\n{{link_notulen}}\n\nTerima kasih."
         })
       }
     }
@@ -71,7 +80,11 @@ export default function SettingsPage() {
       .update({
         wa_api_key: formData.wa_api_key,
         wa_sender_id: formData.wa_sender_id,
-        wa_message_template: formData.wa_message_template
+        wa_message_template: formData.wa_message_template,
+        wa_approval_request_template: formData.wa_approval_request_template,
+        wa_approval_result_template: formData.wa_approval_result_template,
+        wa_reminder_template: formData.wa_reminder_template,
+        wa_minutes_template: formData.wa_minutes_template
       })
       .eq('user_id', user.id)
 
@@ -135,84 +148,211 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-10">
+    <div className="max-w-4xl mx-auto space-y-6 pb-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Pengaturan WhatsApp</h1>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Pusat Notifikasi WhatsApp</h1>
+          <p className="text-sm text-slate-500 mt-1">Atur integrasi API dan template pesan otomatis untuk seluruh sistem.</p>
+        </div>
         <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full flex items-center gap-1 border border-amber-200">
           <ShieldCheck className="w-4 h-4" /> AKUN PREMIUM
         </span>
       </div>
 
-      <Card className="glass shadow-xl border-t-4 border-t-indigo-500">
-        <form onSubmit={handleSave}>
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
-              <KeyRound className="w-5 h-5 text-indigo-500" /> Konfigurasi API
-            </CardTitle>
-            <CardDescription>
-              Masukkan kredensial API WhatsApp (XSender) Anda di bawah ini agar pesan terkirim dari nomor Anda.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 border border-red-200">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200">
-                Pengaturan WhatsApp berhasil disimpan!
-              </div>
-            )}
+      <div className="flex space-x-1 bg-slate-100/50 p-1 rounded-xl">
+        <button
+          onClick={() => setActiveTab("api")}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
+            activeTab === "api" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          }`}
+        >
+          <Settings className="w-4 h-4" /> Koneksi API
+        </button>
+        <button
+          onClick={() => setActiveTab("pemohon")}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
+            activeTab === "pemohon" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          }`}
+        >
+          <Users className="w-4 h-4" /> Template Peserta
+        </button>
+        <button
+          onClick={() => setActiveTab("internal")}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
+            activeTab === "internal" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          }`}
+        >
+          <FileText className="w-4 h-4" /> Template Internal
+        </button>
+      </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="wa_api_key">XSender API Key</Label>
-                <Input 
-                  id="wa_api_key" 
-                  name="wa_api_key" 
-                  value={formData.wa_api_key} 
-                  onChange={handleChange} 
-                  className="font-mono bg-white/50" 
-                  placeholder="Misal: raRmjxN5P9CI..."
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="wa_sender_id">Sender Device ID (Nomor WA Anda)</Label>
-                <Input 
-                  id="wa_sender_id" 
-                  name="wa_sender_id" 
-                  value={formData.wa_sender_id} 
-                  onChange={handleChange} 
-                  className="font-mono bg-white/50" 
-                  placeholder="Misal: 62812345678"
-                />
-              </div>
-            </div>
+      <form onSubmit={handleSave}>
+        {error && (
+          <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 border border-red-200 mb-6">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200 mb-6">
+            Pengaturan WhatsApp berhasil disimpan!
+          </div>
+        )}
 
-            <div className="space-y-2 pt-4 border-t border-slate-100">
-              <Label htmlFor="wa_message_template">Template Pesan Otomatis</Label>
-              <CardDescription className="text-xs mb-2">
-                Gunakan variabel berikut: <code>{"{{nama}}"}</code>, <code>{"{{event}}"}</code>, <code>{"{{link_tiket}}"}</code>
-              </CardDescription>
-              <textarea 
-                id="wa_message_template" 
-                name="wa_message_template" 
-                rows={8}
-                value={formData.wa_message_template} 
-                onChange={handleChange} 
-                className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
-              />
-            </div>
-            
-          </CardContent>
-          <CardFooter className="bg-slate-50/50 p-6 rounded-b-xl border-t border-slate-100 mt-4">
+        <Card className="glass shadow-xl border-t-4 border-t-indigo-500 mb-6">
+          
+          {activeTab === "api" && (
+            <>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <KeyRound className="w-5 h-5 text-indigo-500" /> Konfigurasi API
+                </CardTitle>
+                <CardDescription>
+                  Masukkan kredensial API WhatsApp (XSender) Anda di bawah ini agar pesan terkirim dari nomor Anda.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="wa_api_key">XSender API Key</Label>
+                  <Input 
+                    id="wa_api_key" 
+                    name="wa_api_key" 
+                    value={formData.wa_api_key} 
+                    onChange={handleChange} 
+                    className="font-mono bg-white/50 max-w-lg" 
+                    placeholder="Misal: raRmjxN5P9CI..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="wa_sender_id">Sender Device ID (Nomor WA Anda)</Label>
+                  <Input 
+                    id="wa_sender_id" 
+                    name="wa_sender_id" 
+                    value={formData.wa_sender_id} 
+                    onChange={handleChange} 
+                    className="font-mono bg-white/50 max-w-lg" 
+                    placeholder="Misal: 62812345678"
+                  />
+                </div>
+              </CardContent>
+            </>
+          )}
+
+          {activeTab === "pemohon" && (
+            <>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Users className="w-5 h-5 text-indigo-500" /> Pesan ke Pemohon / Peserta
+                </CardTitle>
+                <CardDescription>
+                  Template notifikasi yang dikirimkan kepada pemohon atau peserta kegiatan.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Pendaftaran Sukses */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-green-500" />
+                    <Label htmlFor="wa_message_template" className="font-bold text-base">Pendaftaran / Pembuatan Event Sukses</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama}}"}</code>, <code>{"{{event}}"}</code>, <code>{"{{link_tiket}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_message_template" name="wa_message_template" rows={6}
+                    value={formData.wa_message_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Hasil Approval */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-blue-500" />
+                    <Label htmlFor="wa_approval_result_template" className="font-bold text-base">Notifikasi Hasil Pengajuan (Approval)</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_pemohon}}"}</code>, <code>{"{{nama_event}}"}</code>, <code>{"{{status_pengajuan}}"}</code>, <code>{"{{catatan}}"}</code>, <code>{"{{link_status}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_approval_result_template" name="wa_approval_result_template" rows={6}
+                    value={formData.wa_approval_result_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Reminder H-1 */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-orange-500" />
+                    <Label htmlFor="wa_reminder_template" className="font-bold text-base">Pengingat H-1 Acara</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama}}"}</code>, <code>{"{{nama_event}}"}</code>, <code>{"{{link_tiket}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_reminder_template" name="wa_reminder_template" rows={6}
+                    value={formData.wa_reminder_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+              </CardContent>
+            </>
+          )}
+
+          {activeTab === "internal" && (
+            <>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-indigo-500" /> Pesan Internal / Panitia
+                </CardTitle>
+                <CardDescription>
+                  Template notifikasi operasional untuk pengelola, pejabat, dan panitia.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Permintaan Approval Baru */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-amber-600" />
+                    <Label htmlFor="wa_approval_request_template" className="font-bold text-base">Permohonan Persetujuan Baru (Untuk Pejabat)</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_approver}}"}</code>, <code>{"{{nama_event}}"}</code>, <code>{"{{pemohon}}"}</code>, <code>{"{{link_approval}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_approval_request_template" name="wa_approval_request_template" rows={6}
+                    value={formData.wa_approval_request_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Notulen Selesai */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-indigo-600" />
+                    <Label htmlFor="wa_minutes_template" className="font-bold text-base">Notulen / Laporan Diterbitkan</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_event}}"}</code>, <code>{"{{link_notulen}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_minutes_template" name="wa_minutes_template" rows={6}
+                    value={formData.wa_minutes_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+              </CardContent>
+            </>
+          )}
+
+          <CardFooter className="bg-slate-50/50 p-6 rounded-b-xl border-t border-slate-100">
             <Button type="submit" disabled={saving} className="w-full sm:w-auto h-11 px-8 font-semibold bg-indigo-600 hover:bg-indigo-700">
-              {saving ? "Menyimpan..." : "Simpan Pengaturan"}
+              <Send className="w-4 h-4 mr-2" /> {saving ? "Menyimpan..." : "Simpan Semua Pengaturan"}
             </Button>
           </CardFooter>
-        </form>
-      </Card>
+
+        </Card>
+      </form>
     </div>
   )
 }
