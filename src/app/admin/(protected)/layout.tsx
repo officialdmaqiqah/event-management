@@ -17,6 +17,19 @@ export default async function AdminLayout({
     redirect("/admin/login")
   }
 
+  // Fetch user profile to check approval status
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('is_approved')
+    .eq('user_id', user.id)
+    .single()
+
+  const isAdmin = user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com'
+
+  if (!isAdmin && profile && !profile.is_approved) {
+    redirect("/admin/pending")
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">

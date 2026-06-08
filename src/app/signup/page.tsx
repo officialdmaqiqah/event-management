@@ -11,6 +11,7 @@ import Link from "next/link"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
+  const [fullName, setFullName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -38,6 +39,11 @@ export default function SignupPage() {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          full_name: fullName,
+        }
+      }
     })
 
     if (signUpError) {
@@ -52,7 +58,7 @@ export default function SignupPage() {
         password,
       })
       setTimeout(() => {
-        router.push("/admin")
+        router.push("/admin/pending")
         router.refresh()
       }, 1500)
     }
@@ -75,10 +81,21 @@ export default function SignupPage() {
               </div>
             )}
             {success && (
-              <div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
-                Pendaftaran berhasil! Mengalihkan ke dashboard...
+              <div className="rounded-md bg-amber-50 p-3 text-sm text-amber-700 border border-amber-200">
+                Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan admin. Mengalihkan...
               </div>
             )}
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Nama Lengkap</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="Masukkan nama lengkap Anda"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

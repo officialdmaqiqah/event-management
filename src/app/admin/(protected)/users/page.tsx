@@ -41,6 +41,34 @@ export default function UsersManagementPage() {
     }
   }
 
+  const toggleApproval = async (userId: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ is_approved: !currentStatus })
+      .eq('user_id', userId)
+
+    if (!error) {
+      setUsers(users.map(u => u.user_id === userId ? { ...u, is_approved: !currentStatus } : u))
+    } else {
+      alert("Gagal mengupdate persetujuan: " + error.message)
+    }
+  }
+
+  const deleteUser = async (userId: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus akun ini secara permanen? Semua event dan partisipan yang dikelola oleh akun ini akan terhapus.")) return;
+    
+    setLoading(true);
+    const { error } = await supabase.rpc('delete_user_by_admin', { target_user_id: userId });
+    
+    if (!error) {
+      setUsers(users.filter(u => u.user_id !== userId));
+      alert("Akun berhasil dihapus.");
+    } else {
+      alert("Gagal menghapus akun: " + error.message);
+    }
+    setLoading(false);
+  }
+
   if (loading) return <div className="p-10 flex items-center justify-center"><div className="animate-pulse text-indigo-500 font-semibold">Memuat Data Pengguna...</div></div>
 
   return (
@@ -68,18 +96,40 @@ export default function UsersManagementPage() {
             <CardContent>
               <p className="text-sm text-slate-500 mb-4">{user.email}</p>
               
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Status
-                </span>
-                <Button 
-                  size="sm" 
-                  variant={user.is_premium ? "outline" : "default"}
-                  className={user.is_premium ? "border-amber-200 text-amber-700 hover:bg-amber-50" : "bg-indigo-600 hover:bg-indigo-700"}
-                  onClick={() => togglePremium(user.user_id, user.is_premium)}
-                >
-                  {user.is_premium ? "Cabut Premium" : "Aktifkan Premium"}
-                </Button>
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Akses Sistem
+                  </span>
+                  <Button 
+                    size="sm" 
+                    variant={user.is_approved ? "outline" : "default"}
+                    className={user.is_approved ? "border-green-200 text-green-700 hover:bg-green-50" : "bg-blue-600 hover:bg-blue-700"}
+                    onClick={() => toggleApproval(user.user_id, user.is_approved)}
+                  >
+                    {user.is_approved ? "Cabut Akses" : "Setujui Akses"}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Status Premium
+                  </span>
+                  <Button 
+                    size="sm" 
+                    variant={user.is_premium ? "outline" : "default"}
+                    className={user.is_premium ? "border-amber-200 text-amber-700 hover:bg-amber-50" : "bg-indigo-600 hover:bg-indigo-700"}
+                    onClick={() => togglePremium(user.user_id, user.is_premium)}
+                  >
+                    {user.is_premium ? "Cabut Premium" : "Aktifkan Premium"}
+                  </Button>
+                </div>
+
+                <div className="flex justify-end pt-2 mt-2 border-t border-slate-50">
+                   <Button size="sm" variant="destructive" className="w-full text-xs" onClick={() => deleteUser(user.user_id)}>
+                     Hapus Akun
+                   </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
