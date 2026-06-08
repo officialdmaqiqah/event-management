@@ -17,10 +17,10 @@ export default async function AdminLayout({
     redirect("/admin/login")
   }
 
-  // Fetch user profile to check approval status
+  // Fetch user profile to check approval status and jabatan
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('is_approved')
+    .select('is_approved, jabatan')
     .eq('user_id', user.id)
     .single()
 
@@ -45,9 +45,33 @@ export default async function AdminLayout({
                 </Button>
               </Link>
             )}
+            {user.email === 'officialsiyoyok@gmail.com' && (
+              <Link href="/admin/organisasi">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                  Organisasi
+                </Button>
+              </Link>
+            )}
+            {(isAdmin || (profile && profile.is_approved && profile.jabatan)) && (
+              <Link href="/admin/approval">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                  Approval Saya
+                </Button>
+              </Link>
+            )}
             <Link href="/admin/settings">
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
                 Pengaturan
+              </Button>
+            </Link>
+            <Link href="/admin/pengajuan">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                Pengajuan
+              </Button>
+            </Link>
+            <Link href="/admin/kalender">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                Kalender
               </Button>
             </Link>
             <span className="text-xs sm:text-sm text-gray-500 hidden md:inline-block border-l border-gray-300 pl-4">

@@ -1,19 +1,52 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
+import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 
-export default function NewEventPage() {
+const toDatetimeLocal = (isoString: string) => {
+  if (!isoString) return ""
+  try {
+    const date = new Date(isoString)
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(date.getTime() - tzOffset)).toISOString().slice(0, 16);
+    return localISOTime;
+  } catch (e) {
+    return ""
+  }
+}
+
+function NewEventForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    type: DialogType;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    type: 'alert',
+    title: '',
+    message: ''
+  })
+
+  const showDialog = (type: DialogType, title: string, message: string) => {
+    setDialogState({ isOpen: true, type, title, message })
+  }
+
+  const closeDialog = () => {
+    setDialogState(prev => ({ ...prev, isOpen: false }))
+  }
 
   const [formData, setFormData] = useState({
     title: "",
@@ -35,6 +68,32 @@ export default function NewEventPage() {
     checkin_start_datetime: "",
     checkin_end_datetime: "",
   })
+
+  useEffect(() => {
+    const titleParam = searchParams.get("title") || ""
+    const typeParam = searchParams.get("type") || ""
+    const orgName = searchParams.get("organizer_name") || ""
+    const orgContact = searchParams.get("organizer_contact") || ""
+    const desc = searchParams.get("description") || ""
+    const loc = searchParams.get("location") || ""
+    const start = searchParams.get("start_datetime") || ""
+    const end = searchParams.get("end_datetime") || ""
+    
+    if (titleParam || orgName || desc) {
+      setFormData(prev => ({
+        ...prev,
+        title: titleParam,
+        type: typeParam,
+        organizer_name: orgName,
+        organizer_contact: orgContact,
+        description: desc,
+        location: loc,
+        start_datetime: toDatetimeLocal(start),
+        end_datetime: toDatetimeLocal(end),
+        registration_slug: titleParam.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+      }))
+    }
+  }, [searchParams])
 
   const [bannerFile, setBannerFile] = useState<File | null>(null)
   const [logoFile, setLogoFile] = useState<File | null>(null)
@@ -301,7 +360,7 @@ export default function NewEventPage() {
                     className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs"
                     onClick={() => {
                       if (!navigator.geolocation) {
-                        alert("Browser Anda tidak mendukung deteksi lokasi (GPS).");
+                        showDialog('error', 'GPS Tidak Didukung', 'Browser Anda tidak mendukung deteksi lokasi (GPS).');
                         return;
                       }
                       navigator.geolocation.getCurrentPosition(
@@ -313,7 +372,7 @@ export default function NewEventPage() {
                           }));
                         },
                         (err) => {
-                          alert("Gagal mendapatkan lokasi GPS. Pastikan izin lokasi diaktifkan.");
+                          showDialog('error', 'Gagal Mendapatkan Lokasi', 'Gagal mendapatkan lokasi GPS. Pastikan izin lokasi diaktifkan di browser Anda.');
                         },
                         { enableHighAccuracy: true }
                       );
@@ -461,6 +520,27 @@ export default function NewEventPage() {
           </CardFooter>
         </form>
       </Card>
+
+      <CustomDialog
+        isOpen={dialogState.isOpen}
+        type={dialogState.type}
+        title={dialogState.title}
+        message={dialogState.message}
+        onCancel={closeDialog}
+        onConfirm={closeDialog}
+      />
     </div>
+  )
+}
+
+export default function NewEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+      </div>
+    }>
+      <NewEventForm />
+    </Suspense>
   )
 }
