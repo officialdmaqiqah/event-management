@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+
 import { Label } from "@/components/ui/label"
 import { Users, UserPlus, MapPin, QrCode, ClipboardEdit, Copy, CheckCircle2 } from "lucide-react"
 
@@ -127,36 +127,34 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
             <CardTitle className="text-base font-bold text-slate-800">Daftar Kehadiran</CardTitle>
             <CardDescription className="text-xs">Data peserta yang telah check-in ke rapat ini.</CardDescription>
           </div>
-          <Dialog open={openModal} onOpenChange={setOpenModal}>
-            <DialogTrigger asChild>
-              <Button className="bg-indigo-600 hover:bg-indigo-700 h-9 text-xs font-semibold gap-1.5 shadow-sm">
-                <UserPlus className="h-4 w-4" /> Input Manual
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Input Kehadiran Manual</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleAddParticipant} className="space-y-4 pt-4">
-                <div className="space-y-1.5">
-                  <Label>Nama Lengkap</Label>
-                  <Input required value={newParticipant.full_name} onChange={e => setNewParticipant({...newParticipant, full_name: e.target.value})} placeholder="Masukkan nama peserta" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Nomor WhatsApp</Label>
-                  <Input required value={newParticipant.whatsapp} onChange={e => setNewParticipant({...newParticipant, whatsapp: e.target.value})} placeholder="08..." />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Jabatan / Organisasi (Opsional)</Label>
-                  <Input value={newParticipant.organization} onChange={e => setNewParticipant({...newParticipant, organization: e.target.value})} placeholder="Contoh: Divisi Acara" />
-                </div>
-                <Button type="submit" disabled={submitting} className="w-full bg-indigo-600 hover:bg-indigo-700">
-                  {submitting ? "Menyimpan..." : "Simpan Kehadiran"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <div>
+            <Button onClick={() => setOpenModal(!openModal)} className="bg-indigo-600 hover:bg-indigo-700 h-9 text-xs font-semibold gap-1.5 shadow-sm">
+              <UserPlus className="h-4 w-4" /> {openModal ? "Batal" : "Input Manual"}
+            </Button>
+          </div>
         </CardHeader>
+        {openModal && (
+          <div className="p-4 border-b border-slate-100 bg-slate-50/80">
+            <h4 className="text-sm font-bold text-slate-800 mb-4">Input Kehadiran Manual</h4>
+            <form onSubmit={handleAddParticipant} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div className="space-y-1.5">
+                <Label>Nama Lengkap</Label>
+                <Input required value={newParticipant.full_name} onChange={e => setNewParticipant({...newParticipant, full_name: e.target.value})} placeholder="Nama peserta" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>WhatsApp</Label>
+                <Input required value={newParticipant.whatsapp} onChange={e => setNewParticipant({...newParticipant, whatsapp: e.target.value})} placeholder="08..." />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Organisasi (Opsional)</Label>
+                <Input value={newParticipant.organization} onChange={e => setNewParticipant({...newParticipant, organization: e.target.value})} placeholder="Contoh: Divisi Acara" />
+              </div>
+              <Button type="submit" disabled={submitting} className="w-full bg-indigo-600 hover:bg-indigo-700">
+                {submitting ? "Menyimpan..." : "Simpan"}
+              </Button>
+            </form>
+          </div>
+        )}
         <CardContent className="p-0">
           <Table>
             <TableHeader>

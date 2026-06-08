@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { MeetingMinutes, MeetingActionItem } from "@/types/notulen"
@@ -242,19 +242,19 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
           <div className="space-y-4 pt-2 border-t border-slate-100">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Agenda Rapat</Label>
-              <Textarea disabled={isFinalized} className="min-h-[80px]" value={form.agenda || ""} onChange={e => setForm({...form, agenda: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.agenda || ""} onChange={e => setForm({...form, agenda: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Ringkasan Pembahasan</Label>
-              <Textarea disabled={isFinalized} className="min-h-[120px]" value={form.discussion_summary || ""} onChange={e => setForm({...form, discussion_summary: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[120px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.discussion_summary || ""} onChange={e => setForm({...form, discussion_summary: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Keputusan Rapat</Label>
-              <Textarea disabled={isFinalized} className="min-h-[100px]" value={form.decisions || ""} onChange={e => setForm({...form, decisions: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[100px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.decisions || ""} onChange={e => setForm({...form, decisions: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Catatan Penting (Opsional)</Label>
-              <Textarea disabled={isFinalized} className="min-h-[80px]" value={form.important_notes || ""} onChange={e => setForm({...form, important_notes: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.important_notes || ""} onChange={e => setForm({...form, important_notes: e.target.value})} />
             </div>
           </div>
 

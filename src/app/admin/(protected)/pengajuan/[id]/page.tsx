@@ -984,6 +984,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               </CardContent>
             </Card>
           )}
+        </div>
+
+        {/* Right Column (Status & Action) */}
+        <div className="space-y-6">
 
           {/* Card 5: Catatan Persetujuan Pejabat (Berjenjang) */}
           {approvalsList.length > 0 && (
@@ -1114,6 +1118,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             </CardContent>
           </Card>
 
+        </div>
         </div>
       )}
       
