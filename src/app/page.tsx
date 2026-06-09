@@ -262,7 +262,7 @@ export default async function Home() {
             <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-6">
               <div>
                 <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">Inspirasi Event</h2>
-                <h3 className="text-3xl font-black text-slate-900">Agenda Meriah Terdekat</h3>
+                <h3 className="text-3xl font-black text-slate-900">Agenda Terdekat</h3>
               </div>
               <Link href="/kalender">
                 <Button className="rounded-full bg-slate-900 hover:bg-emerald-900 text-white font-bold px-6 transition-all duration-300 shadow-md">
