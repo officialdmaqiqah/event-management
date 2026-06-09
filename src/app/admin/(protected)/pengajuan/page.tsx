@@ -315,7 +315,7 @@ export default function AdminPengajuanPage() {
                           {item.nomor_pengajuan}
                         </TableCell>
                         <TableCell>
-                          <div className="font-semibold text-slate-800">{item.nama_pemohon}</div>
+                          <div className="font-semibold text-slate-800 capitalize">{item.nama_pemohon}</div>
                           {item.nama_lembaga ? (
                             <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mt-0.5">{item.nama_lembaga}</div>
                           ) : (
@@ -323,7 +323,7 @@ export default function AdminPengajuanPage() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <div className="font-bold text-indigo-950">{item.nama_event}</div>
+                          <div className="font-bold text-indigo-950 capitalize">{item.nama_event}</div>
                           <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-0.5">
                             <MapPin className="h-3 w-3" />
                             <span className="truncate max-w-[180px]">{item.area_fasilitas.join(", ")}</span>
