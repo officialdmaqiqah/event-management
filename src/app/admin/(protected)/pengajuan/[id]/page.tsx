@@ -424,7 +424,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       if (tError) throw tError
 
       // 4. AUTOMATIC EVENT CREATION IF APPROVED FULLY
-      if (nextStatus === 'approved') {
+      if (nextStatus === 'approved' && pengajuan.privacy_event === 'detail_publik') {
         const slug = generateUniqueSlug(pengajuan.nama_event)
         const locationStr = pengajuan.area_fasilitas.join(", ")
         
@@ -440,7 +440,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             status: 'published',
             registration_slug: slug,
             requires_registration: true,
-            user_id: currentUser.id
+            user_id: currentUser.id,
+            event_request_id: pengajuan.id
           })
         
         if (evtError) {
