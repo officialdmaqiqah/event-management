@@ -281,7 +281,7 @@ function CekStatusContent() {
                   <div className="space-y-4 border-t border-slate-100 md:border-t-0 md:border-l md:pl-6 pt-4 md:pt-0">
                     <div>
                       <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pemohon</h4>
-                      <p className="font-bold text-slate-800 mt-0.5">{pengajuan.nama_pemohon}</p>
+                      <p className="font-bold text-slate-800 mt-0.5 capitalize">{pengajuan.nama_pemohon}</p>
                       {pengajuan.nama_lembaga && (
                         <p className="text-xs text-slate-500 font-medium capitalize">Tipe: {pengajuan.tipe_pemohon} ({pengajuan.nama_lembaga})</p>
                       )}

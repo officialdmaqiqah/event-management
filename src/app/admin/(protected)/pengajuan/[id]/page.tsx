@@ -716,7 +716,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm pt-2">
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Pemohon</span>
-                <span className="font-semibold text-slate-800">{pengajuan.nama_pemohon}</span>
+                <span className="font-semibold text-slate-800 capitalize">{pengajuan.nama_pemohon}</span>
               </div>
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Tipe Pemohon</span>
@@ -815,7 +815,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Deskripsi Kegiatan</span>
-                <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 leading-relaxed text-xs">
+                <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 leading-relaxed text-xs whitespace-pre-wrap capitalize">
                   {pengajuan.deskripsi_kegiatan}
                 </p>
               </div>
@@ -835,7 +835,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               {pengajuan.kebutuhan_tambahan && (
                 <div className="space-y-1">
                   <span className="text-xs text-slate-400 font-semibold block uppercase">Kebutuhan Logistik Tambahan</span>
-                  <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 text-xs font-medium">
+                  <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 text-xs font-medium whitespace-pre-wrap capitalize">
                     {pengajuan.kebutuhan_tambahan}
                   </p>
                 </div>
@@ -844,7 +844,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               {pengajuan.catatan_tambahan && (
                 <div className="space-y-1">
                   <span className="text-xs text-slate-400 font-semibold block uppercase">Catatan Pemohon</span>
-                  <p className="text-slate-600 bg-slate-50/50 p-3 rounded-lg border border-slate-100 text-xs italic">
+                  <p className="text-slate-600 bg-slate-50/50 p-3 rounded-lg border border-slate-100 text-xs italic whitespace-pre-wrap capitalize">
                     "{pengajuan.catatan_tambahan}"
                   </p>
                 </div>

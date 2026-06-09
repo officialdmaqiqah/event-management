@@ -364,7 +364,7 @@ export default function PublicCalendarPage() {
                       <User className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
                       <div>
                         <span className="block font-semibold text-slate-700">Penyelenggara</span>
-                        <span className="text-slate-600 text-xs">
+                        <span className="text-slate-600 text-xs capitalize">
                           {selectedEvent.nama_pemohon} {selectedEvent.nama_lembaga ? `(${selectedEvent.nama_lembaga})` : ''}
                         </span>
                       </div>
@@ -374,7 +374,7 @@ export default function PublicCalendarPage() {
                         <Info className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
                         <div>
                           <span className="block font-semibold text-slate-700 mb-1">Deskripsi</span>
-                          <p className="text-slate-600 text-xs leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
+                          <p className="text-slate-600 text-xs leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 whitespace-pre-wrap capitalize">
                             {selectedEvent.deskripsi_kegiatan}
                           </p>
                         </div>
