@@ -16,6 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo-makt-full.png?v=3" type="image/png" />
+      </head>
       <body className={`${outfit.className} bg-slate-50 text-slate-900`}>{children}</body>
     </html>
   );
