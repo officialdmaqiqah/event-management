@@ -65,7 +65,7 @@ export async function POST(req: Request) {
             const step1 = wfSteps[0]
             let q = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null)
             if (step1.user_id) q = q.eq('user_id', step1.user_id)
-            else if (step1.jabatan) q = q.eq('jabatan', step1.jabatan)
+            else if (step1.jabatan) q = q.ilike('jabatan', step1.jabatan)
             else q = q.eq('system_role', 'super_admin')
 
             const { data: approvers } = await q.limit(1)

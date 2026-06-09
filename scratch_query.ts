@@ -1,24 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
+import * as dotenv from 'dotenv'
+dotenv.config({ path: '.env.local' })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_URL'
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_KEY'
 
-// We need to read from .env.local
-import * as fs from 'fs'
-import * as dotenv from 'dotenv'
-
-const envConfig = dotenv.parse(fs.readFileSync('.env.local'))
-const supabase = createClient(envConfig.NEXT_PUBLIC_SUPABASE_URL, envConfig.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 async function run() {
-  console.log("Checking duplicates...")
-  const { data: p } = await supabase.from('pengajuan_peminjaman').select('id, nama_event, tanggal_mulai').ilike('nama_event', '%Shubuh%')
-  const { data: e } = await supabase.from('events').select('id, title, event_request_id, start_datetime').ilike('title', '%Shubuh%')
+  const { data: profiles } = await supabase.from('user_profiles').select('full_name, jabatan, whatsapp')
+  console.log('User Profiles:', profiles)
   
-  console.log('Pengajuan Shubuh total:', p?.length)
-  console.log(p?.slice(0, 5))
-  
-  console.log('Events Shubuh total:', e?.length)
-  console.log(e?.slice(0, 5))
+  const { data: wf } = await supabase.from('workflow_approval').select('*')
+  console.log('Workflow Steps:', wf)
 }
 run()
