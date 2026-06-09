@@ -126,6 +126,11 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   // Tabs state
   const [activeTab, setActiveTab] = useState<'detail' | 'absensi' | 'notulen' | 'dokumentasi' | 'laporan'>('detail')
 
+  // Inline edit states
+  const [isSuperAdminUser, setIsSuperAdminUser] = useState(false)
+  const [isEditingTujuan, setIsEditingTujuan] = useState(false)
+  const [editTujuanVal, setEditTujuanVal] = useState("")
+
   useEffect(() => {
     fetchUserAndData()
   }, [id])
@@ -200,6 +205,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
       // Calculate if current user can approve
       const isSuperAdmin = prof?.system_role === 'super_admin' || user?.email === 'officialsiyoyok@gmail.com' || user?.email === 'yahya@example.com'
+      setIsSuperAdminUser(isSuperAdmin)
       let approverCheck = false
       let stepFound = null
 
@@ -266,6 +272,40 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         type: 'error',
         title: 'Simpan Gagal',
         message: err.message || 'Terjadi kesalahan saat menyimpan catatan.',
+        action: () => {}
+      })
+    } finally {
+      setUpdating(false)
+    }
+  }
+
+  const handleSaveTujuan = async () => {
+    if (!pengajuan) return
+    setUpdating(true)
+    try {
+      const { error } = await supabase
+        .from("pengajuan_peminjaman")
+        .update({ tujuan_peminjaman: editTujuanVal })
+        .eq("id", pengajuan.id)
+
+      if (error) throw error
+      
+      setPengajuan(prev => prev ? { ...prev, tujuan_peminjaman: editTujuanVal } : null)
+      setIsEditingTujuan(false)
+      setDialogState({
+        isOpen: true,
+        type: 'alert',
+        title: 'Berhasil',
+        message: 'Tujuan peminjaman berhasil diperbarui.',
+        action: () => {}
+      })
+    } catch (err: any) {
+      console.error(err)
+      setDialogState({
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: err.message || 'Gagal menyimpan perubahan.',
         action: () => {}
       })
     } finally {
@@ -808,9 +848,36 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 </div>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 group">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Tujuan Peminjaman</span>
-                <p className="text-slate-800 font-medium">{pengajuan.tujuan_peminjaman}</p>
+                {isEditingTujuan ? (
+                  <div className="flex gap-2 items-start mt-1">
+                    <textarea 
+                      className="w-full text-sm p-2 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[60px]" 
+                      value={editTujuanVal} 
+                      onChange={(e) => setEditTujuanVal(e.target.value)} 
+                    />
+                    <div className="flex flex-col gap-1">
+                      <Button size="sm" onClick={handleSaveTujuan} disabled={updating} className="bg-indigo-600 hover:bg-indigo-700 text-white h-7 text-[10px]">Simpan</Button>
+                      <Button size="sm" variant="outline" onClick={() => setIsEditingTujuan(false)} className="h-7 text-[10px]">Batal</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-start">
+                    <p className="text-slate-800 font-medium">{pengajuan.tujuan_peminjaman}</p>
+                    {isSuperAdminUser && (
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" 
+                        onClick={() => { setEditTujuanVal(pengajuan.tujuan_peminjaman); setIsEditingTujuan(true); }}
+                        title="Edit Tujuan Peminjaman"
+                      >
+                        <Edit3 className="h-3 w-3 text-slate-400 hover:text-indigo-600" />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">
