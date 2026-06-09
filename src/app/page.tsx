@@ -162,7 +162,7 @@ export default async function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">VENUE PILIHAN</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Fasilitas Premium MAKT</h3>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Fasilitas MAKT</h3>
               <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">Kami menyediakan ruang dan pelataran eksklusif yang siap mendukung kesuksesan event bersejarah Anda.</p>
             </div>
             
