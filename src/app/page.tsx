@@ -63,7 +63,7 @@ const FASILITAS_MAKT = [
   {
     id: "lapangan-parkir",
     nama: "Lapangan Parkir Luas",
-    deskripsi: "Mampu menampung ratusan kendaraan roda dua dan roda empat dengan sistem keamanan terpantau 24 jam untuk kenyamanan tamu.",
+    deskripsi: "Mampu menampung ratusan kendaraan roda dua dan roda empat dengan sistem keamanan terpantau untuk kenyamanan tamu.",
   }
 ]
 
