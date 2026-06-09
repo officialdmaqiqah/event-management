@@ -63,7 +63,7 @@ export async function POST(req: Request) {
           const { data: wfSteps } = await supabase.from('workflow_approval').select('*').eq('jenis_event_id', jEvent.id).eq('is_active', true).order('level', { ascending: true }).limit(1)
           if (wfSteps && wfSteps.length > 0) {
             const step1 = wfSteps[0]
-            let q = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null)
+            let q = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null).neq('whatsapp', '')
             if (step1.user_id) q = q.eq('user_id', step1.user_id)
             else if (step1.jabatan) q = q.ilike('jabatan', step1.jabatan)
             else q = q.eq('system_role', 'super_admin')

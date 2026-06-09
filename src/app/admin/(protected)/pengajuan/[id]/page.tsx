@@ -464,7 +464,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             try {
               const nextStep = allWorkflowSteps.find((s: any) => s.level === nextLevelVal)
               if (nextStep) {
-                let query = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null)
+                let query = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null).neq('whatsapp', '')
                 if (nextStep.user_id) {
                   query = query.eq('user_id', nextStep.user_id)
                 } else if (nextStep.jabatan) {
