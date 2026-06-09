@@ -5,19 +5,21 @@ import { createClient } from "@/lib/supabase/server"
 
 // Komponen Card Kalender
 function EventCard({ event }: { event: any }) {
-  const startDate = new Date(event.start_datetime)
+  const startDate = new Date(event.start_datetime || event.tanggal_mulai)
+  const title = event.title || event.nama_event
+  const type = event.type || event.jenis_event
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm border border-slate-200/60 p-6 flex flex-col h-full hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative group overflow-hidden">
       <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 via-emerald-500 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
       <div className="flex justify-between items-start mb-5">
         <span className="bg-slate-50 text-emerald-700 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-100 group-hover:border-emerald-100 group-hover:bg-emerald-50 transition-colors">
-          {event.type}
+          {type}
         </span>
       </div>
       
       <h3 className="font-extrabold text-slate-900 text-xl leading-snug mb-3 group-hover:text-emerald-700 transition-colors capitalize">
-        {event.title}
+        {title}
       </h3>
       
       <div className="flex items-center text-sm font-semibold text-slate-500 mt-auto pt-5 border-t border-slate-100">
@@ -70,13 +72,13 @@ const FASILITAS_MAKT = [
 export default async function Home() {
   const supabase = createClient()
   
-  // Ambil 4 event terdekat
+  // Ambil 4 event terdekat dari pengajuan yang disetujui
   const { data: upcomingEvents } = await supabase
-    .from("events")
+    .from("pengajuan_peminjaman")
     .select("*")
-    .gte("start_datetime", new Date().toISOString())
-    .eq("status", "published")
-    .order("start_datetime", { ascending: true })
+    .in("status", ["approved"])
+    .gte("tanggal_mulai", new Date().toISOString())
+    .order("tanggal_mulai", { ascending: true })
     .limit(4)
 
   return (
