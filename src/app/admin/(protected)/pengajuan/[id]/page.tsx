@@ -457,10 +457,35 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         }
         
         if (nextStatus === 'under_review') {
-          // Send to approver (simulated static number for demo, ideally fetched from user_profiles of the approver)
-          const approverPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_NUMBER || "081234567890"
+          let approverPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_NUMBER || "081234567890"
+          let approverName = "Approver MAKT"
+          
+          if (nextLevelVal) {
+            try {
+              const nextStep = allWorkflowSteps.find((s: any) => s.level === nextLevelVal)
+              if (nextStep) {
+                let query = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null)
+                if (nextStep.approver_user_id) {
+                  query = query.eq('user_id', nextStep.approver_user_id)
+                } else if (nextStep.jabatan) {
+                  query = query.eq('jabatan', nextStep.jabatan)
+                } else {
+                  query = query.eq('system_role', 'super_admin')
+                }
+                
+                const { data: approvers } = await query.limit(1)
+                if (approvers && approvers.length > 0 && approvers[0].whatsapp) {
+                  approverPhone = approvers[0].whatsapp
+                  approverName = approvers[0].full_name || nextStep.jabatan || approverName
+                }
+              }
+            } catch (err) {
+              console.error("Gagal mendapatkan WA approver:", err)
+            }
+          }
+
           sendWhatsAppNotification({
-            recipient_name: "Approver MAKT",
+            recipient_name: approverName,
             recipient_whatsapp: approverPhone,
             message: await tplNotifikasiApprover(pengajuan.nama_event, pengajuan.jenis_event, pengajuan.nama_pemohon, pengajuan.tanggal_mulai, reasonText, adminUrl),
             related_event_request_id: pengajuan.id

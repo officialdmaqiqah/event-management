@@ -20,6 +20,7 @@ interface UserProfile {
   user_id: string
   email: string | null
   full_name: string | null
+  whatsapp: string | null
   is_approved: boolean
   is_premium: boolean
   jabatan: string | null
@@ -204,6 +205,19 @@ export default function UsersManagementPage() {
     else showDialog("error", "Gagal", error.message)
   }
 
+  const saveWhatsApp = async (userId: string, rawWa: string) => {
+    let formattedWA = rawWa.replace(/\D/g, '')
+    if (formattedWA.startsWith('0')) {
+      formattedWA = '62' + formattedWA.substring(1)
+    }
+    const { error } = await supabase.from("user_profiles").update({ whatsapp: formattedWA || null }).eq("user_id", userId)
+    if (!error) {
+      setUsers(u => u.map(x => x.user_id === userId ? { ...x, whatsapp: formattedWA } : x))
+      showDialog("success", "Berhasil", "Nomor WhatsApp berhasil diperbarui.")
+    }
+    else showDialog("error", "Gagal", error.message)
+  }
+
   const saveSystemRole = async (userId: string, role: SystemRoleType | "") => {
     const { error } = await supabase.from("user_profiles")
       .update({ system_role: role || null })
@@ -330,6 +344,27 @@ export default function UsersManagementPage() {
                     </Button>
                   </div>
                   <p className="text-xs text-gray-400">Dipakai untuk matching approval workflow</p>
+                </div>
+
+                {/* WhatsApp */}
+                <div className="space-y-1.5">
+                  <Label htmlFor={`wa-${user.user_id}`} className="text-xs font-semibold text-slate-500">
+                    Nomor WhatsApp
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`wa-${user.user_id}`}
+                      value={user.whatsapp || ""}
+                      onChange={e => setUsers(u => u.map(x => x.user_id === user.user_id ? { ...x, whatsapp: e.target.value } : x))}
+                      placeholder="Contoh: 0812..."
+                      className="h-8 text-xs bg-white/50"
+                    />
+                    <Button size="sm" className="h-8 text-xs px-2.5 bg-green-600 hover:bg-green-700"
+                      onClick={() => saveWhatsApp(user.user_id, user.whatsapp || "")}>
+                      Simpan
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-400">Otomatis diformat menjadi 62</p>
                 </div>
 
                 <div className="border-t border-slate-100 pt-3 space-y-2.5">
