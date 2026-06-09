@@ -13,14 +13,31 @@ import { useRouter } from "next/navigation"
 
 const AREA_OPTIONS = [
   "Ruang Utama (Masjid)",
-  "Aula Serbaguna",
-  "Halaman Utama",
-  "Ruang Rapat Lt. 1",
-  "Ruang Rapat Lt. 2",
-  "Perpustakaan",
+  "Ruang Lt. 2",
+  "Halaman Pelataran Depan Masjid",
+  "Halaman Pelataran Samping Masjid",
+  "Halaman Belakang Masjid (Area Pasir)",
   "Lapangan Parkir",
-  "Ruang Kelas / TPQ",
 ]
+
+const formatTitleCase = (text: string) => {
+  if (!text) return text
+  const commonAbbreviations = ['DKM', 'MAKT', 'MUI', 'DPR', 'MPR', 'KUA', 'PNS', 'BUMN', 'PT', 'CV', 'SD', 'SMP', 'SMA', 'SMK', 'TK']
+  return text.replace(/\w\S*/g, (txt) => {
+    if (commonAbbreviations.includes(txt.toUpperCase())) return txt.toUpperCase()
+    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase()
+  })
+}
+
+const formatWhatsApp = (text: string) => {
+  let formattedWA = text.replace(/\D/g, '')
+  if (formattedWA.startsWith('0')) {
+    formattedWA = '62' + formattedWA.substring(1)
+  } else if (formattedWA.startsWith('8')) {
+    formattedWA = '62' + formattedWA
+  }
+  return formattedWA
+}
 
 type Step = 1 | 2 | 3
 
@@ -106,9 +123,25 @@ export default function AjukanPeminjamanPage() {
     if (errors[e.target.name]) setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
   }
 
+  const handlePemohonBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    if (name === 'nama_pemohon' || name === 'alamat' || name === 'nama_lembaga') {
+      setPemohon(prev => ({ ...prev, [name]: formatTitleCase(value) }))
+    } else if (name === 'whatsapp') {
+      setPemohon(prev => ({ ...prev, [name]: formatWhatsApp(value) }))
+    }
+  }
+
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setEvent(prev => ({ ...prev, [e.target.name]: e.target.value }))
     if (errors[e.target.name]) setErrors(prev => { const n = { ...prev }; delete n[e.target.name]; return n })
+  }
+
+  const handleEventBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    if (['nama_event', 'tujuan_peminjaman', 'deskripsi_kegiatan', 'area_lainnya', 'kebutuhan_tambahan'].includes(name)) {
+      setEvent(prev => ({ ...prev, [name]: formatTitleCase(value) }))
+    }
   }
 
   const toggleArea = (area: string) => {
@@ -327,7 +360,7 @@ export default function AjukanPeminjamanPage() {
               {/* Nama Pemohon */}
               <div className="space-y-2">
                 <Label htmlFor="nama_pemohon" className="text-slate-700 font-semibold">Nama Lengkap Pemohon <span className="text-red-500">*</span></Label>
-                <Input id="nama_pemohon" name="nama_pemohon" value={pemohon.nama_pemohon} onChange={handlePemohonChange} placeholder="Nama lengkap penanggungjawab" className="h-11" />
+                <Input id="nama_pemohon" name="nama_pemohon" value={pemohon.nama_pemohon} onChange={handlePemohonChange} onBlur={handlePemohonBlur} placeholder="Nama lengkap penanggungjawab" className="h-11" />
                 {errors.nama_pemohon && <p className="text-red-500 text-xs">{errors.nama_pemohon}</p>}
               </div>
 
@@ -337,7 +370,7 @@ export default function AjukanPeminjamanPage() {
                   <Label htmlFor="nama_lembaga" className="text-slate-700 font-semibold">
                     Nama {pemohon.tipe_pemohon === 'instansi' ? 'Instansi' : pemohon.tipe_pemohon === 'komunitas' ? 'Komunitas' : 'Lembaga'} <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="nama_lembaga" name="nama_lembaga" value={pemohon.nama_lembaga} onChange={handlePemohonChange}
+                  <Input id="nama_lembaga" name="nama_lembaga" value={pemohon.nama_lembaga} onChange={handlePemohonChange} onBlur={handlePemohonBlur}
                     placeholder={`Nama resmi ${pemohon.tipe_pemohon}`} className="h-11" />
                   {errors.nama_lembaga && <p className="text-red-500 text-xs">{errors.nama_lembaga}</p>}
                 </div>
@@ -349,7 +382,7 @@ export default function AjukanPeminjamanPage() {
                   <Label htmlFor="whatsapp" className="text-slate-700 font-semibold">Nomor WhatsApp <span className="text-red-500">*</span></Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input id="whatsapp" name="whatsapp" value={pemohon.whatsapp} onChange={handlePemohonChange} placeholder="08123456789" className="pl-9 h-11" />
+                    <Input id="whatsapp" name="whatsapp" value={pemohon.whatsapp} onChange={handlePemohonChange} onBlur={handlePemohonBlur} placeholder="08123456789" className="pl-9 h-11" />
                   </div>
                   {errors.whatsapp && <p className="text-red-500 text-xs">{errors.whatsapp}</p>}
                 </div>
@@ -369,7 +402,7 @@ export default function AjukanPeminjamanPage() {
               <div className="space-y-2">
                 <Label htmlFor="alamat" className="text-slate-700 font-semibold">Alamat Lengkap <span className="text-red-500">*</span></Label>
                 <textarea
-                  id="alamat" name="alamat" value={pemohon.alamat} onChange={handlePemohonChange}
+                  id="alamat" name="alamat" value={pemohon.alamat} onChange={handlePemohonChange} onBlur={handlePemohonBlur}
                   placeholder="Alamat lengkap pemohon / lembaga"
                   className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
                 />
@@ -398,7 +431,7 @@ export default function AjukanPeminjamanPage() {
                 {/* Nama Event */}
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="nama_event" className="text-slate-700 font-semibold">Nama Event / Kegiatan <span className="text-red-500">*</span></Label>
-                  <Input id="nama_event" name="nama_event" value={event.nama_event} onChange={handleEventChange} placeholder="Contoh: Seminar Nasional Teknologi 2026" className="h-11" />
+                  <Input id="nama_event" name="nama_event" value={event.nama_event} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Seminar Nasional Teknologi 2026" className="h-11" />
                   {errors.nama_event && <p className="text-red-500 text-xs">{errors.nama_event}</p>}
                 </div>
 
@@ -427,7 +460,7 @@ export default function AjukanPeminjamanPage() {
               {/* Tujuan Peminjaman */}
               <div className="space-y-2">
                 <Label htmlFor="tujuan_peminjaman" className="text-slate-700 font-semibold">Tujuan Peminjaman <span className="text-red-500">*</span></Label>
-                <Input id="tujuan_peminjaman" name="tujuan_peminjaman" value={event.tujuan_peminjaman} onChange={handleEventChange} placeholder="Tujuan utama kegiatan ini" className="h-11" />
+                <Input id="tujuan_peminjaman" name="tujuan_peminjaman" value={event.tujuan_peminjaman} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Tujuan utama kegiatan ini" className="h-11" />
                 {errors.tujuan_peminjaman && <p className="text-red-500 text-xs">{errors.tujuan_peminjaman}</p>}
               </div>
 
@@ -435,7 +468,7 @@ export default function AjukanPeminjamanPage() {
               <div className="space-y-2">
                 <Label htmlFor="deskripsi_kegiatan" className="text-slate-700 font-semibold">Deskripsi Kegiatan <span className="text-red-500">*</span></Label>
                 <textarea
-                  id="deskripsi_kegiatan" name="deskripsi_kegiatan" value={event.deskripsi_kegiatan} onChange={handleEventChange}
+                  id="deskripsi_kegiatan" name="deskripsi_kegiatan" value={event.deskripsi_kegiatan} onChange={handleEventChange} onBlur={handleEventBlur}
                   placeholder="Jelaskan secara singkat rangkaian kegiatan yang akan dilakukan..."
                   className="flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
                 />
@@ -493,7 +526,7 @@ export default function AjukanPeminjamanPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="area_lainnya" className="text-xs text-slate-500">Area lainnya (opsional)</Label>
-                  <Input id="area_lainnya" name="area_lainnya" value={event.area_lainnya} onChange={handleEventChange}
+                  <Input id="area_lainnya" name="area_lainnya" value={event.area_lainnya} onChange={handleEventChange} onBlur={handleEventBlur}
                     placeholder="Tuliskan area lain yang dibutuhkan..." className="h-9 text-sm" />
                 </div>
                 {errors.area_fasilitas && <p className="text-red-500 text-xs">{errors.area_fasilitas}</p>}
@@ -503,7 +536,7 @@ export default function AjukanPeminjamanPage() {
               <div className="space-y-2">
                 <Label htmlFor="kebutuhan_tambahan" className="text-slate-700 font-semibold">Kebutuhan Tambahan</Label>
                 <textarea
-                  id="kebutuhan_tambahan" name="kebutuhan_tambahan" value={event.kebutuhan_tambahan} onChange={handleEventChange}
+                  id="kebutuhan_tambahan" name="kebutuhan_tambahan" value={event.kebutuhan_tambahan} onChange={handleEventChange} onBlur={handleEventBlur}
                   placeholder="Contoh: Proyektor, Sound System, Meja Registrasi, dll (opsional)"
                   className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
                 />
