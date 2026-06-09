@@ -5,7 +5,7 @@ import "./globals.css";
 const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Internal Event Management",
+  title: "MAKT Event Management",
   description: "Sistem manajemen event internal untuk organisasi/lembaga.",
 };
 
