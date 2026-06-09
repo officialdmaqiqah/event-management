@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label"
 import { MapPin, UserCheck, ShieldCheck, AlertCircle, CheckCircle2 } from "lucide-react"
 
 // MAKT Coordinates
-const MAKT_LAT = -2.1221774
-const MAKT_LNG = 106.1118128
+const MAKT_LAT = -2.12075
+const MAKT_LNG = 106.1143889
 const MAX_RADIUS_METERS = 200
 
 // Helper to calculate distance
