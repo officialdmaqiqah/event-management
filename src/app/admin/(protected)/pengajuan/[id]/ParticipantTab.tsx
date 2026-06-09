@@ -9,12 +9,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import { Label } from "@/components/ui/label"
 import { Users, UserPlus, MapPin, QrCode, ClipboardEdit, Copy, CheckCircle2 } from "lucide-react"
+import { QRCodeSVG } from 'qrcode.react'
 
 export default function ParticipantTab({ pengajuanId }: { pengajuanId: string }) {
   const supabase = createClient()
   const [participants, setParticipants] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [showQRModal, setShowQRModal] = useState(false)
   
   // Modal state
   const [openModal, setOpenModal] = useState(false)
@@ -24,6 +26,8 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
     organization: ""
   })
   const [submitting, setSubmitting] = useState(false)
+
+  const absenLink = typeof window !== 'undefined' ? `${window.location.origin}/absen-rapat/${pengajuanId}` : `/absen-rapat/${pengajuanId}`
 
   useEffect(() => {
     fetchParticipants()
@@ -46,8 +50,7 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
   }
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/absen-rapat/${pengajuanId}`
-    navigator.clipboard.writeText(link)
+    navigator.clipboard.writeText(absenLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -87,6 +90,21 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
 
   return (
     <div className="space-y-6">
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowQRModal(false)} />
+          <div className="relative bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full mx-4 flex flex-col items-center">
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Scan untuk Absen</h3>
+            <p className="text-xs text-slate-500 mb-6 text-center">Peserta dapat melakukan scan barcode ini menggunakan kamera HP untuk membuka form kehadiran.</p>
+            <div className="bg-white p-4 rounded-xl border-2 border-slate-100 shadow-sm mb-6">
+              <QRCodeSVG value={absenLink} size={220} level="M" />
+            </div>
+            <Button onClick={() => setShowQRModal(false)} className="w-full bg-indigo-600 hover:bg-indigo-700 font-bold">Tutup Barcode</Button>
+          </div>
+        </div>
+      )}
+
       {/* Stats & Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="border border-indigo-100 shadow-sm">
@@ -105,12 +123,15 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
           <CardContent className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="text-sm font-bold text-slate-800">Bagikan Link Absensi Rapat</p>
-              <p className="text-xs text-slate-500 mt-1">Peserta dapat melakukan absen mandiri via GPS menggunakan link berikut.</p>
+              <p className="text-xs text-slate-500 mt-1">Peserta dapat melakukan absen mandiri via GPS menggunakan link atau barcode.</p>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-500 truncate max-w-[200px]">
+            <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-500 truncate max-w-[150px] sm:max-w-[200px]">
                 /absen-rapat/{pengajuanId.substring(0,8)}...
               </div>
+              <Button onClick={() => setShowQRModal(true)} variant="outline" className="h-9 gap-1.5 shrink-0 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+                <QrCode className="h-4 w-4" /> QR Code
+              </Button>
               <Button onClick={handleCopyLink} variant="outline" className="h-9 gap-1.5 shrink-0 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
                 {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Tersalin" : "Salin Link"}
