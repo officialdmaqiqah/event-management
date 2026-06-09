@@ -286,7 +286,7 @@ export default function AjukanPeminjamanPage() {
       {/* Header */}
       <div className="max-w-3xl mx-auto mb-8 text-center">
         <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-4 hover:text-indigo-800 transition-colors">
-          <Calendar className="h-6 w-6" />
+          <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
           Kubah Timah Events
         </Link>
         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">

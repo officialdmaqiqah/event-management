@@ -84,8 +84,8 @@ export default async function Home() {
       {/* Navbar - Modern Glass */}
       <header className="px-4 sm:px-6 lg:px-14 h-20 flex items-center bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/50">
         <div className="flex gap-3 items-center group cursor-pointer">
-          <div className="bg-emerald-950 p-2 rounded-xl group-hover:bg-emerald-900 transition-colors">
-            <Building2 className="h-5 w-5 text-amber-400" />
+          <div className="flex items-center justify-center mr-1">
+            <img src="/logo-makt-full.png" alt="Logo MAKT" className="h-10 w-auto" />
           </div>
           <div className="flex flex-col">
             <span className="font-black text-xl tracking-tight text-slate-900 leading-none group-hover:text-emerald-800 transition-colors">MAKT Event</span>

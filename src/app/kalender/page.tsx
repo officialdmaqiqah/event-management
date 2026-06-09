@@ -130,7 +130,7 @@ export default function PublicCalendarPage() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg text-indigo-700 flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5" /> Kubah Timah
+            <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" /> Kubah Timah
           </Link>
           <div className="flex gap-3">
             <Link href="/ajukan-peminjaman">

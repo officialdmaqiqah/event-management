@@ -22,8 +22,8 @@ function SuksesContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-16 px-4 flex flex-col justify-center items-center">
       {/* Header / Logo */}
       <div className="mb-8 text-center">
-        <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-2 hover:text-indigo-800 transition-colors">
-          <Calendar className="h-6 w-6" />
+        <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-8 hover:text-indigo-800 transition-colors">
+          <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
           Kubah Timah Events
         </Link>
       </div>

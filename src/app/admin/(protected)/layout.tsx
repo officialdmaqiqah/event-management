@@ -34,7 +34,8 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 min-h-[4rem] flex flex-wrap items-center justify-between gap-3">
-          <Link href="/admin" className="font-bold text-lg sm:text-xl text-gray-900 truncate">
+          <Link href="/admin" className="font-bold text-lg sm:text-xl text-gray-900 truncate flex items-center gap-2">
+            <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
             Event Management
           </Link>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
