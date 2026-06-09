@@ -54,10 +54,33 @@ export async function POST(req: Request) {
       const statusUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/cek-status?nomor=${data.nomor_pengajuan}`
       
       // 1. To Admin
-      // In a real app, you'd query the admin's phone number from user_profiles. Here we simulate or use a hardcoded admin number from env for testing.
-      const adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 
+      let adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 
+      let adminName = "Admin MAKT"
+
+      try {
+        const { data: jEvent } = await supabase.from('jenis_event').select('id').eq('name', body.jenis_event).maybeSingle()
+        if (jEvent) {
+          const { data: wfSteps } = await supabase.from('workflow_approval').select('*').eq('jenis_event_id', jEvent.id).eq('is_active', true).order('level', { ascending: true }).limit(1)
+          if (wfSteps && wfSteps.length > 0) {
+            const step1 = wfSteps[0]
+            let q = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null)
+            if (step1.user_id) q = q.eq('user_id', step1.user_id)
+            else if (step1.jabatan) q = q.eq('jabatan', step1.jabatan)
+            else q = q.eq('system_role', 'super_admin')
+
+            const { data: approvers } = await q.limit(1)
+            if (approvers && approvers.length > 0 && approvers[0].whatsapp) {
+              adminPhone = approvers[0].whatsapp
+              adminName = approvers[0].full_name || step1.jabatan || adminName
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Gagal mendapatkan WA approver pertama:", err)
+      }
+
       sendWhatsAppNotification({
-        recipient_name: "Admin MAKT",
+        recipient_name: adminName,
         recipient_whatsapp: adminPhone,
         message: await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl),
         related_event_request_id: data.id
