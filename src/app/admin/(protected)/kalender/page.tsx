@@ -15,6 +15,7 @@ import {
   ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye
 } from "lucide-react"
+import Link from "next/link"
 
 type PengajuanEvent = {
   id: string
@@ -27,6 +28,9 @@ type PengajuanEvent = {
   nama_pemohon?: string
   nama_lembaga?: string | null
   deskripsi_kegiatan?: string
+  is_public_event?: boolean
+  public_slug?: string
+  banner_url?: string
 }
 
 export default function AdminCalendarPage() {
@@ -65,8 +69,8 @@ export default function AdminCalendarPage() {
   const fetchEvents = async () => {
     setLoading(true)
     try {
-      // Admin sees ALL approved events, including 'rahasia'
-      const { data, error } = await supabase
+      // 1. Fetch pengajuan
+      const { data: pengajuanData, error: pengajuanError } = await supabase
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
@@ -74,8 +78,56 @@ export default function AdminCalendarPage() {
         `)
         .eq("status", "approved")
       
-      if (error) throw error
-      setEvents(data as PengajuanEvent[])
+      if (pengajuanError) throw pengajuanError
+
+      // 2. Fetch public events
+      const { data: publicEventsData, error: publicEventsError } = await supabase
+        .from("events")
+        .select(`
+          id, title, type, start_datetime, end_datetime, location, 
+          organizer_name, description, registration_slug, event_request_id, banner_url
+        `)
+        .eq("status", "published")
+
+      if (publicEventsError) throw publicEventsError
+
+      // 3. Merge data
+      const mergedEvents: PengajuanEvent[] = []
+      const linkedRequestIds = new Set()
+
+      if (publicEventsData) {
+        publicEventsData.forEach(pe => {
+          if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
+          mergedEvents.push({
+            id: pe.id,
+            nama_event: pe.title,
+            jenis_event: pe.type,
+            tanggal_mulai: pe.start_datetime,
+            tanggal_selesai: pe.end_datetime || pe.start_datetime,
+            area_fasilitas: [pe.location],
+            privacy_event: 'detail_publik', 
+            nama_pemohon: pe.organizer_name || 'Admin MAKT',
+            nama_lembaga: null,
+            deskripsi_kegiatan: pe.description || undefined,
+            is_public_event: true,
+            public_slug: pe.registration_slug,
+            banner_url: pe.banner_url || undefined
+          })
+        })
+      }
+
+      if (pengajuanData) {
+        pengajuanData.forEach(p => {
+          if (!linkedRequestIds.has(p.id)) {
+            mergedEvents.push({
+              ...(p as PengajuanEvent),
+              is_public_event: false
+            })
+          }
+        })
+      }
+
+      setEvents(mergedEvents)
     } catch (err) {
       console.error("Gagal load admin calendar events:", err)
     } finally {
@@ -218,11 +270,8 @@ export default function AdminCalendarPage() {
                       let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                       let Icon = Eye
                       
-                      if (ev.privacy_event === 'rahasia') {
-                        bgColor = 'bg-red-50 border-red-100 text-red-700'
-                        Icon = EyeOff
-                      } else if (ev.privacy_event === 'umum_saja') {
-                        bgColor = 'bg-amber-50 border-amber-100 text-amber-700'
+                      if (ev.privacy_event === 'rahasia' || ev.privacy_event === 'umum_saja') {
+                        bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
                         Icon = EyeOff
                       }
 
@@ -230,10 +279,11 @@ export default function AdminCalendarPage() {
                         <div 
                           key={ev.id}
                           onClick={() => setSelectedEvent(ev)}
-                          className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm flex items-center justify-between gap-1 ${bgColor}`}
+                          className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm relative overflow-hidden flex items-center justify-between gap-1 ${bgColor}`}
                           title={ev.nama_event}
                         >
-                          <div className="truncate">{ev.nama_event}</div>
+                          {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
+                          <div className="truncate capitalize">{ev.nama_event}</div>
                           {ev.privacy_event !== 'detail_publik' && <Icon className="h-3 w-3 shrink-0 opacity-70" />}
                         </div>
                       )
@@ -248,9 +298,9 @@ export default function AdminCalendarPage() {
 
       {/* Admin Legend */}
       <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
-        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-500"></div> Publik</div>
-        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div> Umum Saja</div>
-        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div> Rahasia</div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-500"></div> Peminjaman (Publik/Admin)</div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300"></div> Peminjaman (Internal/Rahasia)</div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-pink-500"></div> Event dengan Pendaftaran Terbuka</div>
       </div>
 
       {/* Event Details Dialog (Admin Version - Shows Everything) */}
@@ -282,6 +332,11 @@ export default function AdminCalendarPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm bg-slate-50">
+              {selectedEvent.is_public_event && selectedEvent.banner_url && (
+                <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+                  <img src={selectedEvent.banner_url} alt={selectedEvent.nama_event} className="w-full h-full object-cover" />
+                </div>
+              )}
               <div className="grid grid-cols-1 gap-3">
                 <div className="flex gap-3">
                   <Clock className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
@@ -325,6 +380,22 @@ export default function AdminCalendarPage() {
                   </div>
                 )}
               </div>
+
+              {selectedEvent.is_public_event && selectedEvent.public_slug && (
+                <div className="mt-4 pt-4 border-t border-slate-200">
+                  {new Date() > new Date(selectedEvent.tanggal_selesai) ? (
+                    <Button disabled className="w-full bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed font-medium">
+                      Pendaftaran Ditutup (Event Berakhir)
+                    </Button>
+                  ) : (
+                    <Link href={`/${selectedEvent.public_slug}`}>
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
+                        Lihat Detail Pendaftaran (Frontend)
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Link from "next/link"
-import { Calendar, Search, Filter, Clock, MapPin, Eye, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle } from "lucide-react"
+import { Calendar, Search, Filter, Clock, MapPin, Eye, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle, Zap } from "lucide-react"
 
 type Pengajuan = {
   id: string
@@ -55,6 +55,7 @@ export default function AdminPengajuanPage() {
   const [filteredData, setFilteredData] = useState<Pengajuan[]>([])
   const [loading, setLoading] = useState(true)
   const [errorMsg, setErrorMsg] = useState("")
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const [jenisEventOptions, setJenisEventOptions] = useState<string[]>([
     "Kajian / Pengajian",
@@ -95,7 +96,15 @@ export default function AdminPengajuanPage() {
 
   useEffect(() => {
     fetchPengajuan()
+    checkAdmin()
   }, [])
+
+  const checkAdmin = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user && (user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com')) {
+      setIsAdmin(true)
+    }
+  }
 
   useEffect(() => {
     applyFilters()
@@ -170,12 +179,22 @@ export default function AdminPengajuanPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Kelola Pengajuan Peminjaman</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Data Peminjaman Ruang/Fasilitas</h1>
           <p className="text-sm text-slate-500">Review, setujui, dan kelola semua izin peminjaman fasilitas Masjid Kubah Timah</p>
         </div>
-        <Link href="/ajukan-peminjaman" target="_blank">
-          <Button className="bg-indigo-600 hover:bg-indigo-700">Form Pengajuan Publik ↗</Button>
-        </Link>
+        <div className="flex gap-2">
+          {isAdmin && (
+            <Link href="/admin/pengajuan/generator">
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md">
+                <Zap className="h-4 w-4 mr-2" />
+                Generator Jadwal Rutin
+              </Button>
+            </Link>
+          )}
+          <Link href="/ajukan-peminjaman" target="_blank">
+            <Button className="bg-indigo-600 hover:bg-indigo-700">+ Buat Peminjaman ↗</Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filters Card */}

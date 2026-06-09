@@ -254,10 +254,21 @@ export default function AjukanPeminjamanPage() {
         catatan_tambahan: event.catatan_tambahan.trim() || null,
       }
 
-      const { data, error } = await supabase.rpc('submit_pengajuan', { pengajuan_data: payload })
-      if (error) throw error
+      const res = await fetch('/api/pengajuan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
 
-      const nomor = data?.nomor_pengajuan || 'PJM-UNKNOWN'
+      const responseData = await res.json()
+
+      if (!res.ok) {
+        throw new Error(responseData.error || 'Gagal mengirim pengajuan')
+      }
+
+      const nomor = responseData.data?.nomor_pengajuan || 'PJM-UNKNOWN'
       router.push(`/ajukan-peminjaman/sukses?nomor=${nomor}`)
     } catch (err: any) {
       showDialog('error', 'Gagal Mengirim', err.message || 'Terjadi kesalahan. Silakan coba lagi.')

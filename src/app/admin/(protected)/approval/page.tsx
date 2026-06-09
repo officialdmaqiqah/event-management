@@ -153,7 +153,7 @@ export default function PejabatApprovalPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
             <ShieldCheck className="h-7 w-7 text-indigo-600" />
-            Persetujuan Saya
+            Persetujuan Peminjaman
           </h1>
           <p className="text-sm text-slate-500">Tinjau dan proses pengajuan peminjaman fasilitas yang menunggu persetujuan Anda</p>
         </div>

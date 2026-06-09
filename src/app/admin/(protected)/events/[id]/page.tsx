@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { format } from "date-fns"
 import ParticipantRowActions from "./ParticipantRowActions"
 import ExportCsvButton from "./ExportCsvButton"
+import CopyGuestLinkButton from "./CopyGuestLinkButton"
 
 export default async function EventDetailPage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -66,6 +67,7 @@ export default async function EventDetailPage({ params }: { params: { id: string
             <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">Edit Event</Button>
           </Link>
           <ExportCsvButton participants={participants || []} eventTitle={event.title} eventCustomFields={event.custom_fields || []} />
+          <CopyGuestLinkButton eventId={event.id} />
           <Link href={`/admin/events/${event.id}/checkin`}>
             <Button>Mulai Check-in</Button>
           </Link>

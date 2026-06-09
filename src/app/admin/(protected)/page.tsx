@@ -2,27 +2,52 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { format } from "date-fns"
-import { Calendar, Users, MapPin, Edit, Heart } from "lucide-react"
-import DeleteEventButton from "./_components/DeleteEventButton"
+import { Calendar, Users, MapPin, CalendarDays, CheckCircle2, AlertCircle } from "lucide-react"
 
 export default async function AdminDashboard() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const isSuperAdmin = user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
 
-  let query = supabase.from("events").select("*").order("created_at", { ascending: false })
+  // Ambil profil pengguna
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('is_approved, jabatan')
+    .eq('user_id', user?.id)
+    .single()
 
-  if (!isSuperAdmin && user) {
-    query = query.eq('user_id', user.id)
+  const isAdmin = user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
+
+  // Statistik Pengajuan (Peminjaman)
+  let pendingQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).eq("status", "pending")
+  let approvedQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).eq("status", "approved")
+  
+  if (!isAdmin && user) {
+    pendingQuery = pendingQuery.eq("user_id", user.id)
+    approvedQuery = approvedQuery.eq("user_id", user.id)
   }
 
-  const { data: events, error } = await query
+  const { count: pendingCount } = await pendingQuery
+  const { count: approvedCount } = await approvedQuery
 
-  if (error) {
-    console.error("Error fetching events:", error)
+  // Statistik Event Publik
+  let eventQuery = supabase.from("events").select("id", { count: "exact" }).eq("status", "published")
+  if (!isAdmin && user) {
+    eventQuery = eventQuery.eq("user_id", user.id)
   }
+  const { count: activeEventCount } = await eventQuery
+
+  // Daftar Peminjaman Terdekat
+  let upcomingQuery = supabase
+    .from("pengajuan_peminjaman")
+    .select("id, nama_event, tanggal_mulai, area_fasilitas, status")
+    .gte("tanggal_mulai", new Date().toISOString())
+    .order("tanggal_mulai", { ascending: true })
+    .limit(4)
+
+  if (!isAdmin && user) {
+    upcomingQuery = upcomingQuery.eq("user_id", user.id)
+  }
+  const { data: upcomingPeminjaman } = await upcomingQuery
 
   const getWIBDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -43,86 +68,139 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Daftar Event</h1>
-        <Link href="/admin/events/new">
-          <Button>+ Buat Event Baru</Button>
-        </Link>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Dashboard Utama</h1>
+          <p className="text-slate-500 mt-1">Ringkasan aktivitas peminjaman dan event publik</p>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/admin/pengajuan/new">
+            <Button className="bg-indigo-600 hover:bg-indigo-700">+ Buat Peminjaman</Button>
+          </Link>
+          <Link href="/admin/events/new">
+            <Button variant="outline" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50">+ Buat Event Publik</Button>
+          </Link>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Event Anda</CardTitle>
-          <CardDescription>Kelola semua event yang telah Anda buat</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {events && events.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nama Event</TableHead>
-                    <TableHead className="whitespace-nowrap">Waktu</TableHead>
-                    <TableHead>Lokasi</TableHead>
-                    <TableHead className="whitespace-nowrap">Status</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Aksi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {events.map((event) => (
-                    <TableRow key={event.id}>
-                      <TableCell className="font-medium min-w-[200px]">{event.title}</TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        <div className="flex items-center text-gray-500">
-                          <Calendar className="mr-2 h-4 w-4" />
-                          {getWIBDate(event.start_datetime)}
-                        </div>
-                      </TableCell>
-                      <TableCell className="min-w-[150px]">
-                        <div className="flex items-center text-gray-500">
-                          <MapPin className="mr-2 h-4 w-4" />
-                          {event.location}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                          event.status === 'published' ? 'bg-green-50 text-green-700' :
-                          event.status === 'draft' ? 'bg-gray-100 text-gray-700' :
-                          event.status === 'completed' ? 'bg-blue-50 text-blue-700' :
-                          'bg-red-50 text-red-700'
-                        }`}>
-                          {event.status}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link href={`/admin/events/${event.id}`}>
-                            <Button variant="outline" size="sm">Detail</Button>
-                          </Link>
-                          <Link href={`/admin/events/${event.id}/edit`}>
-                            <Button variant="ghost" size="sm" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <DeleteEventButton eventId={event.id} eventTitle={event.title} />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="border-l-4 border-l-amber-500 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-500">Peminjaman Menunggu Approval</p>
+                <h3 className="text-3xl font-bold text-slate-800 mt-2">{pendingCount || 0}</h3>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-full">
+                <AlertCircle className="w-6 h-6 text-amber-500" />
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-10">
-              <p className="text-gray-500 mb-4">Belum ada event yang dibuat.</p>
-              <Link href="/admin/events/new">
-                <Button variant="outline">Mulai Buat Event</Button>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-emerald-500 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-500">Peminjaman Disetujui</p>
+                <h3 className="text-3xl font-bold text-slate-800 mt-2">{approvedCount || 0}</h3>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-full">
+                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-blue-500 shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-500">Event Publik Aktif</p>
+                <h3 className="text-3xl font-bold text-slate-800 mt-2">{activeEventCount || 0}</h3>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-full">
+                <Users className="w-6 h-6 text-blue-500" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <Card className="shadow-sm">
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Jadwal Peminjaman Terdekat</CardTitle>
+                <CardDescription>Kegiatan yang akan berlangsung di MAKT</CardDescription>
+              </div>
+              <CalendarDays className="h-5 w-5 text-slate-400" />
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {upcomingPeminjaman && upcomingPeminjaman.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {upcomingPeminjaman.map((item) => (
+                  <div key={item.id} className="p-4 flex items-start gap-4 hover:bg-slate-50 transition-colors">
+                    <div className="bg-indigo-50 text-indigo-700 p-3 rounded-lg flex-shrink-0 text-center min-w-[60px]">
+                      <div className="text-sm font-semibold">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit' })}</div>
+                      <div className="text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short' })}</div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-slate-900 truncate capitalize">{item.nama_event}</h4>
+                      <div className="flex items-center gap-3 text-xs text-slate-500 mt-1.5">
+                        <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="flex items-center gap-1 truncate"><MapPin className="h-3.5 w-3.5" /> {item.area_fasilitas[0]}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className={`text-[10px] px-2 py-1 rounded-full font-semibold uppercase ${item.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {item.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-slate-500">
+                <p>Tidak ada peminjaman dalam waktu dekat.</p>
+              </div>
+            )}
+            <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
+              <Link href="/admin/pengajuan" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                Lihat Semua Peminjaman &rarr;
               </Link>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-sm bg-gradient-to-br from-indigo-900 to-slate-900 text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <CardHeader className="relative z-10">
+            <CardTitle className="text-xl">Panduan Penggunaan</CardTitle>
+            <CardDescription className="text-indigo-200">Perbedaan fitur utama pada sistem ini</CardDescription>
+          </CardHeader>
+          <CardContent className="relative z-10 space-y-4">
+            <div className="bg-white/10 rounded-xl p-4 border border-white/10">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-indigo-500/30 p-1.5 rounded-md"><MapPin className="h-4 w-4 text-indigo-300" /></div>
+                <h4 className="font-semibold text-indigo-100">1. Peminjaman Ruang</h4>
+              </div>
+              <p className="text-sm text-indigo-200 leading-relaxed">Gunakan fitur ini untuk memesan ruang rapat atau area masjid. Sistem sudah menyediakan fitur Absensi Internal berbasis GPS untuk rapat Anda.</p>
+            </div>
+            
+            <div className="bg-white/10 rounded-xl p-4 border border-white/10">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-emerald-500/30 p-1.5 rounded-md"><Users className="h-4 w-4 text-emerald-300" /></div>
+                <h4 className="font-semibold text-indigo-100">2. Event Publik</h4>
+              </div>
+              <p className="text-sm text-indigo-200 leading-relaxed">Jika rapat/peminjaman Anda adalah acara besar (seperti kajian akbar) yang butuh pendaftaran jamaah luar, silakan buat Event Publik untuk menyebarkan form pendaftaran (E-Ticket).</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
     </div>
   )
 }

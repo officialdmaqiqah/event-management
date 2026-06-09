@@ -401,12 +401,21 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10 pt-4">
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {error && (
-                    <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-200 font-medium flex items-start">
-                      <span className="block">{error}</span>
+                {new Date() > new Date(event.end_datetime || event.start_datetime) ? (
+                  <div className="text-center py-12 px-4 animate-in fade-in zoom-in duration-500">
+                    <div className="bg-slate-100 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                      <Clock className="w-10 h-10 text-slate-400" />
                     </div>
-                  )}
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Pendaftaran Ditutup</h3>
+                    <p className="text-slate-500">Mohon maaf, event ini telah berakhir sehingga sistem tidak lagi menerima pendaftaran atau absensi kehadiran baru.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {error && (
+                      <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-200 font-medium flex items-start">
+                        <span className="block">{error}</span>
+                      </div>
+                    )}
                   
                   {isDirectCheckin && event.latitude && (
                     <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-start gap-3">
@@ -486,6 +495,7 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                       : (isDirectCheckin ? "Absen Kehadiran Sekarang" : "Daftar & Dapatkan Tiket")}
                   </Button>
                 </form>
+                )}
               </CardContent>
             </Card>
           </div>

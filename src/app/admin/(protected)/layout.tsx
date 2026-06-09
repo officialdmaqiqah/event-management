@@ -39,42 +39,56 @@ export default async function AdminLayout({
             Event Management
           </Link>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-            {user.email === 'officialsiyoyok@gmail.com' && (
-              <Link href="/admin/users">
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
-                  Kelola Pengguna
-                </Button>
-              </Link>
-            )}
-            {user.email === 'officialsiyoyok@gmail.com' && (
-              <Link href="/admin/organisasi">
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
-                  Organisasi
-                </Button>
-              </Link>
-            )}
+            {/* 1. Peminjaman Fasilitas */}
+            <Link href="/admin/pengajuan">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                Peminjaman
+              </Button>
+            </Link>
             {(isAdmin || (profile && profile.is_approved && profile.jabatan)) && (
               <Link href="/admin/approval">
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
-                  Approval Saya
+                  Persetujuan
                 </Button>
               </Link>
             )}
-            <Link href="/admin/settings">
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
-                Pengaturan
-              </Button>
-            </Link>
-            <Link href="/admin/pengajuan">
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
-                Pengajuan
-              </Button>
-            </Link>
+
+            {/* 2. Event Publik & Tiketing (Hanya Super Admin) */}
+            {isAdmin && (
+              <Link href="/admin/events">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                  Event Publik
+                </Button>
+              </Link>
+            )}
+
+            {/* 3. Laporan & Kalender */}
             <Link href="/admin/kalender">
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
                 Kalender
               </Button>
             </Link>
+
+            {/* 4. Sistem & Pengaturan */}
+            <Link href="/admin/settings">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                Pengaturan
+              </Button>
+            </Link>
+            {user.email === 'officialsiyoyok@gmail.com' && (
+              <>
+                <Link href="/admin/organisasi">
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                    Organisasi
+                  </Button>
+                </Link>
+                <Link href="/admin/users">
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                    Pengguna
+                  </Button>
+                </Link>
+              </>
+            )}
             <span className="text-xs sm:text-sm text-gray-500 hidden md:inline-block border-l border-gray-300 pl-4">
               {user.email}
             </span>

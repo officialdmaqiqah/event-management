@@ -67,9 +67,33 @@ function NewEventForm() {
     radius_meters: "100",
     checkin_start_datetime: "",
     checkin_end_datetime: "",
+    event_request_id: "",
   })
 
+  const [availablePengajuan, setAvailablePengajuan] = useState<any[]>([])
+
   useEffect(() => {
+    const fetchPengajuan = async () => {
+      // Fetch approved pengajuan that are not yet linked to an event
+      const { data: linkedEvents } = await supabase.from('events').select('event_request_id').not('event_request_id', 'is', null)
+      const linkedIds = linkedEvents?.map(e => e.event_request_id) || []
+
+      let query = supabase.from('pengajuan_peminjaman')
+        .select('id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, area_fasilitas, nama_pemohon, nama_lembaga, deskripsi_kegiatan')
+        .eq('status', 'approved')
+        .order('tanggal_mulai', { ascending: false })
+
+      const { data } = await query
+      
+      if (data) {
+        // Filter out those already linked
+        const unlinked = data.filter(d => !linkedIds.includes(d.id))
+        setAvailablePengajuan(unlinked)
+      }
+    }
+    
+    fetchPengajuan()
+
     const titleParam = searchParams.get("title") || ""
     const typeParam = searchParams.get("type") || ""
     const orgName = searchParams.get("organizer_name") || ""
@@ -149,6 +173,12 @@ function NewEventForm() {
       return
     }
 
+    if (!formData.event_request_id) {
+      setError("Anda wajib menautkan Event Publik ini dengan data Peminjaman yang sudah disetujui.")
+      setLoading(false)
+      return
+    }
+
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
@@ -216,6 +246,7 @@ function NewEventForm() {
         checkin_start_datetime: formData.checkin_start_datetime ? new Date(formData.checkin_start_datetime).toISOString() : null,
         checkin_end_datetime: formData.checkin_end_datetime ? new Date(formData.checkin_end_datetime).toISOString() : null,
         custom_fields: customFields,
+        event_request_id: formData.event_request_id || null,
       }
     ])
 
@@ -248,6 +279,48 @@ function NewEventForm() {
                 {error}
               </div>
             )}
+            
+            {/* Tautkan Peminjaman */}
+            <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-2">
+              <Label htmlFor="event_request_id" className="text-blue-900 font-semibold">Tautkan dengan Data Peminjaman Ruangan <span className="text-red-500">*</span></Label>
+              <select
+                id="event_request_id"
+                name="event_request_id"
+                required
+                value={formData.event_request_id}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  handleChange(e);
+                  
+                  if (selectedId) {
+                    const selected = availablePengajuan.find(p => p.id === selectedId);
+                    if (selected) {
+                      setFormData(prev => ({
+                        ...prev,
+                        event_request_id: selectedId,
+                        title: selected.nama_event,
+                        type: selected.jenis_event,
+                        organizer_name: selected.nama_lembaga || selected.nama_pemohon || prev.organizer_name,
+                        location: selected.area_fasilitas?.join(", ") || prev.location,
+                        start_datetime: toDatetimeLocal(selected.tanggal_mulai),
+                        end_datetime: selected.tanggal_selesai ? toDatetimeLocal(selected.tanggal_selesai) : prev.end_datetime,
+                        description: selected.deskripsi_kegiatan || prev.description,
+                        registration_slug: selected.nama_event.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+                      }));
+                    }
+                  }
+                }}
+                className="flex h-10 w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm shadow-sm"
+              >
+                <option value="" disabled>-- Wajib Pilih Data Peminjaman yang Disetujui --</option>
+                {availablePengajuan.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.nama_event} ({new Date(p.tanggal_mulai).toLocaleDateString('id-ID')}) - {p.nama_pemohon}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-blue-700">Sesuai alur birokrasi, pembuatan Event Publik wajib diawali dengan persetujuan Peminjaman Ruangan.</p>
+            </div>
             
             {/* Section 1: Informasi Utama */}
             <div className="space-y-6">
