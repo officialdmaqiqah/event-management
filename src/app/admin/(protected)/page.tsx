@@ -144,13 +144,13 @@ export default async function AdminDashboard() {
                 {upcomingPeminjaman.map((item) => (
                   <div key={item.id} className="p-4 flex items-start gap-4 hover:bg-slate-50 transition-colors">
                     <div className="bg-indigo-50 text-indigo-700 p-3 rounded-lg flex-shrink-0 text-center min-w-[60px]">
-                      <div className="text-sm font-semibold">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit' })}</div>
-                      <div className="text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short' })}</div>
+                      <div className="text-sm font-semibold">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', timeZone: 'Asia/Jakarta' })}</div>
+                      <div className="text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short', timeZone: 'Asia/Jakarta' })}</div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-slate-900 truncate capitalize">{item.nama_event}</h4>
                       <div className="flex items-center gap-3 text-xs text-slate-500 mt-1.5">
-                        <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</span>
                         <span className="flex items-center gap-1 truncate"><MapPin className="h-3.5 w-3.5" /> {item.area_fasilitas[0]}</span>
                       </div>
                     </div>

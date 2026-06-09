@@ -281,7 +281,7 @@ export default async function Home() {
                   <CalendarIcon className="h-10 w-10 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-2">Kalender Event Masih Kosong</h3>
-                <p className="text-slate-500 font-medium">Jadilah yang pertama untuk menggelar acara megah bulan ini!</p>
+                <p className="text-slate-500 font-medium">Jadilah yang pertama untuk menggelar acara bulan ini!</p>
               </div>
             )}
           </div>

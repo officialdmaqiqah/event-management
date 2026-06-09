@@ -234,7 +234,7 @@ export default function PejabatApprovalPage() {
                       </TableCell>
                       <TableCell className="text-right pr-6">
                         <Link href={`/admin/pengajuan/${item.id}`}>
-                          <Button variant="outline" size="sm" className="h-8 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white border-0">
+                          <Button size="sm" className="h-8 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm">
                             <Eye className="h-3.5 w-3.5 mr-1" /> Tinjau
                           </Button>
                         </Link>
