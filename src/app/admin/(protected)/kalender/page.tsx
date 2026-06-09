@@ -40,6 +40,7 @@ export default function AdminCalendarPage() {
   const [loading, setLoading] = useState(true)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
+  const [showFilters, setShowFilters] = useState(false)
   
   // Filters
   const [search, setSearch] = useState("")
@@ -191,29 +192,43 @@ export default function AdminCalendarPage() {
 
       {/* Filters */}
       <Card className="border border-slate-200 shadow-sm">
-        <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input 
-              placeholder="Cari event..." value={search} onChange={e => setSearch(e.target.value)}
-              className="pl-9"
-            />
+        <CardHeader 
+          className="pb-3 flex flex-row items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors p-4"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <div className="flex flex-row items-center gap-2">
+            <Filter className="h-4 w-4 text-indigo-600" />
+            <div className="font-bold text-slate-800 text-sm">Filter Pencarian</div>
           </div>
-          <select 
-            value={filterJenis} onChange={e => setFilterJenis(e.target.value)}
-            className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"
-          >
-            <option value="">Semua Jenis</option>
-            {jenisOptions.map(j => <option key={j} value={j}>{j}</option>)}
-          </select>
-          <select 
-            value={filterArea} onChange={e => setFilterArea(e.target.value)}
-            className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"
-          >
-            <option value="">Semua Area</option>
-            {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
-          </select>
-        </CardContent>
+          <Button variant="ghost" size="sm" className="h-6 text-xs text-indigo-600 px-2">
+            {showFilters ? "Sembunyikan" : "Tampilkan"}
+          </Button>
+        </CardHeader>
+        {showFilters && (
+          <CardContent className="p-4 pt-0 flex flex-col md:flex-row gap-4 border-t border-slate-100 mt-2">
+            <div className="relative flex-1 pt-2 md:pt-0">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input 
+                placeholder="Cari event..." value={search} onChange={e => setSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <select 
+              value={filterJenis} onChange={e => setFilterJenis(e.target.value)}
+              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 mt-0"
+            >
+              <option value="">Semua Jenis</option>
+              {jenisOptions.map(j => <option key={j} value={j}>{j}</option>)}
+            </select>
+            <select 
+              value={filterArea} onChange={e => setFilterArea(e.target.value)}
+              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 mt-0"
+            >
+              <option value="">Semua Area</option>
+              {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+            </select>
+          </CardContent>
+        )}
       </Card>
 
       {/* Calendar Navigation */}
