@@ -439,7 +439,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             end_datetime: pengajuan.tanggal_selesai,
             status: 'published',
             registration_slug: slug,
-            requires_registration: true,
+            requires_registration: false,
             user_id: currentUser.id,
             event_request_id: pengajuan.id
           })

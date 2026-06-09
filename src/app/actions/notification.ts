@@ -162,6 +162,9 @@ export async function tplPengajuanDisetujui(nomor: string, namaEvent: string, tg
 Kabar baik! Pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* telah *DISETUJUI*.
 Tanggal Pelaksanaan: *${tglEvent}*
 
+*Pemberitahuan Tambahan:*
+MAKT memiliki layanan pendaftaran online dan absensi online terintegrasi. Jika Anda ingin mengaktifkan fitur registrasi jamaah secara online untuk kegiatan Anda, silakan hubungi Admin.
+
 Silakan patuhi seluruh tata tertib penggunaan fasilitas Masjid Agung Kubah Timah.
 Terima kasih.`
 }
