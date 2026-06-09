@@ -42,8 +42,30 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    
     const supabase = createClient()
+
+    // --- CEK BENTROK JADWAL DAN RUANGAN ---
+    const mulai = new Date(body.tanggal_mulai)
+    const selesai = new Date(body.tanggal_selesai)
+    
+    const { data: overlaps, error: overlapError } = await supabase
+      .from('pengajuan_peminjaman')
+      .select('nomor_pengajuan, nama_event, status')
+      .in('status', ['submitted', 'under_review', 'revision_requested', 'approved'])
+      .lt('tanggal_mulai', selesai.toISOString())
+      .gt('tanggal_selesai', mulai.toISOString())
+      .overlaps('area_fasilitas', body.area_fasilitas)
+      .limit(1)
+
+    if (overlapError) throw overlapError
+
+    if (overlaps && overlaps.length > 0) {
+      return NextResponse.json({ 
+        error: `Mohon maaf, fasilitas pada waktu tersebut sudah lebih dulu dipesan untuk acara ${overlaps[0].nama_event}. Silakan sesuaikan kembali pilihan waktu atau ruangan Anda.` 
+      }, { status: 400 })
+    }
+    // --------------------------------------
+
     const { data, error } = await supabase.rpc("submit_pengajuan", { pengajuan_data: body })
 
     if (error) throw error
