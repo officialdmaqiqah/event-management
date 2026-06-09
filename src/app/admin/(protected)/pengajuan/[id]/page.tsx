@@ -774,7 +774,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Event</span>
-                  <span className="font-bold text-slate-800">{pengajuan.nama_event}</span>
+                  <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_event}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-xs text-slate-400 font-semibold block uppercase">Jenis Event</span>

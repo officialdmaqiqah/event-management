@@ -256,7 +256,7 @@ function CekStatusContent() {
                   <div className="space-y-4">
                     <div>
                       <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Kegiatan</h4>
-                      <p className="font-bold text-slate-800 text-lg mt-0.5">{pengajuan.nama_event}</p>
+                      <p className="font-bold text-slate-800 text-lg mt-0.5 capitalize">{pengajuan.nama_event}</p>
                       <p className="text-xs text-indigo-600 font-semibold">{pengajuan.jenis_event}</p>
                     </div>
 

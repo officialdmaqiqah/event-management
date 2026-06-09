@@ -16,7 +16,7 @@ function EventCard({ event }: { event: any }) {
         </span>
       </div>
       
-      <h3 className="font-extrabold text-slate-900 text-xl leading-snug mb-3 group-hover:text-emerald-700 transition-colors">
+      <h3 className="font-extrabold text-slate-900 text-xl leading-snug mb-3 group-hover:text-emerald-700 transition-colors capitalize">
         {event.title}
       </h3>
       

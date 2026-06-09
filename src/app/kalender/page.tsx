@@ -281,7 +281,7 @@ export default function PublicCalendarPage() {
                             className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm ${bgColor}`}
                             title={displayTitle}
                           >
-                            <div className="truncate">{displayTitle}</div>
+                            <div className="truncate capitalize">{displayTitle}</div>
                             <div className="text-[9px] opacity-70 flex items-center gap-1 mt-0.5 font-medium hidden sm:flex">
                               <Clock className="h-2.5 w-2.5" />
                               {format(new Date(ev.tanggal_mulai), 'HH:mm')}
@@ -316,7 +316,7 @@ export default function PublicCalendarPage() {
             <CardHeader className="pb-2 border-b border-slate-100 bg-slate-50/50">
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-lg font-bold text-slate-900 pr-4 leading-tight">
+                  <CardTitle className="text-lg font-bold text-slate-900 pr-4 leading-tight capitalize">
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Ada Kegiatan di MAKT' : selectedEvent.nama_event}
                   </CardTitle>
                   <CardDescription className="mt-1">
