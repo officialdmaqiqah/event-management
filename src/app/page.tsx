@@ -38,7 +38,7 @@ const FASILITAS_MAKT = [
   {
     id: "ruang-utama",
     nama: "Ruang Utama (Masjid)",
-    deskripsi: "Kapasitas besar, pendingin udara terpusat, dan akustik ruang premium. Sangat cocok untuk kajian akbar tingkat kota maupun nasional. Biasa juga dipakai untuk acara akad nikah.",
+    deskripsi: "Kapasitas besar, pendingin udara terpusat, dan akustik ruang premium. Sangat cocok untuk kajian akbar tingkat kota maupun nasional. Ideal untuk acara akad nikah yang sakral.",
   },
   {
     id: "ruang-lt2",
