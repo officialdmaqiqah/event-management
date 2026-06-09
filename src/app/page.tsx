@@ -43,7 +43,7 @@ const FASILITAS_MAKT = [
   {
     id: "ruang-lt2",
     nama: "Ruang Lt. 2",
-    deskripsi: "Ruangan privat yang nyaman. Ideal untuk acara akad nikah yang sakral, rapat pimpinan, atau diskusi kelompok terbatas.",
+    deskripsi: "Ruangan privat yang nyaman. Ideal untuk musyawarah, rapat pimpinan, diskusi kelompok terbatas, kelas training, atau pelatihan.",
   },
   {
     id: "pelataran-depan",
