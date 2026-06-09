@@ -205,6 +205,16 @@ export default function UsersManagementPage() {
     else showDialog("error", "Gagal", error.message)
   }
 
+  const saveFullName = async (userId: string, name: string) => {
+    // Auto capitalize first letter of each word
+    const formattedName = name.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase());
+    const { error } = await supabase.from("user_profiles").update({ full_name: formattedName.trim() || null }).eq("user_id", userId)
+    if (!error) {
+      setUsers(u => u.map(x => x.user_id === userId ? { ...x, full_name: formattedName.trim() } : x))
+      showDialog("success", "Berhasil", "Nama pengguna berhasil diperbarui.")
+    } else showDialog("error", "Gagal", error.message)
+  }
+
   const saveWhatsApp = async (userId: string, rawWa: string) => {
     let formattedWA = rawWa.replace(/\D/g, '')
     if (formattedWA.startsWith('0')) {
@@ -309,6 +319,26 @@ export default function UsersManagementPage() {
                     ))}
                   </div>
                 )}
+
+                {/* Nama Pengguna */}
+                <div className="space-y-1.5">
+                  <Label htmlFor={`name-${user.user_id}`} className="text-xs font-semibold text-slate-500">
+                    Nama Pengguna
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`name-${user.user_id}`}
+                      value={user.full_name || ""}
+                      onChange={e => setUsers(u => u.map(x => x.user_id === user.user_id ? { ...x, full_name: e.target.value } : x))}
+                      placeholder="Contoh: Budi Santoso"
+                      className="h-8 text-xs bg-white/50"
+                    />
+                    <Button size="sm" className="h-8 text-xs px-2.5 bg-indigo-600 hover:bg-indigo-700"
+                      onClick={() => saveFullName(user.user_id, user.full_name || "")}>
+                      Simpan
+                    </Button>
+                  </div>
+                </div>
 
                 {/* System Role Selector */}
                 <div className="space-y-1.5">
