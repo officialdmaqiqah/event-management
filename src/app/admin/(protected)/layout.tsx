@@ -33,12 +33,14 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-3 min-h-[4rem] flex flex-wrap items-center justify-between gap-3">
-          <Link href="/admin" className="font-bold text-lg sm:text-xl text-gray-900 truncate flex items-center gap-2">
-            <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
-            Event Management
-          </Link>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+        <div className="container mx-auto px-4 py-3 min-h-[4rem] flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center justify-between">
+            <Link href="/admin" className="font-bold text-lg sm:text-xl text-gray-900 truncate flex items-center gap-2">
+              <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
+              Event Management
+            </Link>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* 1. Peminjaman Fasilitas */}
             <Link href="/admin/pengajuan">
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">

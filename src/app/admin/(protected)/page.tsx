@@ -142,22 +142,24 @@ export default async function AdminDashboard() {
             {upcomingPeminjaman && upcomingPeminjaman.length > 0 ? (
               <div className="divide-y divide-slate-100">
                 {upcomingPeminjaman.map((item) => (
-                  <div key={item.id} className="p-4 flex items-start gap-4 hover:bg-slate-50 transition-colors">
-                    <div className="bg-indigo-50 text-indigo-700 p-3 rounded-lg flex-shrink-0 text-center min-w-[60px]">
+                  <div key={item.id} className="p-4 flex items-start gap-3 sm:gap-4 hover:bg-slate-50 transition-colors">
+                    <div className="bg-indigo-50 text-indigo-700 p-2 sm:p-3 rounded-lg flex-shrink-0 text-center min-w-[50px] sm:min-w-[60px]">
                       <div className="text-sm font-semibold">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', timeZone: 'Asia/Jakarta' })}</div>
-                      <div className="text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short', timeZone: 'Asia/Jakarta' })}</div>
+                      <div className="text-[10px] sm:text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short', timeZone: 'Asia/Jakarta' })}</div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-slate-900 truncate capitalize">{item.nama_event}</h4>
-                      <div className="flex items-center gap-3 text-xs text-slate-500 mt-1.5">
-                        <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</span>
-                        <span className="flex items-center gap-1 truncate"><MapPin className="h-3.5 w-3.5" /> {item.area_fasilitas[0]}</span>
+                    <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-slate-900 truncate capitalize text-sm sm:text-base leading-tight">{item.nama_event}</h4>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 mt-1 sm:mt-1.5">
+                          <span className="flex items-center gap-1 whitespace-nowrap"><Calendar className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</span>
+                          <span className="flex items-center gap-1 truncate"><MapPin className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> <span className="truncate">{item.area_fasilitas[0]}</span></span>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <span className={`text-[10px] px-2 py-1 rounded-full font-semibold uppercase ${item.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {item.status}
-                      </span>
+                      <div className="shrink-0 mt-1 sm:mt-0">
+                        <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 sm:py-1 rounded-full font-semibold uppercase ${item.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                          {item.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
