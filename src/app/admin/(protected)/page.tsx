@@ -10,7 +10,7 @@ import DeleteEventButton from "./_components/DeleteEventButton"
 export default async function AdminDashboard() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const isSuperAdmin = user?.email?.startsWith('yahya')
+  const isSuperAdmin = user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
 
   let query = supabase.from("events").select("*").order("created_at", { ascending: false })
 
