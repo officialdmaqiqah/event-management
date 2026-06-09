@@ -56,6 +56,7 @@ export default function AdminPengajuanPage() {
   const [loading, setLoading] = useState(true)
   const [errorMsg, setErrorMsg] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
   const [jenisEventOptions, setJenisEventOptions] = useState<string[]>([
     "Kajian / Pengajian",
@@ -199,92 +200,102 @@ export default function AdminPengajuanPage() {
 
       {/* Filters Card */}
       <Card className="border border-slate-200/80 shadow-sm bg-white">
-        <CardHeader className="pb-3 flex flex-row items-center gap-2">
-          <Filter className="h-4 w-4 text-indigo-600" />
-          <div>
-            <CardTitle className="text-base font-bold">Filter Pencarian</CardTitle>
-            <CardDescription className="text-xs">Saring pengajuan berdasarkan kriteria tertentu</CardDescription>
+        <CardHeader 
+          className="pb-3 flex flex-row items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <div className="flex flex-row items-center gap-2">
+            <Filter className="h-4 w-4 text-indigo-600" />
+            <div>
+              <CardTitle className="text-base font-bold">Filter Pencarian</CardTitle>
+              <CardDescription className="text-xs">Saring pengajuan berdasarkan kriteria tertentu</CardDescription>
+            </div>
           </div>
+          <Button variant="ghost" size="sm" className="h-8 text-xs text-indigo-600">
+            {showFilters ? "Sembunyikan" : "Tampilkan"}
+          </Button>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {/* Search */}
-            <div className="space-y-1.5">
-              <Label htmlFor="search-input" className="text-xs font-semibold text-slate-600">Cari Data</Label>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+        {showFilters && (
+          <CardContent className="space-y-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {/* Search */}
+              <div className="space-y-1.5">
+                <Label htmlFor="search-input" className="text-xs font-semibold text-slate-600">Cari Data</Label>
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                  <Input 
+                    id="search-input" 
+                    value={search} 
+                    onChange={e => setSearch(e.target.value)} 
+                    placeholder="Nomor / Pemohon / Event" 
+                    className="pl-8 h-9 text-xs" 
+                  />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1.5">
+                <Label htmlFor="status-select" className="text-xs font-semibold text-slate-600">Status</Label>
+                <select 
+                  id="status-select" 
+                  value={statusFilter} 
+                  onChange={e => setStatusFilter(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Status</option>
+                  {Object.entries(STATUS_CONFIG).map(([k, v]) => (
+                    <option key={k} value={k}>{v.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Jenis Event */}
+              <div className="space-y-1.5">
+                <Label htmlFor="jenis-select" className="text-xs font-semibold text-slate-600">Jenis Event</Label>
+                <select 
+                  id="jenis-select" 
+                  value={jenisFilter} 
+                  onChange={e => setJenisFilter(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Jenis</option>
+                  {jenisEventOptions.map(o => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Tanggal Mulai */}
+              <div className="space-y-1.5">
+                <Label htmlFor="start-date" className="text-xs font-semibold text-slate-600">Tanggal Mulai Event</Label>
                 <Input 
-                  id="search-input" 
-                  value={search} 
-                  onChange={e => setSearch(e.target.value)} 
-                  placeholder="Nomor / Pemohon / Event" 
-                  className="pl-8 h-9 text-xs" 
+                  id="start-date" 
+                  type="date" 
+                  value={startDate} 
+                  onChange={e => setStartDate(e.target.value)} 
+                  className="h-9 text-xs" 
+                />
+              </div>
+
+              {/* Tanggal Selesai */}
+              <div className="space-y-1.5">
+                <Label htmlFor="end-date" className="text-xs font-semibold text-slate-600">Tanggal Selesai Event</Label>
+                <Input 
+                  id="end-date" 
+                  type="date" 
+                  value={endDate} 
+                  onChange={e => setEndDate(e.target.value)} 
+                  className="h-9 text-xs" 
                 />
               </div>
             </div>
 
-            {/* Status */}
-            <div className="space-y-1.5">
-              <Label htmlFor="status-select" className="text-xs font-semibold text-slate-600">Status</Label>
-              <select 
-                id="status-select" 
-                value={statusFilter} 
-                onChange={e => setStatusFilter(e.target.value)}
-                className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              >
-                <option value="">Semua Status</option>
-                {Object.entries(STATUS_CONFIG).map(([k, v]) => (
-                  <option key={k} value={k}>{v.label}</option>
-                ))}
-              </select>
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+              <Button variant="outline" size="sm" onClick={resetFilters} className="text-xs h-8">Reset Filter</Button>
+              <Button variant="indigo" size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100">Refresh Data</Button>
             </div>
-
-            {/* Jenis Event */}
-            <div className="space-y-1.5">
-              <Label htmlFor="jenis-select" className="text-xs font-semibold text-slate-600">Jenis Event</Label>
-              <select 
-                id="jenis-select" 
-                value={jenisFilter} 
-                onChange={e => setJenisFilter(e.target.value)}
-                className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              >
-                <option value="">Semua Jenis</option>
-                {jenisEventOptions.map(o => (
-                  <option key={o} value={o}>{o}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Tanggal Mulai */}
-            <div className="space-y-1.5">
-              <Label htmlFor="start-date" className="text-xs font-semibold text-slate-600">Tanggal Mulai Event</Label>
-              <Input 
-                id="start-date" 
-                type="date" 
-                value={startDate} 
-                onChange={e => setStartDate(e.target.value)} 
-                className="h-9 text-xs" 
-              />
-            </div>
-
-            {/* Tanggal Selesai */}
-            <div className="space-y-1.5">
-              <Label htmlFor="end-date" className="text-xs font-semibold text-slate-600">Tanggal Selesai Event</Label>
-              <Input 
-                id="end-date" 
-                type="date" 
-                value={endDate} 
-                onChange={e => setEndDate(e.target.value)} 
-                className="h-9 text-xs" 
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
-            <Button variant="outline" size="sm" onClick={resetFilters} className="text-xs h-8">Reset Filter</Button>
-            <Button variant="indigo" size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100">Refresh Data</Button>
-          </div>
-        </CardContent>
+          </CardContent>
+        )}
       </Card>
 
       {/* Error Message */}
