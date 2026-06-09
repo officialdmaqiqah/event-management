@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { MeetingPhoto } from "@/types/notulen"
 import { Image as ImageIcon, UploadCloud, Trash2, Loader2, Save, Eye, EyeOff, ShieldAlert } from "lucide-react"
 
