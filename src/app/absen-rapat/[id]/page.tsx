@@ -11,7 +11,7 @@ import { MapPin, UserCheck, ShieldCheck, AlertCircle, CheckCircle2 } from "lucid
 // MAKT Coordinates
 const MAKT_LAT = -2.12075
 const MAKT_LNG = 106.1143889
-const MAX_RADIUS_METERS = 200
+const MAX_RADIUS_METERS = 100
 
 // Helper to calculate distance
 function getDistanceFromLatLonInM(lat1: number, lon1: number, lat2: number, lon2: number) {
