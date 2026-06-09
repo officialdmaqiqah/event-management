@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { 
   ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles
 } from "lucide-react"
 import Link from "next/link"
 
@@ -270,9 +270,13 @@ export default function AdminCalendarPage() {
                       let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                       let Icon = Eye
                       
+                      const isSpecial = (ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+
                       if (ev.privacy_event === 'rahasia' || ev.privacy_event === 'umum_saja') {
                         bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
                         Icon = EyeOff
+                      } else if (isSpecial) {
+                        bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
                       }
 
                       return (
@@ -283,7 +287,10 @@ export default function AdminCalendarPage() {
                           title={ev.nama_event}
                         >
                           {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
-                          <div className="truncate capitalize">{ev.nama_event}</div>
+                          <div className="flex items-center gap-1 truncate capitalize">
+                            {isSpecial && ev.privacy_event === 'detail_publik' && <Sparkles className="h-3 w-3 shrink-0 text-amber-600" />}
+                            <span className="truncate">{ev.nama_event}</span>
+                          </div>
                           {ev.privacy_event !== 'detail_publik' && <Icon className="h-3 w-3 shrink-0 opacity-70" />}
                         </div>
                       )

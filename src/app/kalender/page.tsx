@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays 
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles 
 } from "lucide-react"
 import Link from "next/link"
 
@@ -322,7 +322,13 @@ export default function PublicCalendarPage() {
                         // Privacy masking for "umum_saja"
                         const isMasked = ev.privacy_event === 'umum_saja'
                         const displayTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
-                        const bgColor = isMasked ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-indigo-50 border-indigo-100 text-indigo-700'
+                        
+                        // Check if special guest / event
+                        const isSpecial = !isMasked && (ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+                        
+                        let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
+                        if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
+                        else if (isSpecial) bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
                         
                         return (
                           <div 
@@ -332,7 +338,10 @@ export default function PublicCalendarPage() {
                             title={displayTitle}
                           >
                             {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
-                            <div className="truncate capitalize">{displayTitle}</div>
+                            <div className="flex items-center gap-1 truncate capitalize">
+                              {isSpecial && <Sparkles className="h-3 w-3 shrink-0 text-amber-600" />}
+                              <span className="truncate">{displayTitle}</span>
+                            </div>
                             <div className="text-[9px] opacity-70 flex items-center gap-1 mt-0.5 font-medium hidden sm:flex">
                               <Clock className="h-2.5 w-2.5" />
                               {format(new Date(ev.tanggal_mulai), 'HH:mm')}
