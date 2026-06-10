@@ -384,6 +384,9 @@ export default function PublicCalendarPage() {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-pink-500"></div> Event dengan Pendaftaran Terbuka
           </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-amber-200 border border-amber-300"></div> Kajian Spesial / Tamu Undangan
+          </div>
         </div>
       </main>
 
