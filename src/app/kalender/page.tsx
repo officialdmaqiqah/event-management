@@ -32,6 +32,7 @@ type PengajuanEvent = {
   is_public_event?: boolean
   public_slug?: string
   banner_url?: string
+  nama_ustadz?: string
 }
 
 export default function PublicCalendarPage() {
@@ -77,7 +78,7 @@ export default function PublicCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz
         `)
         .eq("status", "approved")
         .neq("privacy_event", "rahasia")
@@ -339,7 +340,7 @@ export default function PublicCalendarPage() {
                         const displayTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
                         
                         // Check if special guest / event
-                        const isSpecial = !isMasked && (ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+                        const isSpecial = !isMasked && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
                         
                         let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                         if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'

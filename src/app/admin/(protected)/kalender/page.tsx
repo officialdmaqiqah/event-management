@@ -31,6 +31,7 @@ type PengajuanEvent = {
   is_public_event?: boolean
   public_slug?: string
   banner_url?: string
+  nama_ustadz?: string
 }
 
 export default function AdminCalendarPage() {
@@ -75,7 +76,7 @@ export default function AdminCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz
         `)
         .eq("status", "approved")
       
@@ -285,7 +286,7 @@ export default function AdminCalendarPage() {
                       let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                       let Icon = Eye
                       
-                      const isSpecial = (ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+                      const isSpecial = Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
 
                       if (ev.privacy_event === 'rahasia' || ev.privacy_event === 'umum_saja') {
                         bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
