@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2 } from "lucide-react"
+import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2, FileText, Search } from "lucide-react"
 
 export default function BantuanPage() {
   return (
