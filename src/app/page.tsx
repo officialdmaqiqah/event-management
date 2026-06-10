@@ -396,6 +396,7 @@ export default async function Home() {
                 <Link href="/kalender" className="text-slate-500 hover:text-emerald-600 font-medium transition-colors text-sm">Kalender Event</Link>
                 <Link href="/cek-status" className="text-slate-500 hover:text-emerald-600 font-medium transition-colors text-sm">Cek Status Pengajuan</Link>
                 <Link href="/ajukan-peminjaman" className="text-slate-500 hover:text-emerald-600 font-medium transition-colors text-sm">Rencanakan Event Anda</Link>
+                <Link href="/bantuan" className="text-slate-500 hover:text-emerald-600 font-medium transition-colors text-sm">Pusat Bantuan</Link>
               </div>
             </div>
             
