@@ -280,6 +280,11 @@ export default function AdminCalendarPage() {
                     }>
                       {format(day, 'd')}
                     </span>
+                    {dayEvents.length > 0 && (
+                      <span className="hidden sm:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                        {dayEvents.length} Jadwal
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                     {dayEvents.map(ev => {
@@ -303,15 +308,23 @@ export default function AdminCalendarPage() {
                         <div 
                           key={ev.id}
                           onClick={() => setSelectedEvent(ev)}
-                          className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm relative overflow-hidden flex items-center justify-between gap-1 ${bgColor}`}
+                          className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm relative overflow-hidden flex flex-col gap-1 ${bgColor}`}
                           title={ev.nama_event}
                         >
                           {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
-                          <div className="flex items-center gap-1 truncate capitalize">
-                            {isSpecial && ev.privacy_event === 'detail_publik' && <Sparkles className="h-3 w-3 shrink-0 text-amber-600" />}
-                            <span className="truncate">{ev.nama_event}</span>
+                          <div className="flex items-center justify-between gap-1 w-full">
+                            <div className="flex items-center gap-1 truncate capitalize">
+                              {isSpecial && ev.privacy_event === 'detail_publik' ? <Sparkles className="h-2.5 w-2.5 shrink-0 text-amber-600" /> : <Clock className="h-2.5 w-2.5 shrink-0 opacity-70" />}
+                              <span className="truncate">{ev.nama_event}</span>
+                            </div>
+                            {ev.privacy_event !== 'detail_publik' && <Icon className="h-3 w-3 shrink-0 opacity-70 ml-1" />}
                           </div>
-                          {ev.privacy_event !== 'detail_publik' && <Icon className="h-3 w-3 shrink-0 opacity-70" />}
+                          <div className="flex justify-between items-center mt-0.5 w-full">
+                            <span className="opacity-80">
+                              {format(new Date(ev.tanggal_mulai), 'HH:mm')}
+                            </span>
+                            {ev.privacy_event !== 'detail_publik' && <span className="text-[8px] font-bold px-1 bg-white/50 rounded">INTERNAL</span>}
+                          </div>
                         </div>
                       )
                     })}
