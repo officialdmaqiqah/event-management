@@ -132,6 +132,9 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false)
   const [isEditingTujuan, setIsEditingTujuan] = useState(false)
   const [editTujuanVal, setEditTujuanVal] = useState("")
+  const [isEditingKajian, setIsEditingKajian] = useState(false)
+  const [editUstadzVal, setEditUstadzVal] = useState("")
+  const [editJudulVal, setEditJudulVal] = useState("")
 
   useEffect(() => {
     fetchUserAndData()
@@ -884,19 +887,12 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         🌟 Spesial Tamu
                       </span>
                     )}
-                    {isSuperAdminUser && (
+                    {isSuperAdminUser && !isEditingKajian && (
                       <button 
                         onClick={() => {
-                          // Simple prompt for now, or you could build a full inline edit state
-                          const newUstadz = window.prompt("Nama Ustadz / Pemateri:", pengajuan.nama_ustadz || "");
-                          if (newUstadz !== null) {
-                            const newJudul = window.prompt("Judul Kajian / Tema:", pengajuan.judul_kajian || "");
-                            if (newJudul !== null) {
-                              updateField("nama_ustadz", newUstadz).then(() => {
-                                updateField("judul_kajian", newJudul);
-                              });
-                            }
-                          }
+                          setEditUstadzVal(pengajuan.nama_ustadz || "")
+                          setEditJudulVal(pengajuan.judul_kajian || "")
+                          setIsEditingKajian(true)
                         }} 
                         className="text-xs text-indigo-600 hover:underline ml-auto"
                       >
@@ -904,16 +900,61 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       </button>
                     )}
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/30 p-3 rounded-lg border border-amber-100/50">
-                    <div className="space-y-1">
-                      <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Ustadz / Pemateri</span>
-                      <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_ustadz || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
+                  
+                  {isEditingKajian ? (
+                    <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-200/60 space-y-3">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
+                        <Input 
+                          value={editUstadzVal} 
+                          onChange={(e) => setEditUstadzVal(e.target.value)} 
+                          placeholder="Masukkan nama ustadz..."
+                          className="h-9 bg-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Judul Kajian / Tema</Label>
+                        <Input 
+                          value={editJudulVal} 
+                          onChange={(e) => setEditJudulVal(e.target.value)} 
+                          placeholder="Masukkan judul kajian..."
+                          className="h-9 bg-white"
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-end pt-2">
+                        <Button 
+                          variant="ghost" size="sm" 
+                          onClick={() => setIsEditingKajian(false)}
+                          disabled={updating}
+                        >
+                          Batal
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          onClick={async () => {
+                            await updateField("nama_ustadz", editUstadzVal)
+                            await updateField("judul_kajian", editJudulVal)
+                            setIsEditingKajian(false)
+                          }}
+                          disabled={updating}
+                          className="bg-indigo-600 hover:bg-indigo-700"
+                        >
+                          {updating ? "Menyimpan..." : "Simpan Perubahan"}
+                        </Button>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-xs text-slate-400 font-semibold block uppercase">Judul Kajian / Tema</span>
-                      <span className="font-semibold text-slate-700 italic">{pengajuan.judul_kajian || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/30 p-3 rounded-lg border border-amber-100/50">
+                      <div className="space-y-1">
+                        <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Ustadz / Pemateri</span>
+                        <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_ustadz || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-xs text-slate-400 font-semibold block uppercase">Judul Kajian / Tema</span>
+                        <span className="font-semibold text-slate-700 italic">{pengajuan.judul_kajian || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
