@@ -323,6 +323,39 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
     }
   }
 
+  const updateField = async (field: keyof Pengajuan, value: any) => {
+    if (!pengajuan) return;
+    setUpdating(true);
+    try {
+      const { error } = await supabase
+        .from("pengajuan_peminjaman")
+        .update({ [field]: value })
+        .eq("id", pengajuan.id);
+
+      if (error) throw error;
+      setPengajuan(prev => prev ? { ...prev, [field]: value } : null);
+      
+      setDialogState({
+        isOpen: true,
+        type: 'alert',
+        title: 'Berhasil',
+        message: `Detail ${field.replace('_', ' ')} berhasil diperbarui.`,
+        action: () => {}
+      });
+    } catch (err: any) {
+      console.error(err);
+      setDialogState({
+        isOpen: true,
+        type: 'error',
+        title: 'Gagal',
+        message: err.message || 'Gagal menyimpan perubahan.',
+        action: () => {}
+      });
+    } finally {
+      setUpdating(false);
+    }
+  }
+
   const triggerStatusChange = (newStatus: string, requireReason = false) => {
     setTargetStatus(newStatus)
     setStatusReason("")
@@ -842,20 +875,45 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               </div>
 
               {/* Detail Khusus Kajian/Tabligh Akbar */}
-              {(pengajuan.nama_ustadz || pengajuan.judul_kajian) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                  {pengajuan.nama_ustadz && (
+              {(pengajuan.jenis_event.toLowerCase().includes('kajian') || pengajuan.jenis_event.toLowerCase().includes('tabligh') || pengajuan.nama_ustadz || pengajuan.judul_kajian) && (
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <h4 className="text-sm font-bold text-slate-800">Detail Kajian / Pemateri</h4>
+                    {pengajuan.nama_ustadz && (
+                      <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-amber-200">
+                        🌟 Spesial Tamu Undangan
+                      </span>
+                    )}
+                    {isSuperAdminUser && (
+                      <button 
+                        onClick={() => {
+                          // Simple prompt for now, or you could build a full inline edit state
+                          const newUstadz = window.prompt("Nama Ustadz / Pemateri:", pengajuan.nama_ustadz || "");
+                          if (newUstadz !== null) {
+                            const newJudul = window.prompt("Judul Kajian / Tema:", pengajuan.judul_kajian || "");
+                            if (newJudul !== null) {
+                              updateField("nama_ustadz", newUstadz).then(() => {
+                                updateField("judul_kajian", newJudul);
+                              });
+                            }
+                          }
+                        }} 
+                        className="text-xs text-indigo-600 hover:underline ml-auto"
+                      >
+                        Edit Detail
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/30 p-3 rounded-lg border border-amber-100/50">
                     <div className="space-y-1">
                       <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Ustadz / Pemateri</span>
-                      <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_ustadz}</span>
+                      <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_ustadz || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
                     </div>
-                  )}
-                  {pengajuan.judul_kajian && (
                     <div className="space-y-1">
                       <span className="text-xs text-slate-400 font-semibold block uppercase">Judul Kajian / Tema</span>
-                      <span className="font-bold text-slate-800 capitalize">{pengajuan.judul_kajian}</span>
+                      <span className="font-semibold text-slate-700 italic">{pengajuan.judul_kajian || <em className="text-slate-400 font-normal">Belum diisi</em>}</span>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
 
