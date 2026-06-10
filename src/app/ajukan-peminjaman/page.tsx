@@ -107,6 +107,8 @@ export default function AjukanPeminjamanPage() {
     area_lainnya: "",
     kebutuhan_tambahan: "",
     catatan_tambahan: "",
+    nama_ustadz: "",
+    judul_kajian: "",
   })
 
   // Step 3: Lampiran
@@ -139,7 +141,7 @@ export default function AjukanPeminjamanPage() {
 
   const handleEventBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    if (['nama_event', 'tujuan_peminjaman', 'deskripsi_kegiatan', 'area_lainnya', 'kebutuhan_tambahan'].includes(name)) {
+    if (['nama_event', 'tujuan_peminjaman', 'deskripsi_kegiatan', 'area_lainnya', 'kebutuhan_tambahan', 'nama_ustadz', 'judul_kajian'].includes(name)) {
       setEvent(prev => ({ ...prev, [name]: formatTitleCase(value) }))
     }
   }
@@ -185,6 +187,13 @@ export default function AjukanPeminjamanPage() {
       const selesai = new Date(`${event.tanggal_selesai}T${event.jam_selesai}`)
       if (selesai <= mulai) errs.jam_selesai = "Waktu selesai harus setelah waktu mulai"
     }
+    
+    // Validasi tambahan untuk Kajian Umum dan Tabligh Akbar
+    if (['Kajian Umum', 'Tabligh Akbar'].includes(event.jenis_event)) {
+      if (!event.nama_ustadz.trim()) errs.nama_ustadz = "Nama ustadz / pemateri wajib diisi"
+      if (!event.judul_kajian.trim()) errs.judul_kajian = "Judul kajian wajib diisi"
+    }
+
     const allAreas = [...event.area_fasilitas, ...(event.area_lainnya.trim() ? [event.area_lainnya.trim()] : [])]
     if (allAreas.length === 0) errs.area_fasilitas = "Pilih minimal satu area/fasilitas"
     setErrors(errs)
@@ -252,6 +261,8 @@ export default function AjukanPeminjamanPage() {
         url_surat_peminjaman: urlSurat,
         url_proposal: urlProposal,
         catatan_tambahan: event.catatan_tambahan.trim() || null,
+        nama_ustadz: event.nama_ustadz.trim() || null,
+        judul_kajian: event.judul_kajian.trim() || null,
       }
 
       const res = await fetch('/api/pengajuan', {
@@ -467,6 +478,22 @@ export default function AjukanPeminjamanPage() {
                   {errors.estimasi_peserta && <p className="text-red-500 text-xs">{errors.estimasi_peserta}</p>}
                 </div>
               </div>
+
+              {/* Conditional Fields for Kajian Umum and Tabligh Akbar */}
+              {['Kajian Umum', 'Tabligh Akbar'].includes(event.jenis_event) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                  <div className="space-y-2">
+                    <Label htmlFor="nama_ustadz" className="text-slate-700 font-semibold">Nama Ustadz / Pemateri <span className="text-red-500">*</span></Label>
+                    <Input id="nama_ustadz" name="nama_ustadz" value={event.nama_ustadz} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Ustadz Fulan" className="h-11 bg-white" />
+                    {errors.nama_ustadz && <p className="text-red-500 text-xs">{errors.nama_ustadz}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="judul_kajian" className="text-slate-700 font-semibold">Judul Kajian / Tema <span className="text-red-500">*</span></Label>
+                    <Input id="judul_kajian" name="judul_kajian" value={event.judul_kajian} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Fiqih Ibadah" className="h-11 bg-white" />
+                    {errors.judul_kajian && <p className="text-red-500 text-xs">{errors.judul_kajian}</p>}
+                  </div>
+                </div>
+              )}
 
               {/* Tujuan Peminjaman */}
               <div className="space-y-2">

@@ -54,6 +54,8 @@ type Pengajuan = {
   reviewed_at: string | null
   current_approval_level: number
   created_at: string
+  nama_ustadz?: string
+  judul_kajian?: string
 }
 
 type TimelineItem = {
@@ -830,6 +832,24 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   <span className="font-semibold text-slate-800">{formatDate(pengajuan.created_at)}</span>
                 </div>
               </div>
+
+              {/* Detail Khusus Kajian/Tabligh Akbar */}
+              {(pengajuan.nama_ustadz || pengajuan.judul_kajian) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                  {pengajuan.nama_ustadz && (
+                    <div className="space-y-1">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Ustadz / Pemateri</span>
+                      <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_ustadz}</span>
+                    </div>
+                  )}
+                  {pengajuan.judul_kajian && (
+                    <div className="space-y-1">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Judul Kajian / Tema</span>
+                      <span className="font-bold text-slate-800 capitalize">{pengajuan.judul_kajian}</span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Jadwal Pelaksanaan */}
               <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 grid grid-cols-1 sm:grid-cols-2 gap-3">
