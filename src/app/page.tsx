@@ -97,7 +97,7 @@ export default async function Home() {
           </div>
           <div className="flex flex-col">
             <span className="font-black text-xl tracking-tight text-slate-900 leading-none group-hover:text-emerald-800 transition-colors">MAKT Event</span>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest hidden sm:block mt-0.5">Masjid Agung Kubah Timah</span>
+            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Masjid Agung Kubah Timah</span>
           </div>
         </div>
         
