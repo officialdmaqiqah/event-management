@@ -124,29 +124,29 @@ export default async function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              Eksklusif & Representatif
+              Pusat Syiar & Edukasi
             </div>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
-              Wujudkan Event Islami <br className="hidden sm:block"/>
+              Pusat Layanan Kegiatan <br className="hidden sm:block"/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-amber-200 to-amber-500">
-                Terbaik Anda di MAKT
+                Masjid Agung Kubah Timah
               </span>
             </h1>
             
             <p className="mt-6 text-lg sm:text-xl text-emerald-100/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-              Temukan kemudahan menyelenggarakan berbagai kegiatan dengan fasilitas premium di Masjid Agung Kubah Timah. Dari kajian akbar hingga resepsi pernikahan, percayakan momen penting Anda bersama kami.
+              Jelajahi jadwal kajian terkini, ikuti agenda syiar Islam, atau rencanakan penyelenggaraan acara spesial Anda dengan fasilitas premium dari MAKT.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
-              <Link href="/ajukan-peminjaman" className="w-full sm:w-auto group">
-                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold text-base rounded-full shadow-[0_0_40px_-10px_rgba(245,158,11,0.5)] transition-all duration-300 group-hover:shadow-[0_0_60px_-15px_rgba(245,158,11,0.7)] group-hover:-translate-y-1">
-                  <FileText className="h-5 w-5 mr-2" /> Rencanakan Event Anda
+              <Link href="/kalender" className="w-full sm:w-auto group">
+                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-full shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] transition-all duration-300 group-hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.7)] group-hover:-translate-y-1 border border-emerald-400/50">
+                  <CalendarIcon className="h-5 w-5 mr-2" /> Jadwal Kajian & Event
                 </Button>
               </Link>
-              <Link href="/kalender" className="w-full sm:w-auto">
-                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-emerald-900/20 border border-emerald-700/50 backdrop-blur-md text-emerald-50 hover:bg-emerald-800/50 hover:text-white font-medium text-base rounded-full transition-all duration-300 hover:border-emerald-500/50">
-                  <CalendarIcon className="h-5 w-5 mr-2" /> Jelajahi Kalender
+              <Link href="/ajukan-peminjaman" className="w-full sm:w-auto group">
+                <Button variant="custom" size="lg" className="w-full h-14 px-8 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold text-base rounded-full shadow-[0_0_40px_-10px_rgba(245,158,11,0.5)] transition-all duration-300 group-hover:shadow-[0_0_60px_-15px_rgba(245,158,11,0.7)] group-hover:-translate-y-1">
+                  <FileText className="h-5 w-5 mr-2" /> Rencanakan Acara Anda
                 </Button>
               </Link>
             </div>
@@ -159,21 +159,55 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* AGENDA TERDEKAT - Untuk Jamaah */}
+        <section className="py-24 bg-slate-50 relative -mt-10 rounded-t-[3rem] z-20 shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.1)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-6">
+              <div>
+                <h2 className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-3 flex items-center gap-2">
+                  <BellRing className="h-4 w-4" /> Informasi Jamaah
+                </h2>
+                <h3 className="text-3xl font-black text-slate-900">Agenda Terdekat</h3>
+              </div>
+              <Link href="/kalender">
+                <Button className="rounded-full bg-slate-900 hover:bg-emerald-900 text-white font-bold px-6 transition-all duration-300 shadow-md">
+                  Lihat Kalender Penuh <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+            
+            {upcomingEvents && upcomingEvents.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {upcomingEvents.map((evt) => (
+                  <EventCard key={evt.id} event={evt} />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border border-slate-100 rounded-[2rem] p-16 text-center shadow-sm">
+                <div className="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CalendarIcon className="h-10 w-10 text-slate-300" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">Belum Ada Agenda Dalam Waktu Dekat</h3>
+                <p className="text-slate-500 font-medium">Pantau terus halaman ini untuk update kajian terbaru.</p>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* FASILITAS PREMIUM KAMI - Image Grid Section */}
-        <section className="py-24 bg-slate-50 relative">
+        <section className="py-24 bg-white relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">VENUE PILIHAN</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Fasilitas MAKT</h3>
-              <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">Kami menyediakan ruang dan pelataran eksklusif yang siap mendukung kesuksesan event bersejarah Anda.</p>
+              <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">VENUE & AREA</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Fasilitas Masjid</h3>
+              <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">Fasilitas ikonik yang nyaman, disiapkan untuk menyambut langkah Anda dalam menuntut ilmu dan merangkai momen penuh berkah.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {FASILITAS_MAKT.map((fasilitas, i) => (
-                <div key={i} className="group rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-500">
+                <div key={i} className="group rounded-3xl overflow-hidden bg-slate-50 shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-500">
                   {/* Image Placeholder Frame */}
                   <div className="relative h-64 bg-slate-100 flex items-center justify-center overflow-hidden">
-                    {/* User will replace this with real images later. E.g. <img src={`/images/${fasilitas.id}.jpg`} alt={fasilitas.nama} className="absolute inset-0 w-full h-full object-cover" /> */}
                     <div className="absolute inset-0 bg-slate-200/50 group-hover:scale-105 transition-transform duration-700 ease-in-out"></div>
                     <div className="relative z-10 flex flex-col items-center text-slate-400">
                       <ImageIcon className="h-10 w-10 mb-2 opacity-50" />
@@ -192,121 +226,146 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* VALUE PROPOSITION - Modern Grid Layout */}
-        <section className="py-24 bg-white relative">
+        {/* VALUE PROPOSITION - Split Audience */}
+        <section className="py-24 bg-slate-50 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-20">
-              <h2 className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-3">Keunggulan Layanan</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-3">Keunggulan Sistem</h2>
               <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Lebih Dari Sekadar Tempat</h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-14">
-              {[
-                { icon: <FileText className="h-6 w-6"/>, title: "Proses Pengajuan Instan", desc: "Isi formulir perencanaan event secara online dari mana saja. Unggah dokumen pendukung tanpa repot datang ke sekretariat." },
-                { icon: <ShieldCheck className="h-6 w-6"/>, title: "Keamanan & Kenyamanan", desc: "Sistem koordinasi internal memastikan setiap kegiatan yang berlangsung terjamin kelayakannya dan terawasi keamanannya." },
-                { icon: <CalendarIcon className="h-6 w-6"/>, title: "Publikasi Otomatis", desc: "Event Anda dapat langsung tayang di Kalender Publik MAKT sehingga dapat diketahui masyarakat luas dan menghindari bentrok jadwal." },
-                { icon: <BellRing className="h-6 w-6"/>, title: "Notifikasi Status Cepat", desc: "Dapatkan pembaruan status persetujuan pengajuan event Anda secara real-time melalui sistem kami." },
-                { icon: <QrCode className="h-6 w-6"/>, title: "Dukungan IT Terintegrasi", desc: "Layanan absensi digital, pencatatan risalah, hingga pengelolaan dokumentasi tersedia untuk mendukung acara Anda." },
-                { icon: <Building2 className="h-6 w-6"/>, title: "Ekosistem Masjid Ramah", desc: "Dikelilingi oleh lingkungan yang Islami, bersih, dan asri. Membuat setiap kegiatan terasa sejuk dan penuh berkah." }
-              ].map((fitur, i) => (
-                <div key={i} className="flex gap-6 group cursor-default">
-                  <div className="shrink-0 mt-1">
-                    <div className="h-14 w-14 bg-slate-50 text-amber-500 rounded-2xl flex items-center justify-center border border-slate-100 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500 group-hover:-rotate-6 group-hover:scale-110 shadow-sm group-hover:shadow-amber-500/30">
-                      {fitur.icon}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+              {/* Kolom Jamaah */}
+              <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] shadow-sm border border-emerald-100">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+                    <MapPin className="h-6 w-6" />
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900">Bagi Jamaah</h4>
+                </div>
+                <div className="space-y-8">
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-emerald-500" /></div>
+                    <div>
+                      <h5 className="font-bold text-slate-900 text-lg mb-1">Informasi Terpusat</h5>
+                      <p className="text-slate-500 text-sm leading-relaxed">Seluruh jadwal kajian rutin dan tabligh akbar terupdate secara real-time di satu kalender.</p>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-extrabold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{fitur.title}</h4>
-                    <p className="text-slate-500 leading-relaxed text-sm font-medium">{fitur.desc}</p>
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-emerald-500" /></div>
+                    <div>
+                      <h5 className="font-bold text-slate-900 text-lg mb-1">Transparansi Jadwal</h5>
+                      <p className="text-slate-500 text-sm leading-relaxed">Hindari datang ke masjid di waktu yang kosong atau salah jadwal dengan melihat kalender publik kami.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-emerald-500" /></div>
+                    <div>
+                      <h5 className="font-bold text-slate-900 text-lg mb-1">Ekosistem Masjid Ramah</h5>
+                      <p className="text-slate-500 text-sm leading-relaxed">Dikelilingi oleh fasilitas Islami yang bersih dan terawat, siap menyambut ibadah Anda.</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Kolom Penyelenggara */}
+              <div className="bg-slate-900 p-8 sm:p-10 rounded-[2.5rem] shadow-xl shadow-slate-900/10 border border-slate-800 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className="h-12 w-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center">
+                    <ClipboardList className="h-6 w-6" />
+                  </div>
+                  <h4 className="text-2xl font-black text-white">Bagi Penyelenggara Acara</h4>
+                </div>
+                <div className="space-y-8 relative z-10">
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-amber-400" /></div>
+                    <div>
+                      <h5 className="font-bold text-white text-lg mb-1">Birokrasi Bebas Kertas</h5>
+                      <p className="text-slate-400 text-sm leading-relaxed">Isi formulir perencanaan secara online dan unggah dokumen pendukung tanpa repot datang ke sekretariat.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-amber-400" /></div>
+                    <div>
+                      <h5 className="font-bold text-white text-lg mb-1">Notifikasi Otomatis</h5>
+                      <p className="text-slate-400 text-sm leading-relaxed">Pantau status pengajuan izin secara transparan dengan pemberitahuan melalui sistem.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="shrink-0 mt-1"><CheckCircle2 className="h-5 w-5 text-amber-400" /></div>
+                    <div>
+                      <h5 className="font-bold text-white text-lg mb-1">Publikasi Terintegrasi</h5>
+                      <p className="text-slate-400 text-sm leading-relaxed">Begitu disetujui, acara Anda otomatis tayang di Kalender MAKT untuk menarik minat jamaah.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ALUR PENGAJUAN - Elegant Steps */}
-        <section className="py-24 bg-slate-900 border-y border-slate-800 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 z-0"></div>
+        {/* ALUR PENGAJUAN - Elegant Steps (Khusus Penyelenggara) */}
+        <section className="py-24 bg-white relative">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-black text-white">Alur Perencanaan Event</h2>
-              <p className="text-slate-400 mt-3 font-medium text-lg">Hanya butuh beberapa langkah mudah untuk mewujudkan acara Anda</p>
+              <h2 className="text-sm font-bold text-slate-400 tracking-widest uppercase mb-3">TUTORIAL PEMBUAT ACARA</h2>
+              <h3 className="text-3xl font-black text-slate-900">Alur Perencanaan Event</h3>
+              <p className="text-slate-500 mt-3 font-medium text-lg">Hanya butuh 4 langkah mudah untuk mewujudkan acara Anda</p>
             </div>
             
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative mt-16">
-              <div className="hidden md:block absolute top-1/2 left-[10%] w-[80%] h-0.5 bg-gradient-to-r from-emerald-900 via-amber-500/50 to-emerald-900 -translate-y-1/2 z-0"></div>
+              <div className="hidden md:block absolute top-1/2 left-[10%] w-[80%] h-0.5 bg-slate-200 -translate-y-1/2 z-0"></div>
               
               {[
-                { no: "1", title: "Rencanakan", desc: "Pilih tanggal, fasilitas, dan isi detail konsep kegiatan." },
-                { no: "2", title: "Review", desc: "Tim kami meninjau kesesuaian dan jadwal." },
+                { no: "1", title: "Rencanakan", desc: "Pilih tanggal, fasilitas, dan isi detail konsep." },
+                { no: "2", title: "Review", desc: "Tim meninjau kesesuaian dan keamanan jadwal." },
                 { no: "3", title: "Disetujui", desc: "Izin terbit. Anda siap menjalankan acara!" },
-                { no: "4", title: "Event Sukses", desc: "Berlangsung meriah & diumumkan di kalender." },
+                { no: "4", title: "Go Public", desc: "Otomatis diumumkan di kalender." },
               ].map((step, i) => (
                 <div key={i} className="relative z-10 w-full md:w-56 text-center group">
-                  <div className="h-16 w-16 bg-slate-800 border-4 border-slate-900 text-amber-400 shadow-xl shadow-amber-900/20 font-black text-xl rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-amber-500 group-hover:text-slate-900 group-hover:border-amber-300 transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="h-16 w-16 bg-white border-4 border-slate-100 text-slate-300 font-black text-xl rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-amber-500 group-hover:text-slate-900 group-hover:border-amber-100 transition-all duration-500 group-hover:-translate-y-2 shadow-sm">
                     {step.no}
                   </div>
-                  <h4 className="font-bold text-white mb-2 text-lg">{step.title}</h4>
-                  <p className="text-sm text-slate-400 font-medium px-4">{step.desc}</p>
+                  <h4 className="font-bold text-slate-800 mb-2 text-lg">{step.title}</h4>
+                  <p className="text-sm text-slate-500 font-medium px-4">{step.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* KALENDER PREVIEW - Clean Cards */}
-        <section className="py-24 bg-slate-50 relative">
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-white rounded-l-[100px] pointer-events-none opacity-50"></div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-6">
-              <div>
-                <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">Inspirasi Event</h2>
-                <h3 className="text-3xl font-black text-slate-900">Agenda Terdekat</h3>
+        {/* CTA AKHIR - Split Banner */}
+        <section className="py-16 bg-slate-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Banner Kiri - Jamaah */}
+              <div className="bg-emerald-900 rounded-[2rem] p-10 relative overflow-hidden flex flex-col items-center text-center justify-center min-h-[300px]">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 mix-blend-overlay"></div>
+                <CalendarIcon className="h-10 w-10 text-emerald-400 mb-6 relative z-10" />
+                <h3 className="text-2xl sm:text-3xl font-black text-white mb-3 relative z-10">Tetap Terhubung dengan Masjid</h3>
+                <p className="text-emerald-100/80 mb-8 font-medium text-sm sm:text-base relative z-10">Jangan lewatkan kajian ilmu dan kegiatan syiar Islami terbaru di Masjid Agung Kubah Timah.</p>
+                <Link href="/kalender" className="relative z-10 w-full sm:w-auto">
+                  <Button variant="outline" className="w-full bg-transparent border-emerald-400/50 text-emerald-100 hover:bg-emerald-800 hover:text-white rounded-full font-bold px-8 h-12 transition-all">
+                    Buka Kalender Penuh
+                  </Button>
+                </Link>
               </div>
-              <Link href="/kalender">
-                <Button className="rounded-full bg-slate-900 hover:bg-emerald-900 text-white font-bold px-6 transition-all duration-300 shadow-md">
-                  Jelajahi Semua Event <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-            
-            {upcomingEvents && upcomingEvents.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {upcomingEvents.map((evt) => (
-                  <EventCard key={evt.id} event={evt} />
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white border border-slate-100 rounded-[2rem] p-16 text-center shadow-sm">
-                <div className="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CalendarIcon className="h-10 w-10 text-slate-300" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2">Kalender Event Masih Kosong</h3>
-                <p className="text-slate-500 font-medium">Jadilah yang pertama untuk menggelar acara bulan ini!</p>
-              </div>
-            )}
-          </div>
-        </section>
 
-        {/* CTA AKHIR - Elegant Dark */}
-        <section className="py-24 bg-emerald-950 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 mix-blend-overlay"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-800/40 rounded-full blur-[100px] pointer-events-none"></div>
-          
-          <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
-            <Sparkles className="h-12 w-12 text-amber-400 mx-auto mb-8 opacity-80" />
-            <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 tracking-tight leading-tight">
-              Siap menyelenggarakan event Anda di <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">MAKT?</span>
-            </h2>
-            <p className="text-emerald-100/70 mb-12 text-lg font-medium leading-relaxed">
-              Jadikan momen kegiatan Anda jauh lebih bermakna dengan dukungan fasilitas eksklusif dan layanan terbaik dari kami.
-            </p>
-            <Link href="/ajukan-peminjaman">
-              <Button variant="custom" size="lg" className="h-14 px-10 bg-amber-500 hover:bg-amber-400 text-emerald-950 font-black text-base shadow-xl rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(245,158,11,0.6)]">
-                Rencanakan Event Anda Sekarang
-              </Button>
-            </Link>
+              {/* Banner Kanan - Penyelenggara */}
+              <div className="bg-amber-500 rounded-[2rem] p-10 relative overflow-hidden flex flex-col items-center text-center justify-center min-h-[300px]">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+                <div className="absolute top-0 right-0 w-40 h-40 bg-amber-400 rounded-full blur-2xl pointer-events-none"></div>
+                <Sparkles className="h-10 w-10 text-amber-900 mb-6 relative z-10" />
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-3 relative z-10">Miliki Ide Kegiatan Bermanfaat?</h3>
+                <p className="text-amber-900/80 mb-8 font-medium text-sm sm:text-base relative z-10">Jadikan momen kegiatan Anda lebih bermakna dengan dukungan fasilitas eksklusif kami.</p>
+                <Link href="/ajukan-peminjaman" className="relative z-10 w-full sm:w-auto">
+                  <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold px-8 h-12 shadow-xl shadow-slate-900/20 transition-all hover:scale-105">
+                    Ajukan Acara Sekarang
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
