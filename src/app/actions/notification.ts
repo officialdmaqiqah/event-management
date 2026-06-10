@@ -1,6 +1,6 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient, createAdminClient } from "@/lib/supabase/server"
 
 type NotificationPayload = {
   recipient_name: string
@@ -21,7 +21,7 @@ function formatWhatsAppNumber(phone: string) {
 
 export async function sendWhatsAppNotification(payload: NotificationPayload) {
   try {
-    const supabase = createClient()
+    const supabase = createAdminClient()
     let WA_GATEWAY_URL = process.env.WA_GATEWAY_URL || "https://api.fonnte.com/send"
     let WA_API_KEY = process.env.WA_API_KEY
 
@@ -105,7 +105,7 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     
     // Update log status to failed if possible
     try {
-      const supabase = createClient()
+      const supabase = createAdminClient()
       // find the latest pending log for this request (approximate since we don't pass the ID through the catch easily unless we scope it)
       // For a more robust approach, we could restructure the try/catch, but this is a simplified fallback.
     } catch (e) {}
