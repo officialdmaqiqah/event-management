@@ -170,7 +170,7 @@ export default function PublicCalendarPage() {
         start: new Date(eStart.setHours(0,0,0,0)), 
         end: new Date(eEnd.setHours(23,59,59,999))
       })
-    })
+    }).sort((a, b) => new Date(a.tanggal_mulai).getTime() - new Date(b.tanggal_mulai).getTime())
   }
 
   const openEventDetails = (ev: PengajuanEvent) => {
