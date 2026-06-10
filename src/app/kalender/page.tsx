@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X
 } from "lucide-react"
 import Link from "next/link"
 
@@ -25,7 +25,7 @@ type PengajuanEvent = {
   tanggal_mulai: string
   tanggal_selesai: string
   area_fasilitas: string[]
-  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia'
+  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia' | 'publik_terbatas'
   nama_pemohon?: string
   nama_lembaga?: string | null
   deskripsi_kegiatan?: string
@@ -338,6 +338,7 @@ export default function PublicCalendarPage() {
                       {dayEvents.map(ev => {
                         // Privacy masking for "umum_saja"
                         const isMasked = ev.privacy_event === 'umum_saja'
+                        const isTerbatas = ev.privacy_event === 'publik_terbatas'
                         const displayTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
                         
                         // Check if special guest / event or routine
@@ -346,6 +347,7 @@ export default function PublicCalendarPage() {
                         
                         let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                         if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
+                        else if (isTerbatas) bgColor = 'bg-rose-50 border-rose-200 text-rose-700 shadow-sm'
                         else if (isSpecial) bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
                         else if (isRutin) bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
                         
@@ -358,12 +360,14 @@ export default function PublicCalendarPage() {
                           >
                             {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
                             <div className="flex items-center gap-1 truncate capitalize">
-                              {isSpecial && <Sparkles className="h-3 w-3 shrink-0 text-amber-600" />}
+                              {isTerbatas ? <Lock className="h-2.5 w-2.5 flex-shrink-0 text-rose-600" /> : isSpecial ? <Sparkles className="h-2.5 w-2.5 flex-shrink-0" /> : <Clock className="h-2.5 w-2.5 flex-shrink-0 opacity-70" />}
                               <span className="truncate">{displayTitle}</span>
                             </div>
-                            <div className="text-[9px] opacity-70 flex items-center gap-1 mt-0.5 font-medium hidden sm:flex">
-                              <Clock className="h-2.5 w-2.5" />
-                              {format(new Date(ev.tanggal_mulai), 'HH:mm')}
+                            <div className="flex justify-between items-center mt-0.5">
+                              <span className="opacity-80">
+                                {format(new Date(ev.tanggal_mulai), 'HH:mm')}
+                              </span>
+                              {isTerbatas && <span className="text-[8px] font-bold px-1 bg-rose-200 text-rose-800 rounded">INTERNAL</span>}
                             </div>
                           </div>
                         )
@@ -379,19 +383,19 @@ export default function PublicCalendarPage() {
         {/* Legend */}
         <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 justify-center sm:justify-start">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik (Detail Tampil)
+            <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-rose-200 border border-rose-300"></div> Internal/Undangan
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-slate-300"></div> Peminjaman Internal/Umum
+            <div className="w-3 h-3 rounded-full bg-slate-300"></div> Internal Umum
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-pink-500"></div> Event dengan Pendaftaran Terbuka
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-200 border border-amber-300"></div> Kajian Spesial / Tamu Undangan
+            <div className="w-3 h-3 rounded-full bg-amber-200 border border-amber-300"></div> Kajian Spesial
           </div>
         </div>
       </main>
@@ -400,10 +404,15 @@ export default function PublicCalendarPage() {
       {selectedEvent && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
           <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className={`h-1.5 ${selectedEvent.privacy_event === 'umum_saja' ? 'bg-slate-400' : 'bg-indigo-500'}`} />
+            <div className={`h-1.5 ${selectedEvent.privacy_event === 'umum_saja' ? 'bg-slate-400' : selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-indigo-500'}`} />
             <CardHeader className="pb-2 border-b border-slate-100 bg-slate-50/50">
               <div className="flex justify-between items-start">
-                <div>
+                <div className="flex flex-col gap-2">
+                  {selectedEvent.privacy_event === 'publik_terbatas' && (
+                    <span className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-md w-fit">
+                      <Lock className="h-3 w-3" /> KHUSUS INTERNAL / UNDANGAN
+                    </span>
+                  )}
                   <CardTitle className="text-lg font-bold text-slate-900 pr-4 leading-tight capitalize">
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Ada Kegiatan di MAKT' : selectedEvent.nama_event}
                   </CardTitle>
@@ -515,6 +524,16 @@ export default function PublicCalendarPage() {
                 {selectedEvent.privacy_event === 'umum_saja' && (
                   <div className="mt-2 p-3 bg-blue-50 text-blue-800 text-xs rounded-lg border border-blue-100">
                     Ini adalah kegiatan terbatas. Rincian penyelenggara dan deskripsi tidak dipublikasikan untuk umum demi alasan privasi.
+                  </div>
+                )}
+                
+                {selectedEvent.privacy_event === 'publik_terbatas' && (
+                  <div className="bg-rose-50 text-rose-800 p-4 rounded-xl border border-rose-100 text-sm font-medium flex items-start gap-3">
+                    <Lock className="h-5 w-5 mt-0.5 text-rose-600 flex-shrink-0" />
+                    <div className="space-y-1">
+                      <p className="font-bold">Perhatian: Acara Internal / Khusus Undangan</p>
+                      <p className="text-rose-700/90 text-xs">Kegiatan ini diselenggarakan secara tertutup atau hanya untuk kalangan internal lembaga. Jamaah umum dimohon untuk memaklumi.</p>
+                    </div>
                   </div>
                 )}
               </div>

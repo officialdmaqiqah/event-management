@@ -49,7 +49,7 @@ type Pengajuan = {
   url_proposal: string | null
   catatan_tambahan: string | null
   catatan_admin: string | null
-  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia'
+  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia' | 'publik_terbatas'
   reviewed_by: string | null
   reviewed_at: string | null
   current_approval_level: number
@@ -1319,12 +1319,23 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <input 
                       type="radio" 
                       name="privacy_event" 
+                      value="publik_terbatas"
+                      checked={privacyEvent === 'publik_terbatas'}
+                      onChange={() => setPrivacyEvent('publik_terbatas')}
+                      className="text-indigo-600 focus:ring-indigo-500" 
+                    />
+                    <span>Khusus Internal (Tampil di Kalender dengan Label &quot;Internal / Undangan&quot;)</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="privacy_event" 
                       value="umum_saja"
                       checked={privacyEvent === 'umum_saja'}
                       onChange={() => setPrivacyEvent('umum_saja')}
                       className="text-indigo-600 focus:ring-indigo-500" 
                     />
-                    <span>Umum Saja (Tampilkan Anonim / Booking)</span>
+                    <span>Umum Saja (Tampilkan Anonim / &quot;Ada Kegiatan di MAKT&quot;)</span>
                   </label>
                   <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
                     <input 

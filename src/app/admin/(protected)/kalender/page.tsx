@@ -24,7 +24,7 @@ type PengajuanEvent = {
   tanggal_mulai: string
   tanggal_selesai: string
   area_fasilitas: string[]
-  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia'
+  privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia' | 'publik_terbatas'
   nama_pemohon?: string
   nama_lembaga?: string | null
   deskripsi_kegiatan?: string
@@ -338,14 +338,16 @@ export default function AdminCalendarPage() {
           <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className={`h-1.5 ${
               selectedEvent.privacy_event === 'rahasia' ? 'bg-red-500' : 
-              selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-500' : 'bg-indigo-500'
+              selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-500' :
+              selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-indigo-500'
             }`} />
             <CardHeader className="pb-2 border-b border-slate-100 bg-white">
               <div className="flex justify-between items-start">
                 <div className="pr-4">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold mb-1 border ${
                     selectedEvent.privacy_event === 'rahasia' ? 'bg-red-50 text-red-700 border-red-200' : 
-                    selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                    selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200'
                   }`}>
                     {selectedEvent.privacy_event === 'rahasia' && <EyeOff className="h-3 w-3 mr-1" />}
                     Privasi: {selectedEvent.privacy_event.replace('_', ' ').toUpperCase()}
