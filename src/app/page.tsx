@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Calendar as CalendarIcon, FileText, CheckCircle2, BellRing, QrCode, ClipboardList, MapPin, ArrowRight, ShieldCheck, Search, Sparkles, Building2, Image as ImageIcon } from "lucide-react"
+import { Calendar as CalendarIcon, FileText, CheckCircle2, BellRing, QrCode, ClipboardList, MapPin, ArrowRight, ShieldCheck, Search, Sparkles, Building2, Image as ImageIcon, Lock } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 
 // Komponen Card Kalender
@@ -16,6 +16,11 @@ function EventCard({ event }: { event: any }) {
         <span className="bg-slate-50 text-emerald-700 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-100 group-hover:border-emerald-100 group-hover:bg-emerald-50 transition-colors">
           {type}
         </span>
+        {event.privacy_event === 'publik_terbatas' && (
+          <span className="bg-rose-50 text-rose-600 text-[10px] font-bold px-2.5 py-1 rounded-md border border-rose-100 flex items-center gap-1">
+            <Lock className="h-3 w-3" /> Internal
+          </span>
+        )}
       </div>
       
       <h3 className="font-bold text-slate-900 text-lg leading-tight mb-3 group-hover:text-emerald-700 transition-colors capitalize line-clamp-3">
@@ -77,7 +82,7 @@ export default async function Home() {
     .from("pengajuan_peminjaman")
     .select("*")
     .in("status", ["approved"])
-    .in("privacy_event", ["detail_publik", "umum_saja"])
+    .in("privacy_event", ["detail_publik", "umum_saja", "publik_terbatas"])
     .gte("tanggal_mulai", new Date().toISOString())
     .order("tanggal_mulai", { ascending: true })
     .limit(4)
