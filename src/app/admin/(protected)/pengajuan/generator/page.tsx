@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
+import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
 import { ArrowLeft, CalendarDays, Copy, Plus, Trash2 } from "lucide-react"
 
