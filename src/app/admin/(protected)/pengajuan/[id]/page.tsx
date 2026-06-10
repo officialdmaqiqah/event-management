@@ -881,7 +881,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <h4 className="text-sm font-bold text-slate-800">Detail Kajian / Pemateri</h4>
                     {pengajuan.nama_ustadz && (
                       <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-amber-200">
-                        🌟 Spesial Tamu Undangan
+                        🌟 Spesial Tamu
                       </span>
                     )}
                     {isSuperAdminUser && (
