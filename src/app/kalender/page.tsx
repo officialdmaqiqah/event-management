@@ -491,7 +491,7 @@ export default function PublicCalendarPage() {
                         </span>
                       </div>
                     </div>
-                    {selectedEvent.deskripsi_kegiatan && (
+                    {selectedEvent.deskripsi_kegiatan && selectedEvent.privacy_event === 'detail_publik' && (
                       <div className="flex gap-3 pt-2 border-t border-slate-100">
                         <Info className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
                         <div>
