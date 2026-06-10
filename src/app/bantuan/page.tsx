@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2, FileText, Search } from "lucide-react"
+import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2, FileText, Search, MessageCircle } from "lucide-react"
 
 export default function BantuanPage() {
   return (
@@ -113,6 +113,25 @@ export default function BantuanPage() {
               <p className="text-amber-800/80 text-sm m-0">
                 Saat mengajukan event, pastikan Anda memilih opsi <strong>Privasi</strong> yang tepat. Jika Anda memilih "Rahasia", acara Anda tidak akan muncul sama sekali di Kalender Publik, demi menjaga kerahasiaan kegiatan.
               </p>
+            </div>
+
+            {/* Hubungi Admin */}
+            <div className="mt-12 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 bg-slate-50 p-6 rounded-2xl">
+              <div>
+                <h4 className="font-bold text-slate-900 text-lg">Masih Punya Pertanyaan?</h4>
+                <p className="text-slate-600 text-sm mt-1">Jangan ragu untuk menghubungi admin kami via WhatsApp jika Anda butuh bantuan lebih lanjut.</p>
+              </div>
+              <a 
+                href="https://wa.me/6282175426357" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="shrink-0"
+              >
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold px-6 h-12 shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  Hubungi Ustadz Roni
+                </Button>
+              </a>
             </div>
           </div>
         </div>
