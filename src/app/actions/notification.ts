@@ -22,20 +22,24 @@ function formatWhatsAppNumber(phone: string) {
 export async function sendWhatsAppNotification(payload: NotificationPayload) {
   try {
     const supabase = createAdminClient()
-    let WA_GATEWAY_URL = process.env.WA_GATEWAY_URL || "https://api.fonnte.com/send"
+    let WA_GATEWAY_URL = process.env.WA_GATEWAY_URL || "https://xsender.id/api/send-message"
     let WA_API_KEY = process.env.WA_API_KEY
+    let WA_SENDER_ID = process.env.WA_SENDER_ID || ""
 
     // Fallback: Ambil dari database jika di .env tidak ada
     if (!WA_API_KEY) {
       const { data: adminProfile } = await supabase
         .from('user_profiles')
-        .select('wa_api_key')
+        .select('wa_api_key, wa_sender_id')
         .not('wa_api_key', 'is', null)
         .limit(1)
         .single()
       
       if (adminProfile?.wa_api_key) {
         WA_API_KEY = adminProfile.wa_api_key
+        if (adminProfile.wa_sender_id) {
+          WA_SENDER_ID = adminProfile.wa_sender_id
+        }
       }
     }
 
@@ -73,18 +77,21 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
       return { success: true, simulated: true }
     }
 
-    // 3. Send via External API (Generic Example)
-    // You will need to adjust the payload structure depending on your provider (Fonnte, Wablas, dll).
+    // 3. Send via XSender API
+    const payloadBody = {
+      api_key: WA_API_KEY,
+      sender: WA_SENDER_ID,
+      number: formattedNumber,
+      message: payload.message,
+      footer: "MAKT System"
+    }
+
     const response = await fetch(WA_GATEWAY_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": WA_API_KEY // Fonnte usually does not use Bearer prefix
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        target: formattedNumber,
-        message: payload.message
-      })
+      body: JSON.stringify(payloadBody)
     })
 
     let responseData;
@@ -99,9 +106,9 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
       throw new Error(`Gateway Error HTTP ${response.status}: ${errorText}`)
     }
 
-    // Fonnte returns HTTP 200 even for errors like invalid token, so we must check the body
+    // XSender returns HTTP 200 even for errors sometimes, check status/success flag if available
     if (responseData && responseData.status === false) {
-      throw new Error(`Gateway API Error: ${responseData.reason || JSON.stringify(responseData)}`)
+      throw new Error(`Gateway API Error: ${responseData.msg || JSON.stringify(responseData)}`)
     }
 
     // 4. Update status to sent
