@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles 
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen
 } from "lucide-react"
 import Link from "next/link"
 
@@ -340,12 +340,14 @@ export default function PublicCalendarPage() {
                         const isMasked = ev.privacy_event === 'umum_saja'
                         const displayTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
                         
-                        // Check if special guest / event
-                        const isSpecial = !isMasked && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+                        // Check if special guest / event or routine
+                        const isRutin = !isMasked && Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
+                        const isSpecial = !isMasked && !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
                         
                         let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                         if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
                         else if (isSpecial) bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
+                        else if (isRutin) bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
                         
                         return (
                           <div 
@@ -378,6 +380,9 @@ export default function PublicCalendarPage() {
         <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 justify-center sm:justify-start">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik (Detail Tampil)
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-slate-300"></div> Peminjaman Internal/Umum
@@ -450,15 +455,19 @@ export default function PublicCalendarPage() {
                   <>
                     {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
                       <div className="flex gap-3">
-                        <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                        {(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? (
+                          <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <BookOpen className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                        )}
                         <div>
                           <span className="block font-semibold text-slate-700">Pemateri / Tema Kajian</span>
                           <span className="text-slate-800 text-xs font-bold block mt-0.5">
                             {selectedEvent.nama_ustadz || "Belum ditentukan"}
                           </span>
-                          {selectedEvent.judul_kajian && (
+                          {selectedEvent.judul_kajian && selectedEvent.judul_kajian.toLowerCase().trim() !== selectedEvent.nama_event.toLowerCase().trim() && (
                             <span className="text-slate-600 text-xs italic block mt-0.5">
-                              "{selectedEvent.judul_kajian}"
+                              &quot;{selectedEvent.judul_kajian}&quot;
                             </span>
                           )}
                         </div>
@@ -469,7 +478,7 @@ export default function PublicCalendarPage() {
                       <div>
                         <span className="block font-semibold text-slate-700">Penyelenggara</span>
                         <span className="text-slate-600 text-xs capitalize">
-                          {selectedEvent.nama_pemohon} {selectedEvent.nama_lembaga ? `(${selectedEvent.nama_lembaga})` : ''}
+                          {selectedEvent.nama_pemohon} {selectedEvent.nama_lembaga && selectedEvent.nama_lembaga.toLowerCase() !== selectedEvent.nama_pemohon?.toLowerCase() ? `(${selectedEvent.nama_lembaga})` : ''}
                         </span>
                       </div>
                     </div>

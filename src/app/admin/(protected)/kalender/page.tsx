@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { 
   ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles, BookOpen
 } from "lucide-react"
 import Link from "next/link"
 
@@ -287,13 +287,16 @@ export default function AdminCalendarPage() {
                       let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
                       let Icon = Eye
                       
-                      const isSpecial = Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
+                      const isRutin = Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
+                      const isSpecial = !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
 
                       if (ev.privacy_event === 'rahasia' || ev.privacy_event === 'umum_saja') {
                         bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
                         Icon = EyeOff
                       } else if (isSpecial) {
                         bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
+                      } else if (isRutin) {
+                        bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
                       }
 
                       return (
@@ -323,6 +326,7 @@ export default function AdminCalendarPage() {
       {/* Admin Legend */}
       <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-500"></div> Peminjaman (Publik/Admin)</div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300"></div> Peminjaman (Internal/Rahasia)</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-pink-500"></div> Event dengan Pendaftaran Terbuka</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-200 border border-amber-300"></div> Kajian Spesial / Tamu Undangan</div>
@@ -364,16 +368,20 @@ export default function AdminCalendarPage() {
               )}
               <div className="grid grid-cols-1 gap-3">
                 {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
-                  <div className="flex gap-3 bg-amber-50 p-2 rounded-lg border border-amber-100">
-                    <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                  <div className={`flex gap-3 p-2 rounded-lg border ${(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
+                    {(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? (
+                      <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                    ) : (
+                      <BookOpen className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                    )}
                     <div>
-                      <span className="block font-semibold text-amber-800">Pemateri / Tema Kajian</span>
-                      <span className="text-amber-900 text-xs font-bold block mt-0.5">
+                      <span className={`block font-semibold ${(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? 'text-amber-800' : 'text-emerald-800'}`}>Pemateri / Tema Kajian</span>
+                      <span className={`text-xs font-bold block mt-0.5 ${(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? 'text-amber-900' : 'text-emerald-900'}`}>
                         {selectedEvent.nama_ustadz || "Belum ditentukan"}
                       </span>
-                      {selectedEvent.judul_kajian && (
-                        <span className="text-amber-700 text-xs italic block mt-0.5">
-                          "{selectedEvent.judul_kajian}"
+                      {selectedEvent.judul_kajian && selectedEvent.judul_kajian.toLowerCase().trim() !== selectedEvent.nama_event.toLowerCase().trim() && (
+                        <span className={`text-xs italic block mt-0.5 ${(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? 'text-amber-700' : 'text-emerald-700'}`}>
+                          &quot;{selectedEvent.judul_kajian}&quot;
                         </span>
                       )}
                     </div>
@@ -406,7 +414,7 @@ export default function AdminCalendarPage() {
                   <div>
                     <span className="block font-semibold text-slate-700">Penyelenggara</span>
                     <span className="text-slate-600 text-xs">
-                      {selectedEvent.nama_pemohon} {selectedEvent.nama_lembaga ? `(${selectedEvent.nama_lembaga})` : ''}
+                      {selectedEvent.nama_pemohon} {selectedEvent.nama_lembaga && selectedEvent.nama_lembaga.toLowerCase() !== selectedEvent.nama_pemohon?.toLowerCase() ? `(${selectedEvent.nama_lembaga})` : ''}
                     </span>
                   </div>
                 </div>
