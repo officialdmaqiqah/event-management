@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
-import { Calendar, Users, MapPin, FileText, ChevronRight, ChevronLeft, CheckCircle2, Building2, User, Phone, Mail, ClipboardList } from "lucide-react"
+import { Calendar, Users, MapPin, FileText, ChevronRight, ChevronLeft, CheckCircle2, Building2, User, Phone, Mail, ClipboardList, Info } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 const AREA_OPTIONS = [
