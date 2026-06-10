@@ -57,7 +57,7 @@ export default function BantuanPage() {
                     Sistem MAKT memiliki kalender terpadu yang menampilkan semua kegiatan publik yang akan dilaksanakan.
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
-                    <li><strong>Cara Akses:</strong> Kunjungi halaman utama situs (Beranda) dan klik menu "Kalender Event" atau buka halaman <Link href="/kalender"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">/kalender</code></Link>.</li>
+                    <li><strong>Cara Akses:</strong> Kunjungi halaman utama situs (Beranda) dan klik menu "Kalender Event" atau buka halaman <Link href="/kalender"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">Kalender</code></Link>.</li>
                     <li><strong>Fungsi:</strong> Anda bisa melihat acara apa saja yang akan berlangsung dalam format kalender bulanan.</li>
                     <li><strong>Tingkat Privasi Acara:</strong> Anda akan melihat perbedaan status privasi setiap acara:
                       <ul className="list-circle pl-5 mt-1 space-y-1">
@@ -77,7 +77,7 @@ export default function BantuanPage() {
                     Jika Anda/organisasi Anda ingin menggunakan fasilitas MAKT (seperti Ruang Utama, Ruang Lt. 2, atau Pelataran).
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
-                    <li><strong>Cara Akses:</strong> Dari halaman utama, klik tombol "Ajukan Acara Sekarang" atau akses <Link href="/ajukan-peminjaman"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">/ajukan-peminjaman</code></Link>.</li>
+                    <li><strong>Cara Akses:</strong> Dari halaman utama, klik tombol "Ajukan Acara Sekarang" atau akses <Link href="/ajukan-peminjaman"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">Ajukan Peminjaman</code></Link>.</li>
                     <li><strong>Prosedur Pengisian:</strong>
                       <ol className="list-decimal pl-5 mt-1 space-y-1">
                         <li>Isi biodata pemohon dan lembaga/organisasi Anda.</li>
@@ -99,7 +99,7 @@ export default function BantuanPage() {
                     Anda tidak perlu bertanya-tanya apakah pengajuan Anda sudah disetujui atau belum.
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
-                    <li><strong>Cara Akses:</strong> Klik menu "Cek Status Pengajuan" atau buka <Link href="/cek-status"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">/cek-status</code></Link>.</li>
+                    <li><strong>Cara Akses:</strong> Klik menu "Cek Status Pengajuan" atau buka <Link href="/cek-status"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">Cek Status</code></Link>.</li>
                     <li><strong>Fungsi:</strong> Masukkan Kode Tiket / ID Pengajuan yang Anda dapatkan sebelumnya. Sistem akan menampilkan status terkini: <strong>Pending</strong> (Menunggu Konfirmasi), <strong>Approved</strong> (Disetujui), atau <strong>Rejected</strong> (Ditolak).</li>
                   </ul>
                 </div>
@@ -120,7 +120,7 @@ export default function BantuanPage() {
                     <UserCircle className="h-4 w-4 text-emerald-500" /> 1. Login Admin
                   </h4>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
-                    <li>Akses URL <Link href="/admin/login"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">/admin/login</code></Link>.</li>
+                    <li>Akses URL <Link href="/admin/login"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">Login</code></Link>.</li>
                     <li>Masukkan username dan password Anda.</li>
                   </ul>
                 </div>
@@ -163,7 +163,7 @@ export default function BantuanPage() {
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
                     <li><strong>Scanner:</strong> Ada fitur scanner (pemindai QR Code) untuk melakukan check-in peserta yang sudah mendaftar (misalnya untuk tiket VIP atau acara terbatas).</li>
-                    <li><strong>Absen Rapat:</strong> Sistem juga mengakomodir modul Absensi Rapat (<Link href="/absen-rapat"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">/absen-rapat</code></Link>) dengan validasi lokasi (GPS radius) untuk memastikan pengurus/peserta benar-benar hadir di area Masjid Agung Kubah Timah.</li>
+                    <li><strong>Absen Rapat:</strong> Sistem juga mengakomodir modul Absensi Rapat (<Link href="/absen-rapat"><code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-700 transition-colors cursor-pointer">Absen Rapat</code></Link>) dengan validasi lokasi (GPS radius) untuk memastikan pengurus/peserta benar-benar hadir di area Masjid Agung Kubah Timah.</li>
                   </ul>
                 </div>
 
