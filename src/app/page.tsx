@@ -18,7 +18,7 @@ function EventCard({ event }: { event: any }) {
         </span>
       </div>
       
-      <h3 className="font-extrabold text-slate-900 text-xl leading-snug mb-3 group-hover:text-emerald-700 transition-colors capitalize">
+      <h3 className="font-bold text-slate-900 text-lg leading-tight mb-3 group-hover:text-emerald-700 transition-colors capitalize line-clamp-3">
         {title}
       </h3>
       
@@ -77,6 +77,7 @@ export default async function Home() {
     .from("pengajuan_peminjaman")
     .select("*")
     .in("status", ["approved"])
+    .in("privacy_event", ["detail_publik", "umum_saja"])
     .gte("tanggal_mulai", new Date().toISOString())
     .order("tanggal_mulai", { ascending: true })
     .limit(4)
