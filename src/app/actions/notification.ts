@@ -79,17 +79,29 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${WA_API_KEY}` // adjust header to provider spec
+        "Authorization": WA_API_KEY // Fonnte usually does not use Bearer prefix
       },
       body: JSON.stringify({
-        target: formattedNumber, // adjust field name
-        message: payload.message // adjust field name
+        target: formattedNumber,
+        message: payload.message
       })
     })
 
+    let responseData;
+    try {
+      responseData = await response.json();
+    } catch(e) {
+      // Not JSON
+    }
+
     if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`Gateway Error: ${response.status} - ${errorText}`)
+      const errorText = responseData ? JSON.stringify(responseData) : await response.text().catch(() => '')
+      throw new Error(`Gateway Error HTTP ${response.status}: ${errorText}`)
+    }
+
+    // Fonnte returns HTTP 200 even for errors like invalid token, so we must check the body
+    if (responseData && responseData.status === false) {
+      throw new Error(`Gateway API Error: ${responseData.reason || JSON.stringify(responseData)}`)
     }
 
     // 4. Update status to sent
