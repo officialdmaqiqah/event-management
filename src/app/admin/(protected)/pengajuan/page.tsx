@@ -208,7 +208,7 @@ export default function AdminPengajuanPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Data Peminjaman Ruang/Fasilitas</h1>
-          <p className="text-sm text-slate-500">Review, setujui, dan kelola semua izin peminjaman fasilitas Masjid Kubah Timah</p>
+          <p className="text-sm text-slate-500">Review, setujui, dan kelola semua izin peminjaman fasilitas Masjid Agung Kubah Timah</p>
         </div>
         <div className="flex gap-2">
           {isAdmin && (
