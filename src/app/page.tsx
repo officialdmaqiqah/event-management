@@ -352,7 +352,7 @@ export default async function Home() {
                 <h3 className="text-2xl sm:text-3xl font-black text-white mb-3 relative z-10">Tetap Terhubung dengan Masjid</h3>
                 <p className="text-emerald-100/80 mb-8 font-medium text-sm sm:text-base relative z-10">Jangan lewatkan kajian ilmu dan kegiatan syiar Islami terbaru di Masjid Agung Kubah Timah.</p>
                 <Link href="/kalender" className="relative z-10 w-full sm:w-auto">
-                  <Button className="w-full bg-white hover:bg-emerald-50 text-emerald-900 rounded-full font-bold px-8 h-12 shadow-xl shadow-white/10 transition-all hover:scale-105">
+                  <Button variant="custom" className="w-full bg-white hover:bg-emerald-50 text-emerald-900 rounded-full font-bold px-8 h-12 shadow-xl shadow-white/10 transition-all hover:scale-105">
                     Buka Kalender Penuh
                   </Button>
                 </Link>
@@ -366,7 +366,7 @@ export default async function Home() {
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-3 relative z-10">Miliki Ide Kegiatan Bermanfaat?</h3>
                 <p className="text-amber-900/80 mb-8 font-medium text-sm sm:text-base relative z-10">Jadikan momen kegiatan Anda lebih bermakna dengan dukungan fasilitas eksklusif kami.</p>
                 <Link href="/ajukan-peminjaman" className="relative z-10 w-full sm:w-auto">
-                  <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold px-8 h-12 shadow-xl shadow-slate-900/20 transition-all hover:scale-105">
+                  <Button variant="custom" className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold px-8 h-12 shadow-xl shadow-slate-900/20 transition-all hover:scale-105">
                     Ajukan Acara Sekarang
                   </Button>
                 </Link>
