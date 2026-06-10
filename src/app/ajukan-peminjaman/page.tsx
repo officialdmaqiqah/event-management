@@ -59,6 +59,41 @@ export default function AjukanPeminjamanPage() {
     "Lainnya",
   ])
 
+  // Helper function to map event type to description
+  const getJenisEventDescription = (jenis: string) => {
+    if (!jenis) return null;
+    
+    const j = jenis.toLowerCase();
+    if (j.includes("kajian") || j.includes("pengajian") || j.includes("tabligh")) {
+      return "Acara keagamaan, pengajian rutin, atau tabligh akbar untuk umum maupun internal.";
+    }
+    if (j.includes("seminar") || j.includes("workshop")) {
+      return "Kegiatan seminar, lokakarya, atau diskusi panel berskala kecil maupun besar.";
+    }
+    if (j.includes("rapat") || j.includes("musyawarah")) {
+      return "Konsolidasi internal, rapat pengurus, atau musyawarah organisasi.";
+    }
+    if (j.includes("nikah") || j.includes("akad")) {
+      return "Pelaksanaan prosesi akad nikah di area dalam masjid atau ruangan yang disepakati.";
+    }
+    if (j.includes("sosial") || j.includes("bakti")) {
+      return "Kegiatan bakti sosial, donor darah, santunan, atau pembagian sembako.";
+    }
+    if (j.includes("olahraga") || j.includes("lomba")) {
+      return "Kegiatan perlombaan, olahraga ringan, atau festival bernuansa Islami.";
+    }
+    if (j.includes("pendidikan") || j.includes("pelatihan")) {
+      return "Kegiatan belajar mengajar, TPA/TPQ, atau pelatihan kemampuan (skills).";
+    }
+    if (j.includes("budaya") || j.includes("seni")) {
+      return "Kegiatan pentas seni Islami, nasyid, atau kebudayaan bernuansa reliji.";
+    }
+    if (j.includes("lainnya")) {
+      return "Pilih ini jika jenis kegiatan Anda tidak ada di daftar. Jelaskan lebih detail di kolom Nama Event dan Deskripsi.";
+    }
+    return "Deskripsi tidak tersedia untuk kategori ini.";
+  }
+
   useEffect(() => {
     const fetchEventTypes = async () => {
       try {
@@ -465,7 +500,13 @@ export default function AjukanPeminjamanPage() {
                     <option value="">-- Pilih Jenis Event --</option>
                     {jenisEventOptions.map(j => <option key={j} value={j}>{j}</option>)}
                   </select>
-                  {errors.jenis_event && <p className="text-red-500 text-xs">{errors.jenis_event}</p>}
+                  {event.jenis_event && (
+                    <p className="text-xs text-indigo-600 bg-indigo-50 p-2 rounded border border-indigo-100 flex items-start gap-1.5 mt-1">
+                      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                      <span>{getJenisEventDescription(event.jenis_event)}</span>
+                    </p>
+                  )}
+                  {errors.jenis_event && <p className="text-red-500 text-xs mt-1">{errors.jenis_event}</p>}
                 </div>
 
                 {/* Estimasi Peserta */}
