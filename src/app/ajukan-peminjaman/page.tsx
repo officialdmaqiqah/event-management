@@ -71,10 +71,22 @@ export default function AjukanPeminjamanPage() {
       return "Kegiatan seminar, lokakarya, atau diskusi panel berskala kecil maupun besar.";
     }
     if (j.includes("rapat") || j.includes("musyawarah")) {
-      return "Konsolidasi internal, rapat pengurus, atau musyawarah organisasi.";
+      return "Konsolidasi internal, rapat pengurus, rapat panitia, atau musyawarah organisasi.";
     }
     if (j.includes("nikah") || j.includes("akad")) {
       return "Pelaksanaan prosesi akad nikah di area dalam masjid atau ruangan yang disepakati.";
+    }
+    if (j.includes("komunitas")) {
+      return "Acara atau pertemuan yang diadakan oleh perkumpulan komunitas masyarakat/kepemudaan.";
+    }
+    if (j.includes("eksternal") || j.includes("luar")) {
+      return "Kegiatan yang diselenggarakan oleh instansi pemerintah, swasta, atau yayasan luar di lingkungan masjid.";
+    }
+    if (j.includes("vip") || j.includes("protokoler")) {
+      return "Kunjungan tokoh penting, pejabat pemerintahan, atau acara resmi yang membutuhkan standar protokoler khusus.";
+    }
+    if (j.includes("rahasia") || j.includes("internal")) {
+      return "Kegiatan khusus yang sifatnya tertutup (privat) dan tidak dipublikasikan rinciannya ke jamaah umum.";
     }
     if (j.includes("sosial") || j.includes("bakti")) {
       return "Kegiatan bakti sosial, donor darah, santunan, atau pembagian sembako.";
@@ -91,7 +103,7 @@ export default function AjukanPeminjamanPage() {
     if (j.includes("lainnya")) {
       return "Pilih ini jika jenis kegiatan Anda tidak ada di daftar. Jelaskan lebih detail di kolom Nama Event dan Deskripsi.";
     }
-    return "Deskripsi tidak tersedia untuk kategori ini.";
+    return "Pilih jenis event ini sesuai dengan kebutuhan acara Anda.";
   }
 
   useEffect(() => {
