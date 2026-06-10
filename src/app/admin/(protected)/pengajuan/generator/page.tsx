@@ -172,7 +172,7 @@ export default function GeneratorPage() {
               status: 'approved',
               tipe_pemohon: 'lembaga',
               nama_lembaga: 'DKM MAKT',
-              nama_pemohon: 'Admin MAKT (Sistem Rutin)',
+              nama_pemohon: 'DKM MAKT',
               whatsapp: '080000000000',
               email: 'admin@makt.id',
               alamat: 'Pangkalpinang',
