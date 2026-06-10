@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2, FileText, Search, MessageCircle } from "lucide-react"
+import { ArrowLeft, BookOpen, Calendar, ShieldCheck, CheckCircle2, FileText, Search, UserCircle, CheckSquare, CalendarDays, QrCode, FileArchive } from "lucide-react"
 
 export default function BantuanPage() {
   return (
@@ -34,47 +34,74 @@ export default function BantuanPage() {
 
           <div className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-emerald-600 hover:prose-a:text-emerald-700">
             <p className="lead text-lg text-slate-600 mb-8">
-              Selamat datang di Pusat Bantuan! Sistem ini dibangun untuk mempermudah pengelolaan jadwal dan peminjaman fasilitas di lingkungan Masjid Agung Kubah Timah.
+              Selamat datang di Sistem Manajemen Event Masjid Agung Kubah Timah (MAKT)! Sistem ini dibangun untuk mempermudah jamaah, takmir, dan pengurus dalam mengelola penjadwalan, peminjaman fasilitas, dan pelaksanaan kegiatan di lingkungan masjid.
+            </p>
+            <p className="text-slate-600 mb-8">
+              Berikut adalah panduan lengkap cara menggunakan berbagai fitur yang ada di dalam sistem ini.
             </p>
 
             {/* Bagian 1 */}
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-4">
                 <span className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-sm">1</span>
-                <h3 className="text-xl font-bold text-slate-900 m-0">Untuk Jamaah / Pemohon Umum</h3>
+                <h3 className="text-xl font-bold text-slate-900 m-0">Panduan Untuk Jamaah / Pemohon Umum</h3>
               </div>
+              <p className="text-slate-600 mb-6 ml-10">Bagian ini ditujukan bagi Anda yang ingin mengetahui jadwal masjid, mendaftarkan acara, atau melihat informasi kegiatan.</p>
               
-              <div className="space-y-6 pl-10 border-l-2 border-slate-100 ml-4">
+              <div className="space-y-8 pl-10 border-l-2 border-slate-100 ml-4">
                 <div>
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-emerald-500" /> Mengecek Jadwal Kegiatan
+                    <Calendar className="h-4 w-4 text-emerald-500" /> 1. Mengecek Jadwal Kegiatan (Kalender)
                   </h4>
                   <p className="text-slate-600 mt-2">
-                    Kunjungi menu <strong>Kalender Event</strong>. Di sini Anda dapat melihat jadwal kegiatan yang akan berlangsung. Perhatikan label privasi acara:
+                    Sistem MAKT memiliki kalender terpadu yang menampilkan semua kegiatan publik yang akan dilaksanakan.
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
-                    <li><strong>Publik:</strong> Terbuka untuk umum, detail kegiatan bisa dilihat.</li>
-                    <li><strong>Umum Saja:</strong> Terbuka untuk umum, namun detail disederhanakan.</li>
-                    <li><strong>Khusus Internal:</strong> Ditandai dengan ikon gembok merah muda. Ini berarti fasilitas sedang dipakai oleh lembaga tertentu secara tertutup (misal: Rapat atau Akad Nikah).</li>
+                    <li><strong>Cara Akses:</strong> Kunjungi halaman utama situs (Beranda) dan klik menu "Kalender Event" atau buka halaman <code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">/kalender</code>.</li>
+                    <li><strong>Fungsi:</strong> Anda bisa melihat acara apa saja yang akan berlangsung dalam format kalender bulanan.</li>
+                    <li><strong>Tingkat Privasi Acara:</strong> Anda akan melihat perbedaan status privasi setiap acara:
+                      <ul className="list-circle pl-5 mt-1 space-y-1">
+                        <li><strong>Publik:</strong> Terbuka untuk umum, detail kegiatan dan deskripsi bisa dilihat bebas.</li>
+                        <li><strong>Umum Saja:</strong> Anda tahu ada acara umum, tapi detail spesifik mungkin disederhanakan.</li>
+                        <li><strong>Khusus Internal:</strong> Ada ikon gembok "Internal". Ini berarti fasilitas sedang dipakai oleh lembaga/keluarga tertentu secara tertutup (misal: Rapat atau Akad Nikah). Anda tidak bisa melihat deskripsi detailnya, tetapi Anda tahu fasilitas tersebut sedang dipakai.</li>
+                      </ul>
+                    </li>
                   </ul>
                 </div>
 
                 <div>
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-emerald-500" /> Mengajukan Peminjaman Fasilitas
+                    <FileText className="h-4 w-4 text-emerald-500" /> 2. Mengajukan Peminjaman Fasilitas / Membuat Acara
                   </h4>
                   <p className="text-slate-600 mt-2">
-                    Gunakan menu <strong>Rencanakan Event Anda</strong>. Isi formulir dengan lengkap termasuk biodata, detail acara, pilihan fasilitas, dan sifat privasi. Setelah di-submit, Anda akan mendapatkan <strong>Kode Tiket</strong>.
+                    Jika Anda/organisasi Anda ingin menggunakan fasilitas MAKT (seperti Ruang Utama, Ruang Lt. 2, atau Pelataran).
                   </p>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Cara Akses:</strong> Dari halaman utama, klik tombol "Ajukan Acara Sekarang" atau akses <code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">/ajukan-peminjaman</code>.</li>
+                    <li><strong>Prosedur Pengisian:</strong>
+                      <ol className="list-decimal pl-5 mt-1 space-y-1">
+                        <li>Isi biodata pemohon dan lembaga/organisasi Anda.</li>
+                        <li>Isi detail acara (Nama Acara, Tanggal, Jam Mulai - Selesai).</li>
+                        <li>Pilih fasilitas yang ingin digunakan.</li>
+                        <li>Tentukan Sifat Privasi Acara. Pilih "Publik" jika ingin dipromosikan ke jamaah lain, atau "Khusus Internal" jika itu acara tertutup.</li>
+                      </ol>
+                    </li>
+                    <li>Sistem akan mengirimkan notifikasi kepada Admin untuk diperiksa (Review).</li>
+                    <li><strong>Setelah Submit:</strong> Anda akan mendapatkan <strong>ID Pengajuan/Kode Tiket</strong>. Simpan kode ini!</li>
+                  </ul>
                 </div>
 
                 <div>
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Search className="h-4 w-4 text-emerald-500" /> Cek Status Pengajuan
+                    <Search className="h-4 w-4 text-emerald-500" /> 3. Cek Status Pengajuan
                   </h4>
                   <p className="text-slate-600 mt-2">
-                    Gunakan menu <strong>Cek Status Pengajuan</strong> dan masukkan Kode Tiket Anda untuk melihat apakah pengajuan disetujui (Approved), ditolak (Rejected), atau masih menunggu (Pending).
+                    Anda tidak perlu bertanya-tanya apakah pengajuan Anda sudah disetujui atau belum.
                   </p>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Cara Akses:</strong> Klik menu "Cek Status Pengajuan" atau buka <code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">/cek-status</code>.</li>
+                    <li><strong>Fungsi:</strong> Masukkan Kode Tiket / ID Pengajuan yang Anda dapatkan sebelumnya. Sistem akan menampilkan status terkini: <strong>Pending</strong> (Menunggu Konfirmasi), <strong>Approved</strong> (Disetujui), atau <strong>Rejected</strong> (Ditolak).</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -83,36 +110,83 @@ export default function BantuanPage() {
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-4">
                 <span className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-sm">2</span>
-                <h3 className="text-xl font-bold text-slate-900 m-0">Untuk Admin / Pengurus</h3>
+                <h3 className="text-xl font-bold text-slate-900 m-0">Panduan Untuk Admin / Takmir (Pengurus)</h3>
               </div>
+              <p className="text-slate-600 mb-6 ml-10">Bagian ini khusus bagi pengelola sistem yang memiliki akses masuk ke dashboard admin.</p>
               
-              <div className="space-y-6 pl-10 border-l-2 border-slate-100 ml-4">
+              <div className="space-y-8 pl-10 border-l-2 border-slate-100 ml-4">
                 <div>
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" /> Manajemen Pengajuan
+                    <UserCircle className="h-4 w-4 text-emerald-500" /> 1. Login Admin
                   </h4>
-                  <p className="text-slate-600 mt-2">
-                    Masuk ke Portal Pengurus, lalu akses menu <strong>Pengajuan</strong>. Anda dapat melihat, memfilter (berdasarkan privasi), mengurutkan, dan mereview formulir pengajuan. Jika disetujui, acara akan otomatis masuk ke kalender publik sesuai pengaturan privasinya.
-                  </p>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li>Akses URL <code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">/admin/login</code>.</li>
+                    <li>Masukkan username dan password Anda.</li>
+                  </ul>
                 </div>
 
                 <div>
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Fitur Operasional (Scanner & Absensi)
+                    <CheckSquare className="h-4 w-4 text-emerald-500" /> 2. Manajemen Pengajuan (Penyetujuan Acara)
                   </h4>
                   <p className="text-slate-600 mt-2">
-                    Tersedia fitur Scanner Check-in untuk peserta acara tertentu, dan modul Absensi Rapat berbasis radius lokasi (GPS) untuk memastikan kehadiran pengurus di area Masjid Agung Kubah Timah.
+                    Menu ini digunakan untuk menyeleksi pengajuan fasilitas yang masuk dari jamaah.
                   </p>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Cara Akses:</strong> Di sidebar kiri, klik "Pengajuan".</li>
+                    <li><strong>Fitur Utama:</strong>
+                      <ul className="list-circle pl-5 mt-1 space-y-1">
+                        <li><strong>Filter & Pencarian:</strong> Anda bisa memfilter pengajuan berdasarkan Sifat Privasi (Publik/Internal/Umum/Rahasia) atau mengurutkannya berdasarkan tanggal terbaru/terlama.</li>
+                        <li><strong>Aksi (Review):</strong> Anda bisa melihat detail formulir yang diisi pemohon.</li>
+                        <li><strong>Approval:</strong> Jika tidak ada bentrok jadwal dan acara sesuai syariat, klik setujui (Approve). Jadwal tersebut akan otomatis masuk ke dalam sistem Kalender Publik.</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-emerald-500" /> 3. Manajemen Kalender & Event Admin
+                  </h4>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Cara Akses:</strong> Menu "Kalender" di dashboard admin.</li>
+                    <li><strong>Fungsi:</strong> Melihat keseluruhan jadwal acara (baik yang rahasia maupun publik) dalam view yang komprehensif. Admin bisa mengelola jadwal jika terjadi reschedule mendadak.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                    <QrCode className="h-4 w-4 text-emerald-500" /> 4. Sistem Absensi & Scanner (Manajemen Kepanitiaan)
+                  </h4>
+                  <p className="text-slate-600 mt-2">
+                    Ketika acara besar sedang berlangsung (misal Kajian Akbar), sistem MAKT menyediakan alat operasional untuk panitia.
+                  </p>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Scanner:</strong> Ada fitur scanner (pemindai QR Code) untuk melakukan check-in peserta yang sudah mendaftar (misalnya untuk tiket VIP atau acara terbatas).</li>
+                    <li><strong>Absen Rapat:</strong> Sistem juga mengakomodir modul Absensi Rapat (<code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded">/absen-rapat</code>) dengan validasi lokasi (GPS radius) untuk memastikan pengurus/peserta benar-benar hadir di area Masjid Agung Kubah Timah.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                    <FileArchive className="h-4 w-4 text-emerald-500" /> 5. Arsip Dokumen & Laporan Rapat
+                  </h4>
+                  <ul className="list-disc pl-5 text-slate-600 mt-2 space-y-1">
+                    <li><strong>Laporan Rapat:</strong> MAKT menyediakan arsip publik dan internal untuk menyimpan notulensi rapat, hasil musyawarah, dan evaluasi kegiatan.</li>
+                    <li><strong>Fungsi:</strong> Hal ini menjaga transparansi dan keteraturan tata kelola masjid.</li>
+                  </ul>
                 </div>
               </div>
             </div>
 
             {/* Note */}
-            <div className="bg-amber-50 rounded-xl p-6 border border-amber-100 mt-8">
-              <h4 className="font-bold text-amber-900 mb-2">💡 Tips Penting</h4>
-              <p className="text-amber-800/80 text-sm m-0">
-                Saat mengajukan event, pastikan Anda memilih opsi <strong>Privasi</strong> yang tepat. Jika Anda memilih "Rahasia", acara Anda tidak akan muncul sama sekali di Kalender Publik, demi menjaga kerahasiaan kegiatan.
-              </p>
+            <div className="bg-amber-50 rounded-xl p-6 border border-amber-100 mt-12">
+              <h4 className="font-bold text-amber-900 mb-2 flex items-center gap-2">💡 Tips Praktis untuk Semua Pengguna</h4>
+              <ul className="list-disc pl-5 text-amber-800/80 mt-2 space-y-2 text-sm">
+                <li>Selalu periksa menu <strong>Agenda Terdekat</strong> di halaman utama (Beranda) untuk melihat ringkasan acara menarik minggu ini.</li>
+                <li>Saat mengajukan event, perhatikan baik-baik pilihan privasi. Jika Anda memilih "Rahasia", acara Anda tidak akan muncul sama sekali di kalender publik.</li>
+                <li>Dengan beroperasinya sistem manajemen ini, semoga tata kelola kegiatan di Masjid Agung Kubah Timah semakin tertib, transparan, dan penuh berkah.</li>
+              </ul>
             </div>
 
             {/* Hubungi Admin */}
