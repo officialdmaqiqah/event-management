@@ -460,7 +460,7 @@ export default function PublicCalendarPage() {
                   </div>
                 </div>
 
-                {selectedEvent.privacy_event === 'detail_publik' && (
+                {(selectedEvent.privacy_event === 'detail_publik' || selectedEvent.privacy_event === 'publik_terbatas') && (
                   <>
                     {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
                       <div className="flex gap-3">
