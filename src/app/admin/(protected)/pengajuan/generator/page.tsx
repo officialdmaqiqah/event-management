@@ -6,8 +6,8 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
-import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
 import { ArrowLeft, CalendarDays, Copy, Plus, Trash2 } from "lucide-react"
 
@@ -296,9 +296,9 @@ export default function GeneratorPage() {
                               <div className="space-y-1.5 md:w-1/3">
                                 <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Waktu Pelaksanaan</Label>
                                 <div className="flex items-center gap-2">
-                                  <Input type="time" value={session.waktu_mulai} onChange={e => updateSession(day.id, session.id, 'waktu_mulai', e.target.value)} className="h-10 bg-white flex-1" />
+                                  <TimeInput value={session.waktu_mulai} onChange={e => updateSession(day.id, session.id, 'waktu_mulai', e.target.value)} className="h-10 bg-white flex-1" />
                                   <span className="text-slate-400 font-medium">-</span>
-                                  <Input type="time" value={session.waktu_selesai} onChange={e => updateSession(day.id, session.id, 'waktu_selesai', e.target.value)} className="h-10 bg-white flex-1" />
+                                  <TimeInput value={session.waktu_selesai} onChange={e => updateSession(day.id, session.id, 'waktu_selesai', e.target.value)} className="h-10 bg-white flex-1" />
                                 </div>
                               </div>
                               <div className="space-y-1.5 flex-1">

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { TimeInput } from "@/components/ui/time-input"
 
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -222,11 +223,11 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-slate-600">Jam Mulai</Label>
-                <Input type="time" disabled={isFinalized} value={form.start_time || ""} onChange={e => setForm({...form, start_time: e.target.value})} />
+                <TimeInput disabled={isFinalized} value={form.start_time || ""} onChange={e => setForm({...form, start_time: e.target.value})} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-slate-600">Jam Selesai</Label>
-                <Input type="time" disabled={isFinalized} value={form.end_time || ""} onChange={e => setForm({...form, end_time: e.target.value})} />
+                <TimeInput disabled={isFinalized} value={form.end_time || ""} onChange={e => setForm({...form, end_time: e.target.value})} />
               </div>
             </div>
             <div className="space-y-1.5">

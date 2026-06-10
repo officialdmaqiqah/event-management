@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
@@ -577,7 +578,7 @@ export default function AjukanPeminjamanPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="jam_mulai" className="text-slate-700 font-semibold text-sm">Jam Mulai <span className="text-red-500">*</span></Label>
-                    <Input id="jam_mulai" name="jam_mulai" type="time" value={event.jam_mulai} onChange={handleEventChange} className="h-10 bg-white" />
+                    <TimeInput id="jam_mulai" name="jam_mulai" value={event.jam_mulai} onChange={handleEventChange} className="h-10 bg-white" />
                     {errors.jam_mulai && <p className="text-red-500 text-xs">{errors.jam_mulai}</p>}
                   </div>
                   <div className="space-y-2">
@@ -587,7 +588,7 @@ export default function AjukanPeminjamanPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="jam_selesai" className="text-slate-700 font-semibold text-sm">Jam Selesai <span className="text-red-500">*</span></Label>
-                    <Input id="jam_selesai" name="jam_selesai" type="time" value={event.jam_selesai} onChange={handleEventChange} className="h-10 bg-white" />
+                    <TimeInput id="jam_selesai" name="jam_selesai" value={event.jam_selesai} onChange={handleEventChange} className="h-10 bg-white" />
                     {errors.jam_selesai && <p className="text-red-500 text-xs">{errors.jam_selesai}</p>}
                   </div>
                 </div>
