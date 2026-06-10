@@ -352,7 +352,7 @@ export default async function Home() {
                 <h3 className="text-2xl sm:text-3xl font-black text-white mb-3 relative z-10">Tetap Terhubung dengan Masjid</h3>
                 <p className="text-emerald-100/80 mb-8 font-medium text-sm sm:text-base relative z-10">Jangan lewatkan kajian ilmu dan kegiatan syiar Islami terbaru di Masjid Agung Kubah Timah.</p>
                 <Link href="/kalender" className="relative z-10 w-full sm:w-auto">
-                  <Button variant="outline" className="w-full bg-transparent border-emerald-400/50 text-emerald-100 hover:bg-emerald-800 hover:text-white rounded-full font-bold px-8 h-12 transition-all">
+                  <Button className="w-full bg-white hover:bg-emerald-50 text-emerald-900 rounded-full font-bold px-8 h-12 shadow-xl shadow-white/10 transition-all hover:scale-105">
                     Buka Kalender Penuh
                   </Button>
                 </Link>
