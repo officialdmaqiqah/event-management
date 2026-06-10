@@ -32,6 +32,7 @@ type PengajuanEvent = {
   public_slug?: string
   banner_url?: string
   nama_ustadz?: string
+  judul_kajian?: string
 }
 
 export default function AdminCalendarPage() {
@@ -76,7 +77,7 @@ export default function AdminCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian
         `)
         .eq("status", "approved")
       
@@ -362,6 +363,23 @@ export default function AdminCalendarPage() {
                 </div>
               )}
               <div className="grid grid-cols-1 gap-3">
+                {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
+                  <div className="flex gap-3 bg-amber-50 p-2 rounded-lg border border-amber-100">
+                    <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="block font-semibold text-amber-800">Pemateri / Tema Kajian</span>
+                      <span className="text-amber-900 text-xs font-bold block mt-0.5">
+                        {selectedEvent.nama_ustadz || "Belum ditentukan"}
+                      </span>
+                      {selectedEvent.judul_kajian && (
+                        <span className="text-amber-700 text-xs italic block mt-0.5">
+                          "{selectedEvent.judul_kajian}"
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <Clock className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
                   <div>

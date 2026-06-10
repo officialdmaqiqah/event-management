@@ -33,6 +33,7 @@ type PengajuanEvent = {
   public_slug?: string
   banner_url?: string
   nama_ustadz?: string
+  judul_kajian?: string
 }
 
 export default function PublicCalendarPage() {
@@ -78,7 +79,7 @@ export default function PublicCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian
         `)
         .eq("status", "approved")
         .neq("privacy_event", "rahasia")
@@ -447,6 +448,22 @@ export default function PublicCalendarPage() {
 
                 {selectedEvent.privacy_event === 'detail_publik' && (
                   <>
+                    {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
+                      <div className="flex gap-3">
+                        <Sparkles className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="block font-semibold text-slate-700">Pemateri / Tema Kajian</span>
+                          <span className="text-slate-800 text-xs font-bold block mt-0.5">
+                            {selectedEvent.nama_ustadz || "Belum ditentukan"}
+                          </span>
+                          {selectedEvent.judul_kajian && (
+                            <span className="text-slate-600 text-xs italic block mt-0.5">
+                              "{selectedEvent.judul_kajian}"
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex gap-3">
                       <User className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
                       <div>
