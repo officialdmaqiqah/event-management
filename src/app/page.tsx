@@ -168,7 +168,7 @@ export default async function Home() {
         {/* AGENDA TERDEKAT - Untuk Jamaah */}
         <section className="py-24 bg-slate-50 relative -mt-10 rounded-t-[3rem] z-20 shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.1)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-6">
               <div>
                 <h2 className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-3 flex items-center gap-2">
                   <BellRing className="h-4 w-4" /> Informasi Jamaah
