@@ -157,6 +157,7 @@ export default function AjukanPeminjamanPage() {
     catatan_tambahan: "",
     nama_ustadz: "",
     judul_kajian: "",
+    privacy_event: "detail_publik"
   })
 
   // Step 3: Lampiran
@@ -311,6 +312,8 @@ export default function AjukanPeminjamanPage() {
         catatan_tambahan: event.catatan_tambahan.trim() || null,
         nama_ustadz: event.nama_ustadz.trim() || null,
         judul_kajian: event.judul_kajian.trim() || null,
+        privacy_event: event.privacy_event,
+        status: 'pending'
       }
 
       const res = await fetch('/api/pengajuan', {
@@ -556,12 +559,44 @@ export default function AjukanPeminjamanPage() {
                 {errors.tujuan_peminjaman && <p className="text-red-500 text-xs">{errors.tujuan_peminjaman}</p>}
               </div>
 
+              {/* Sifat Kegiatan */}
+              <div className="space-y-2">
+                <Label className="text-slate-700 font-semibold">Sifat Kegiatan (Privasi Kalender) <span className="text-red-500">*</span></Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEvent(p => ({...p, privacy_event: 'detail_publik'}))}
+                    className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
+                      event.privacy_event === 'detail_publik'
+                        ? 'border-indigo-500 bg-indigo-50/50'
+                        : 'border-slate-200 bg-white hover:border-indigo-300'
+                    }`}
+                  >
+                    <span className={`text-sm font-bold ${event.privacy_event === 'detail_publik' ? 'text-indigo-700' : 'text-slate-700'}`}>Terbuka Umum</span>
+                    <span className="text-xs text-slate-500 font-medium">Bisa dihadiri oleh jamaah secara luas</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEvent(p => ({...p, privacy_event: 'publik_terbatas'}))}
+                    className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
+                      event.privacy_event === 'publik_terbatas'
+                        ? 'border-rose-500 bg-rose-50/50'
+                        : 'border-slate-200 bg-white hover:border-rose-300'
+                    }`}
+                  >
+                    <span className={`text-sm font-bold flex items-center gap-1 ${event.privacy_event === 'publik_terbatas' ? 'text-rose-700' : 'text-slate-700'}`}>Khusus Internal / Undangan</span>
+                    <span className="text-xs text-slate-500 font-medium">Terbatas untuk kalangan lembaga sendiri</span>
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 italic">* Pilihan ini membantu Admin dalam menentukan label kalender kegiatan Anda.</p>
+              </div>
+
               {/* Deskripsi Kegiatan */}
               <div className="space-y-2">
-                <Label htmlFor="deskripsi_kegiatan" className="text-slate-700 font-semibold">Deskripsi Kegiatan <span className="text-red-500">*</span></Label>
+                <Label htmlFor="deskripsi_kegiatan" className="text-slate-700 font-semibold">Deskripsi Singkat Acara <span className="text-red-500">*</span></Label>
                 <textarea
                   id="deskripsi_kegiatan" name="deskripsi_kegiatan" value={event.deskripsi_kegiatan} onChange={handleEventChange} onBlur={handleEventBlur}
-                  placeholder="Jelaskan secara singkat rangkaian kegiatan yang akan dilakukan..."
+                  placeholder="Jelaskan secara singkat gambaran kasar tentang apa saja yang akan dilakukan..."
                   className="flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
                 />
                 {errors.deskripsi_kegiatan && <p className="text-red-500 text-xs">{errors.deskripsi_kegiatan}</p>}
