@@ -156,6 +156,14 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         setCurrentUserProfile(profileData)
       }
 
+      // Validasi id harus berupa UUID, jika tidak, tampilkan error atau anggap tidak ditemukan
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        setLoading(false);
+        setErrorMsg("ID pengajuan tidak valid. Pastikan tautan yang Anda buka benar.");
+        return;
+      }
+
       // Get Application Detail
       const { data: pData, error: pError } = await supabase
         .from("pengajuan_peminjaman")
@@ -236,7 +244,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
     } catch (err: any) {
       console.error(err)
-      setErrorMsg("Gagal mengambil rincian data pengajuan.")
+      setErrorMsg("Gagal mengambil rincian data pengajuan: " + (err.message || err.toString()))
     } finally {
       setLoading(false)
     }

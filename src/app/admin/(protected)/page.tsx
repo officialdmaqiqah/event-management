@@ -74,7 +74,7 @@ export default async function AdminDashboard() {
           <p className="text-slate-500 mt-1">Ringkasan aktivitas peminjaman dan event publik</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/admin/pengajuan/new">
+          <Link href="/ajukan-peminjaman">
             <Button className="bg-indigo-600 hover:bg-indigo-700">+ Buat Peminjaman</Button>
           </Link>
           <Link href="/admin/events/new">
