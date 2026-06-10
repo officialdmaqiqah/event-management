@@ -95,6 +95,8 @@ export default function AdminPengajuanPage() {
   const [jenisFilter, setJenisFilter] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [privacyFilter, setPrivacyFilter] = useState("")
+  const [sortBy, setSortBy] = useState("created_desc")
 
   useEffect(() => {
     fetchPengajuan()
@@ -110,7 +112,7 @@ export default function AdminPengajuanPage() {
 
   useEffect(() => {
     applyFilters()
-  }, [data, search, statusFilter, jenisFilter, startDate, endDate])
+  }, [data, search, statusFilter, jenisFilter, startDate, endDate, privacyFilter, sortBy])
 
   const fetchPengajuan = async () => {
     setLoading(true)
@@ -165,6 +167,28 @@ export default function AdminPengajuanPage() {
       temp = temp.filter(p => new Date(p.tanggal_mulai) <= eDate)
     }
 
+    // Privacy Filter
+    if (privacyFilter) {
+      temp = temp.filter(p => p.privacy_event === privacyFilter)
+    }
+
+    // Sort
+    temp.sort((a, b) => {
+      if (sortBy === "created_desc") {
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      }
+      if (sortBy === "created_asc") {
+        return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+      }
+      if (sortBy === "mulai_desc") {
+        return new Date(b.tanggal_mulai).getTime() - new Date(a.tanggal_mulai).getTime()
+      }
+      if (sortBy === "mulai_asc") {
+        return new Date(a.tanggal_mulai).getTime() - new Date(b.tanggal_mulai).getTime()
+      }
+      return 0
+    })
+
     setFilteredData(temp)
   }
 
@@ -174,6 +198,8 @@ export default function AdminPengajuanPage() {
     setJenisFilter("")
     setStartDate("")
     setEndDate("")
+    setPrivacyFilter("")
+    setSortBy("created_desc")
   }
 
   return (
@@ -218,7 +244,7 @@ export default function AdminPengajuanPage() {
         </CardHeader>
         {showFilters && (
           <CardContent className="space-y-4 pt-2">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {/* Search */}
               <div className="space-y-1.5">
                 <Label htmlFor="search-input" className="text-xs font-semibold text-slate-600">Cari Data</Label>
@@ -289,6 +315,38 @@ export default function AdminPengajuanPage() {
                   className="h-9 text-xs" 
                 />
               </div>
+              {/* Privasi */}
+              <div className="space-y-1.5">
+                <Label htmlFor="privacy-select" className="text-xs font-semibold text-slate-600">Sifat Kegiatan (Privasi)</Label>
+                <select 
+                  id="privacy-select" 
+                  value={privacyFilter} 
+                  onChange={e => setPrivacyFilter(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Privasi</option>
+                  <option value="detail_publik">Publik</option>
+                  <option value="publik_terbatas">Khusus Internal</option>
+                  <option value="umum_saja">Umum Saja</option>
+                  <option value="rahasia">Rahasia</option>
+                </select>
+              </div>
+
+              {/* Urutkan Berdasarkan */}
+              <div className="space-y-1.5">
+                <Label htmlFor="sort-select" className="text-xs font-semibold text-slate-600">Urutkan</Label>
+                <select 
+                  id="sort-select" 
+                  value={sortBy} 
+                  onChange={e => setSortBy(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                  <option value="created_desc">Tanggal Dibuat (Terbaru)</option>
+                  <option value="created_asc">Tanggal Dibuat (Terlama)</option>
+                  <option value="mulai_desc">Waktu Mulai (Terbaru)</option>
+                  <option value="mulai_asc">Waktu Mulai (Terlama)</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
@@ -331,6 +389,7 @@ export default function AdminPengajuanPage() {
                     <TableHead className="font-bold text-xs uppercase text-slate-500">Pemohon</TableHead>
                     <TableHead className="font-bold text-xs uppercase text-slate-500">Event / Kegiatan</TableHead>
                     <TableHead className="w-[200px] font-bold text-xs uppercase text-slate-500">Waktu Mulai</TableHead>
+                    <TableHead className="w-[140px] font-bold text-xs uppercase text-slate-500">Privasi</TableHead>
                     <TableHead className="w-[140px] font-bold text-xs uppercase text-slate-500">Status</TableHead>
                     <TableHead className="w-[100px] text-right font-bold text-xs uppercase text-slate-500 pr-6">Aksi</TableHead>
                   </TableRow>
@@ -365,6 +424,11 @@ export default function AdminPengajuanPage() {
                             <Calendar className="h-3.5 w-3.5 text-slate-400" />
                             {formatDate(item.tanggal_mulai)}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold bg-slate-100 text-slate-600">
+                            {item.privacy_event === 'detail_publik' ? 'Publik' : item.privacy_event === 'umum_saja' ? 'Umum' : item.privacy_event === 'publik_terbatas' ? 'Internal' : item.privacy_event === 'rahasia' ? 'Rahasia' : '-'}
+                          </span>
                         </TableCell>
                         <TableCell>
                           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold ${cfg.color}`}>
