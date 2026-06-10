@@ -170,8 +170,9 @@ export default function GeneratorPage() {
             generatedRows.push({
               nomor_pengajuan: `RUTIN-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
               status: 'approved',
-              tipe_pemohon: 'internal',
-              nama_pemohon: 'DKM MAKT (Sistem Rutin)',
+              tipe_pemohon: 'lembaga',
+              nama_lembaga: 'DKM MAKT',
+              nama_pemohon: 'Admin MAKT (Sistem Rutin)',
               whatsapp: '080000000000',
               email: 'admin@makt.id',
               alamat: 'Pangkalpinang',
