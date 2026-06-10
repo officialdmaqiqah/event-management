@@ -532,7 +532,7 @@ export default function PublicCalendarPage() {
                     <Lock className="h-5 w-5 mt-0.5 text-rose-600 flex-shrink-0" />
                     <div className="space-y-1">
                       <p className="font-bold">Perhatian: Acara Internal / Khusus Undangan</p>
-                      <p className="text-rose-700/90 text-xs">Kegiatan ini diselenggarakan secara tertutup atau hanya untuk kalangan internal lembaga. Jamaah umum dimohon untuk memaklumi.</p>
+                      <p className="text-rose-700/90 text-xs">Kegiatan ini diselenggarakan secara tertutup atau hanya untuk kalangan internal lembaga/keluarga. Jamaah umum dimohon untuk memaklumi.</p>
                     </div>
                   </div>
                 )}
