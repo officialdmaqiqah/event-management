@@ -290,18 +290,30 @@ export default function AdminCalendarPage() {
                     {dayEvents.map(ev => {
                       // Admin sees true colors based on privacy
                       let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
+                      let badgeColor = 'bg-indigo-200 text-indigo-800'
                       let Icon = Eye
+                      
+                      const isTerbatas = ev.privacy_event === 'publik_terbatas'
+                      const isMasked = ev.privacy_event === 'umum_saja'
+                      const isRahasia = ev.privacy_event === 'rahasia'
                       
                       const isRutin = Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
                       const isSpecial = !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
 
-                      if (ev.privacy_event === 'rahasia' || ev.privacy_event === 'umum_saja') {
+                      if (isRahasia || isMasked) {
                         bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
+                        badgeColor = 'bg-slate-200 text-slate-800'
+                        Icon = EyeOff
+                      } else if (isTerbatas) {
+                        bgColor = 'bg-rose-50 border-rose-200 text-rose-700 shadow-sm'
+                        badgeColor = 'bg-rose-200 text-rose-800'
                         Icon = EyeOff
                       } else if (isSpecial) {
                         bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
+                        badgeColor = 'bg-amber-200 text-amber-800'
                       } else if (isRutin) {
                         bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
+                        badgeColor = 'bg-emerald-200 text-emerald-800'
                       }
 
                       return (
@@ -314,7 +326,7 @@ export default function AdminCalendarPage() {
                           {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
                           <div className="flex items-center justify-between gap-1 w-full">
                             <div className="flex items-center gap-1 truncate capitalize">
-                              {isSpecial && ev.privacy_event === 'detail_publik' ? <Sparkles className="h-2.5 w-2.5 shrink-0 text-amber-600" /> : <Clock className="h-2.5 w-2.5 shrink-0 opacity-70" />}
+                              {isTerbatas || isRahasia ? <Icon className="h-2.5 w-2.5 flex-shrink-0 text-rose-600" /> : isSpecial && ev.privacy_event === 'detail_publik' ? <Sparkles className="h-2.5 w-2.5 shrink-0 text-amber-600" /> : <Clock className="h-2.5 w-2.5 shrink-0 opacity-70" />}
                               <span className="truncate">{ev.nama_event}</span>
                             </div>
                             {ev.privacy_event !== 'detail_publik' && <Icon className="h-3 w-3 shrink-0 opacity-70 ml-1" />}
@@ -323,7 +335,7 @@ export default function AdminCalendarPage() {
                             <span className="opacity-80">
                               {format(new Date(ev.tanggal_mulai), 'HH:mm')}
                             </span>
-                            {ev.privacy_event !== 'detail_publik' && <span className="text-[8px] font-bold px-1 bg-white/50 rounded">INTERNAL</span>}
+                            {ev.privacy_event !== 'detail_publik' && <span className={`text-[8px] font-bold px-1 rounded ${badgeColor}`}>INTERNAL</span>}
                           </div>
                         </div>
                       )
