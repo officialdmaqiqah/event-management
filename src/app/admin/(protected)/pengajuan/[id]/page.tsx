@@ -136,6 +136,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const [isEditingKajian, setIsEditingKajian] = useState(false)
   const [editUstadzVal, setEditUstadzVal] = useState("")
   const [editJudulVal, setEditJudulVal] = useState("")
+  const [editNamaEventVal, setEditNamaEventVal] = useState("")
 
   useEffect(() => {
     fetchUserAndData()
@@ -891,6 +892,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     {isSuperAdminUser && !isEditingKajian && (
                       <button 
                         onClick={() => {
+                          setEditNamaEventVal(pengajuan.nama_event || "")
                           setEditUstadzVal(pengajuan.nama_ustadz || "")
                           setEditJudulVal(pengajuan.judul_kajian || "")
                           setIsEditingKajian(true)
@@ -904,6 +906,15 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   
                   {isEditingKajian ? (
                     <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-200/60 space-y-3">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Event (Judul Utama)</Label>
+                        <Input 
+                          value={editNamaEventVal} 
+                          onChange={(e) => setEditNamaEventVal(e.target.value)} 
+                          placeholder="Masukkan nama event utama..."
+                          className="h-9 bg-white"
+                        />
+                      </div>
                       <div className="space-y-1.5">
                         <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
                         <Input 
@@ -933,6 +944,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         <Button 
                           size="sm" 
                           onClick={async () => {
+                            await updateField("nama_event", editNamaEventVal)
                             await updateField("nama_ustadz", editUstadzVal)
                             await updateField("judul_kajian", editJudulVal)
                             setIsEditingKajian(false)
