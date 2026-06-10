@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ShieldCheck, Lock, Smartphone, Send, KeyRound, MessageSquare, Users, FileText, Settings } from "lucide-react"
-
+import { ShieldCheck, Lock, Smartphone, Send, KeyRound, MessageSquare, Users, FileText, Settings, FlaskConical } from "lucide-react"
+import { sendWhatsAppNotification } from "@/app/actions/notification"
 export default function SettingsPage() {
   const supabase = createClient()
   const [profile, setProfile] = useState<any>(null)
@@ -26,6 +26,11 @@ export default function SettingsPage() {
     wa_reminder_template: "",
     wa_minutes_template: ""
   })
+
+  const [testNumber, setTestNumber] = useState("")
+  const [testMessage, setTestMessage] = useState("Ini adalah pesan uji coba dari sistem MAKT.")
+  const [testing, setTesting] = useState(false)
+  const [testResult, setTestResult] = useState<{success?: boolean, error?: string, simulated?: boolean} | null>(null)
 
   useEffect(() => {
     fetchProfile()
@@ -94,6 +99,29 @@ export default function SettingsPage() {
       setSuccess(true)
     }
     setSaving(false)
+  }
+
+  const handleTestSend = async () => {
+    if (!testNumber) {
+      setTestResult({ success: false, error: "Nomor WhatsApp harus diisi" })
+      return
+    }
+    
+    setTesting(true)
+    setTestResult(null)
+    
+    try {
+      const result = await sendWhatsAppNotification({
+        recipient_name: "Test User",
+        recipient_whatsapp: testNumber,
+        message: testMessage
+      })
+      setTestResult(result)
+    } catch (err: any) {
+      setTestResult({ success: false, error: err.message })
+    } finally {
+      setTesting(false)
+    }
   }
 
   if (loading) return <div className="p-10 flex items-center justify-center"><div className="animate-pulse text-indigo-500 font-semibold">Memuat Pengaturan...</div></div>
@@ -232,6 +260,47 @@ export default function SettingsPage() {
                     className="font-mono bg-white/50 max-w-lg" 
                     placeholder="Misal: 62812345678"
                   />
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-slate-100">
+                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                    <FlaskConical className="w-5 h-5 text-indigo-500" /> Uji Coba Kirim Pesan
+                  </h3>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4 max-w-lg">
+                    <div className="space-y-2">
+                      <Label htmlFor="test_number">Nomor Tujuan</Label>
+                      <Input 
+                        id="test_number" 
+                        value={testNumber} 
+                        onChange={(e) => setTestNumber(e.target.value)} 
+                        className="bg-white" 
+                        placeholder="08123..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="test_message">Pesan Uji Coba</Label>
+                      <textarea 
+                        id="test_message"
+                        value={testMessage}
+                        onChange={(e) => setTestMessage(e.target.value)}
+                        rows={3}
+                        className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                      />
+                    </div>
+                    
+                    {testResult && (
+                      <div className={`p-3 rounded-md text-sm ${testResult.success ? (testResult.simulated ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-green-100 text-green-800 border-green-200') : 'bg-red-100 text-red-800 border-red-200'} border`}>
+                        {testResult.success 
+                          ? (testResult.simulated ? '✅ Berhasil (Mode Simulasi - API Key tidak diset / gateway tidak ditemukan)' : '✅ Pesan berhasil dikirim via Gateway!') 
+                          : `❌ Gagal: ${testResult.error}`}
+                      </div>
+                    )}
+
+                    <Button type="button" onClick={handleTestSend} disabled={testing} className="w-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
+                      {testing ? "Mengirim..." : "Kirim Pesan Uji Coba"}
+                    </Button>
+                    <p className="text-xs text-slate-500 text-center mt-2">Pastikan pengaturan API sudah disimpan sebelum melakukan uji coba.</p>
+                  </div>
                 </div>
               </CardContent>
             </>
