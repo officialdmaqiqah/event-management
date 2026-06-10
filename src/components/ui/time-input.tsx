@@ -11,8 +11,19 @@ export const TimeInput = React.forwardRef<HTMLInputElement, TimeInputProps>(
     const [internalValue, setInternalValue] = React.useState(value || "")
 
     React.useEffect(() => {
-      setInternalValue(value || "")
+      if (value !== undefined) {
+        setInternalValue(value)
+      }
     }, [value])
+
+    const triggerChange = (newVal: string) => {
+      if (onChange) {
+        onChange({
+          target: { name: props.name, id: props.id, value: newVal },
+          currentTarget: { name: props.name, id: props.id, value: newVal },
+        } as unknown as React.ChangeEvent<HTMLInputElement>)
+      }
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let val = e.target.value.replace(/[^0-9:]/g, "")
@@ -27,11 +38,7 @@ export const TimeInput = React.forwardRef<HTMLInputElement, TimeInputProps>(
       }
 
       setInternalValue(val)
-
-      if (onChange) {
-        e.target.value = val
-        onChange(e)
-      }
+      triggerChange(val)
     }
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -48,10 +55,7 @@ export const TimeInput = React.forwardRef<HTMLInputElement, TimeInputProps>(
       }
       
       setInternalValue(val)
-      if (onChange) {
-        e.target.value = val
-        onChange(e as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
+      triggerChange(val)
       
       if (props.onBlur) props.onBlur(e)
     }
