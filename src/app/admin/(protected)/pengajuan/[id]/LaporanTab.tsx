@@ -198,7 +198,7 @@ export default function LaporanTab({ pengajuanId, pengajuanData, isPublic = fals
                       <td className="border border-slate-300 py-1.5 px-3 text-center">{idx + 1}</td>
                       <td className="border border-slate-300 py-1.5 px-3">{p.full_name}</td>
                       <td className="border border-slate-300 py-1.5 px-3">{p.organization || '-'}</td>
-                      <td className="border border-slate-300 py-1.5 px-3 text-center">{new Date(p.checked_in_at).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}</td>
+                      <td className="border border-slate-300 py-1.5 px-3 text-center">{new Date(p.checked_in_at).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', hour12: false}).replace(/\./g, ':')}</td>
                     </tr>
                   ))}
                 </tbody>

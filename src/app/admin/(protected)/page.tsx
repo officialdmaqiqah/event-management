@@ -151,7 +151,7 @@ export default async function AdminDashboard() {
                       <div className="min-w-0">
                         <h4 className="font-semibold text-slate-900 truncate capitalize text-sm sm:text-base leading-tight">{item.nama_event}</h4>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 mt-1 sm:mt-1.5">
-                          <span className="flex items-center gap-1 whitespace-nowrap"><Calendar className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</span>
+                          <span className="flex items-center gap-1 whitespace-nowrap"><Calendar className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta', hour12: false }).replace(/\./g, ':')} WIB</span>
                           <span className="flex items-center gap-1 truncate"><MapPin className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> <span className="truncate">{item.area_fasilitas[0]}</span></span>
                         </div>
                       </div>

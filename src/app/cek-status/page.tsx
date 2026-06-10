@@ -60,8 +60,9 @@ function formatDate(dateStr: string) {
   return new Intl.DateTimeFormat('id-ID', {
     dateStyle: 'long',
     timeStyle: 'short',
-    timeZone: 'Asia/Jakarta'
-  }).format(d)
+    timeZone: 'Asia/Jakarta',
+    hour12: false
+  }).format(d).replace(/\./g, ':')
 }
 
 function CekStatusContent() {

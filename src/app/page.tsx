@@ -28,7 +28,7 @@ function EventCard({ event }: { event: any }) {
         </div>
         <div className="flex flex-col">
           <span className="text-slate-700">{startDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}</span>
-          <span className="text-slate-400 text-xs">{startDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }).replace(/\./g, ':')} WIB</span>
+          <span className="text-slate-400 text-xs">{startDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta', hour12: false }).replace(/\./g, ':')} WIB</span>
         </div>
       </div>
     </div>

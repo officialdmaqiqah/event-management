@@ -214,7 +214,7 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
                     <TableCell>
                       {p.checked_in_at ? (
                         <div className="text-sm font-medium text-slate-700">
-                          {new Date(p.checked_in_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB
+                          {new Date(p.checked_in_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace(/\./g, ':')} WIB
                         </div>
                       ) : (
                         <span className="text-xs text-slate-400 italic">Belum hadir</span>
