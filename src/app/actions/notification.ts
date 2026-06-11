@@ -175,13 +175,23 @@ function formatIndonesianDate(isoString: string) {
 }
 
 export async function tplPengajuanBerhasil(nomor: string, namaEvent: string, url: string) {
-  return `Assalamu’alaikum.
-Terima kasih, pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* telah berhasil kami terima.
-Pengajuan Anda sedang kami proses. Anda dapat mengecek status pengajuan melalui tautan berikut:
+  return `*✅ PENGAJUAN BERHASIL TERKIRIM*
+
+Assalamu'alaikum w. w.
+
+Terima kasih, pengajuan peminjaman fasilitas Masjid Agung Kubah Timah (MAKT) Anda telah berhasil kami terima dengan rincian:
+
+▪️ *No. Tiket:* ${nomor}
+▪️ *Nama Kegiatan:* ${namaEvent}
+
+Saat ini pengajuan Anda sedang dalam tahap *Pengecekan Admin* dan akan diteruskan ke Pejabat terkait untuk proses persetujuan.
+
+🔍 *Lacak Status Pengajuan:*
+Anda dapat memantau perkembangan status permohonan Anda kapan saja melalui tautan berikut:
 ${url}
 
-Terima kasih.
-- Admin MAKT`
+Wassalamu'alaikum w. w.
+_Sekretariat MAKT_`
 }
 
 export async function tplNotifikasiAdmin(nomor: string, namaPemohon: string, namaEvent: string, tglEvent: string, url: string) {
@@ -217,34 +227,59 @@ Terima kasih.`
 
 export async function tplPengajuanDisetujui(nomor: string, namaEvent: string, tglEvent: string) {
   const formattedDate = formatIndonesianDate(tglEvent)
-  return `Assalamu’alaikum.
-Kabar baik! Pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* telah *DISETUJUI*.
-Tanggal Pelaksanaan: *${formattedDate}*
+  return `*🎉 PENGAJUAN DISETUJUI*
+
+Assalamu'alaikum w. w.
+
+Kabar baik! Pengajuan peminjaman fasilitas MAKT Anda telah *DISETUJUI* sepenuhnya:
+
+▪️ *No. Tiket:* ${nomor}
+▪️ *Nama Kegiatan:* ${namaEvent}
+▪️ *Waktu Pelaksanaan:* ${formattedDate}
 
 *Pemberitahuan Tambahan:*
-MAKT memiliki layanan pendaftaran online dan absensi online terintegrasi. Jika Anda ingin mengaktifkan fitur registrasi jamaah secara online untuk kegiatan Anda, silakan hubungi Admin.
+Jika Anda membutuhkan layanan pendaftaran jamaah online (E-Ticket) & absensi terintegrasi untuk acara ini, silakan hubungi Admin MAKT.
 
-Silakan patuhi seluruh tata tertib penggunaan fasilitas Masjid Agung Kubah Timah.
-Terima kasih.`
+Mohon selalu mematuhi tata tertib kebersihan dan keamanan selama menggunakan fasilitas Masjid.
+
+Wassalamu'alaikum w. w.
+_Sekretariat MAKT_`
 }
 
 export async function tplPengajuanDitolak(nomor: string, namaEvent: string, catatan: string) {
-  return `Assalamu’alaikum.
-Mohon maaf, pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* saat ini *DITOLAK*.
+  return `*❌ PENGAJUAN DITOLAK*
 
-Alasan penolakan: 
-_${catatan || 'Tidak memenuhi syarat dan ketentuan.'}_
+Assalamu'alaikum w. w.
 
-Terima kasih.`
+Mohon maaf, pengajuan peminjaman fasilitas MAKT Anda terpaksa kami *TOLAK* dengan rincian berikut:
+
+▪️ *No. Tiket:* ${nomor}
+▪️ *Nama Kegiatan:* ${namaEvent}
+
+*Alasan Penolakan:* 
+_${catatan || 'Tidak memenuhi syarat dan ketentuan penggunaan fasilitas masjid.'}_
+
+Kami memohon maaf atas ketidaknyamanan ini. Terima kasih atas partisipasi Anda.
+
+Wassalamu'alaikum w. w.
+_Sekretariat MAKT_`
 }
 
 export async function tplPengajuanRevisi(nomor: string, namaEvent: string, catatan: string, url: string) {
-  return `Assalamu’alaikum.
-Pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* memerlukan *REVISI*.
+  return `*⚠️ PENGAJUAN BUTUH REVISI*
 
-Catatan Revisi: 
+Assalamu'alaikum w. w.
+
+Pengajuan peminjaman fasilitas MAKT Anda memerlukan sedikit *PERBAIKAN / REVISI* dengan rincian:
+
+▪️ *No. Tiket:* ${nomor}
+▪️ *Nama Kegiatan:* ${namaEvent}
+
+*Catatan Revisi dari Admin/Pejabat:* 
 _${catatan}_
 
-Silakan segera lakukan perbaikan.
-Terima kasih.`
+Mohon segera melengkapi kekurangan atau memperbaiki dokumen sesuai catatan di atas.
+
+Wassalamu'alaikum w. w.
+_Sekretariat MAKT_`
 }
