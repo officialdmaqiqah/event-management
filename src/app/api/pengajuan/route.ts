@@ -130,13 +130,16 @@ export async function POST(req: Request) {
         waMessage = await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl)
       } else {
         if (sysTemplate) {
+          const tglFormat = body.tanggal_mulai ? (await import('@/app/actions/notification')).formatIndonesianDate(body.tanggal_mulai) : ''
           waMessage = sysTemplate
             .replace(/{{nama_approver}}/g, adminName)
             .replace(/{{nama_event}}/g, body.nama_event)
+            .replace(/{{jenis_event}}/g, body.jenis_event || '-')
+            .replace(/{{tanggal_event}}/g, tglFormat)
             .replace(/{{pemohon}}/g, body.nama_pemohon)
             .replace(/{{link_approval}}/g, adminUrl)
         } else {
-          waMessage = await tplNotifikasiApprover(body.nama_event, body.jenis_event, body.nama_pemohon, body.tanggal_mulai, "", adminUrl)
+          waMessage = await tplNotifikasiApprover(body.nama_event, body.jenis_event, body.nama_pemohon, body.tanggal_mulai, "", adminUrl, adminName)
         }
       } await sendWhatsAppNotification({
         recipient_name: adminName,
