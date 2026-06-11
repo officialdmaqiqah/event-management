@@ -119,7 +119,7 @@ export async function POST(req: Request) {
         console.error("Gagal mendapatkan WA approver pertama:", err)
       }
 
-      sendWhatsAppNotification({
+      await sendWhatsAppNotification({
         recipient_name: adminName,
         recipient_whatsapp: adminPhone,
         message: await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl),
@@ -127,10 +127,10 @@ export async function POST(req: Request) {
       }).catch(e => console.error("WA Admin failed", e))
 
       // 2. To Pemohon
-      if (body.nomor_whatsapp) {
-        sendWhatsAppNotification({
+      if (body.whatsapp) {
+        await sendWhatsAppNotification({
           recipient_name: body.nama_pemohon,
-          recipient_whatsapp: body.nomor_whatsapp,
+          recipient_whatsapp: body.whatsapp,
           message: await tplPengajuanBerhasil(data.nomor_pengajuan, body.nama_event, statusUrl),
           related_event_request_id: data.id
         }).catch(e => console.error("WA Pemohon failed", e))

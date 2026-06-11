@@ -525,21 +525,21 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
         if (waNumber) {
           if (nextStatus === 'approved') {
-            sendWhatsAppNotification({
+            await sendWhatsAppNotification({
               recipient_name: pengajuan.nama_pemohon,
               recipient_whatsapp: waNumber,
               message: await tplPengajuanDisetujui(pengajuan.nomor_pengajuan, pengajuan.nama_event, pengajuan.tanggal_mulai),
               related_event_request_id: pengajuan.id
             })
           } else if (nextStatus === 'rejected') {
-            sendWhatsAppNotification({
+            await sendWhatsAppNotification({
               recipient_name: pengajuan.nama_pemohon,
               recipient_whatsapp: waNumber,
               message: await tplPengajuanDitolak(pengajuan.nomor_pengajuan, pengajuan.nama_event, reasonText),
               related_event_request_id: pengajuan.id
             })
           } else if (nextStatus === 'revision_requested') {
-            sendWhatsAppNotification({
+            await sendWhatsAppNotification({
               recipient_name: pengajuan.nama_pemohon,
               recipient_whatsapp: waNumber,
               message: await tplPengajuanRevisi(pengajuan.nomor_pengajuan, pengajuan.nama_event, reasonText, statusUrl),
@@ -576,7 +576,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             }
           }
 
-          sendWhatsAppNotification({
+          await sendWhatsAppNotification({
             recipient_name: approverName,
             recipient_whatsapp: approverPhone,
             message: await tplNotifikasiApprover(pengajuan.nama_event, pengajuan.jenis_event, pengajuan.nama_pemohon, pengajuan.tanggal_mulai, reasonText, adminUrl),
