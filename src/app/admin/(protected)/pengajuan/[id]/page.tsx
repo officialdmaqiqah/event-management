@@ -1112,6 +1112,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       <FileDown className="h-3.5 w-3.5" /> Unduh
                     </Button>
                   </a>
+                ) : (
+                  <Button variant="outline" size="sm" disabled className="h-8 text-xs">Kosong</Button>
                 )}
               </div>
 
