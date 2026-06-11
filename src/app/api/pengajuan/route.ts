@@ -1,6 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
-import { sendWhatsAppNotification, tplPengajuanBerhasil, tplNotifikasiAdmin } from "@/app/actions/notification"
+import { sendWhatsAppNotification, tplPengajuanBerhasil, tplNotifikasiAdmin, tplNotifikasiApprover } from "@/app/actions/notification"
 
 export async function GET(req: Request) {
   try {
