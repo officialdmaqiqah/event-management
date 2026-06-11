@@ -47,6 +47,7 @@ type Pengajuan = {
   kebutuhan_tambahan: string | null
   url_surat_peminjaman: string | null
   url_proposal: string | null
+  url_flyer?: string | null
   catatan_tambahan: string | null
   catatan_admin: string | null
   privacy_event: 'detail_publik' | 'umum_saja' | 'rahasia' | 'publik_terbatas'
@@ -489,7 +490,9 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             registration_slug: slug,
             requires_registration: false,
             user_id: currentUser.id,
-            event_request_id: pengajuan.id
+            event_request_id: pengajuan.id,
+            banner_url: pengajuan.url_flyer || null,
+            url_flyer: pengajuan.url_flyer || null
           })
         
         if (evtError) {
@@ -1107,6 +1110,26 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   <a href={pengajuan.url_proposal} target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
                       <FileDown className="h-3.5 w-3.5" /> Unduh
+                    </Button>
+                  </a>
+                )}
+              </div>
+
+              {/* Flyer Kegiatan */}
+              <div className="border border-slate-100 bg-slate-50/50 p-4 rounded-xl flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <FileText className="h-8 w-8 text-emerald-500/80 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <h5 className="text-xs font-bold text-slate-800 truncate">Flyer / Poster</h5>
+                    <p className="text-[10px] text-slate-400">
+                      {pengajuan.url_flyer ? "Tersedia" : "Tidak Dilampirkan"}
+                    </p>
+                  </div>
+                </div>
+                {pengajuan.url_flyer ? (
+                  <a href={pengajuan.url_flyer} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
+                      <FileDown className="h-3.5 w-3.5" /> Lihat
                     </Button>
                   </a>
                 ) : (

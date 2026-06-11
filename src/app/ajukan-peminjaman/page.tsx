@@ -163,6 +163,7 @@ export default function AjukanPeminjamanPage() {
   // Step 3: Lampiran
   const [suratFile, setSuratFile] = useState<File | null>(null)
   const [proposalFile, setProposalFile] = useState<File | null>(null)
+  const [flyerFile, setFlyerFile] = useState<File | null>(null)
 
   const showDialog = (type: DialogType, title: string, message: string) => {
     setDialogState({ isOpen: true, type, title, message })
@@ -256,17 +257,28 @@ export default function AjukanPeminjamanPage() {
     return null
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'surat' | 'proposal') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'surat' | 'proposal' | 'flyer') => {
     if (!e.target.files?.[0]) return
     const file = e.target.files[0]
-    const fileError = validateFile(file)
+    
+    let fileError = null;
+    if (type === 'flyer') {
+      const allowed = ['image/jpeg','image/png']
+      if (!allowed.includes(file.type)) fileError = "Format file tidak didukung. Gunakan JPG atau PNG."
+      if (file.size > 2 * 1024 * 1024) fileError = "Ukuran file maksimal 2MB."
+    } else {
+      fileError = validateFile(file)
+    }
+
     if (fileError) {
       showDialog('error', 'File Tidak Valid', fileError)
       e.target.value = ''
       return
     }
+    
     if (type === 'surat') setSuratFile(file)
-    else setProposalFile(file)
+    else if (type === 'proposal') setProposalFile(file)
+    else if (type === 'flyer') setFlyerFile(file)
   }
 
   const uploadFile = async (file: File, prefix: string) => {
@@ -282,9 +294,11 @@ export default function AjukanPeminjamanPage() {
     try {
       let urlSurat = null
       let urlProposal = null
+      let urlFlyer = null
 
       if (suratFile) urlSurat = await uploadFile(suratFile, 'surat')
       if (proposalFile) urlProposal = await uploadFile(proposalFile, 'proposal')
+      if (flyerFile) urlFlyer = await uploadFile(flyerFile, 'flyer')
 
       const allAreas = [
         ...event.area_fasilitas,
@@ -309,6 +323,7 @@ export default function AjukanPeminjamanPage() {
         kebutuhan_tambahan: event.kebutuhan_tambahan.trim() || null,
         url_surat_peminjaman: urlSurat,
         url_proposal: urlProposal,
+        url_flyer: urlFlyer,
         catatan_tambahan: event.catatan_tambahan.trim() || null,
         nama_ustadz: event.nama_ustadz.trim() || null,
         judul_kajian: event.judul_kajian.trim() || null,
@@ -702,14 +717,26 @@ export default function AjukanPeminjamanPage() {
                       {suratFile && <p className="text-xs text-green-600 mt-2 font-medium">✓ {suratFile.name}</p>}
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="proposal" className="text-slate-700 font-semibold">Proposal Kegiatan</Label>
-                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-indigo-300 transition-colors">
-                      <ClipboardList className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                      <p className="text-xs text-slate-500 mb-2">PDF, JPG, PNG, DOC, DOCX</p>
-                      <input id="proposal" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={e => handleFileChange(e, 'proposal')}
-                        className="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
-                      {proposalFile && <p className="text-xs text-green-600 mt-2 font-medium">✓ {proposalFile.name}</p>}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="proposal" className="text-slate-700 font-semibold">Proposal Kegiatan (Opsional)</Label>
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-indigo-300 transition-colors">
+                        <ClipboardList className="h-6 w-6 text-slate-300 mx-auto mb-1" />
+                        <p className="text-[10px] text-slate-500 mb-2">PDF, JPG, PNG, DOC, DOCX</p>
+                        <input id="proposal" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={e => handleFileChange(e, 'proposal')}
+                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
+                        {proposalFile && <p className="text-[10px] text-green-600 mt-1 font-medium">✓ {proposalFile.name}</p>}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="flyer" className="text-slate-700 font-semibold">Flyer / Poster (Opsional)</Label>
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-indigo-300 transition-colors">
+                        <FileText className="h-6 w-6 text-slate-300 mx-auto mb-1" />
+                        <p className="text-[10px] text-slate-500 mb-2">JPG, PNG (Maks 2MB)</p>
+                        <input id="flyer" type="file" accept=".jpg,.jpeg,.png" onChange={e => handleFileChange(e, 'flyer')}
+                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
+                        {flyerFile && <p className="text-[10px] text-green-600 mt-1 font-medium">✓ {flyerFile.name}</p>}
+                      </div>
                     </div>
                   </div>
                 </div>
