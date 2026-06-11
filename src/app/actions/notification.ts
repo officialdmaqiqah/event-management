@@ -177,7 +177,7 @@ function formatIndonesianDate(isoString: string) {
 export async function tplPengajuanBerhasil(nomor: string, namaEvent: string, url: string) {
   return `*✅ PENGAJUAN BERHASIL TERKIRIM*
 
-Assalamu'alaikum w. w.
+Assalamu'alaikum warahmatullahi wabarakatuh
 
 Terima kasih, pengajuan peminjaman fasilitas Masjid Agung Kubah Timah (MAKT) Anda telah berhasil kami terima dengan rincian:
 
@@ -231,7 +231,7 @@ export async function tplPengajuanDisetujui(nomor: string, namaEvent: string, tg
   const formattedDate = formatIndonesianDate(tglEvent)
   return `*🎉 PENGAJUAN DISETUJUI*
 
-Assalamu'alaikum w. w.
+Assalamu'alaikum warahmatullahi wabarakatuh
 
 Kabar baik! Pengajuan peminjaman fasilitas MAKT Anda telah *DISETUJUI* sepenuhnya:
 
@@ -251,7 +251,7 @@ Sekretariat MAKT`
 export async function tplPengajuanDitolak(nomor: string, namaEvent: string, catatan: string) {
   return `*❌ PENGAJUAN DITOLAK*
 
-Assalamu'alaikum w. w.
+Assalamu'alaikum warahmatullahi wabarakatuh
 
 Mohon maaf, pengajuan peminjaman fasilitas MAKT Anda terpaksa kami *TOLAK* dengan rincian berikut:
 
@@ -270,7 +270,7 @@ Sekretariat MAKT`
 export async function tplPengajuanRevisi(nomor: string, namaEvent: string, catatan: string, url: string) {
   return `*⚠️ PENGAJUAN BUTUH REVISI*
 
-Assalamu'alaikum w. w.
+Assalamu'alaikum warahmatullahi wabarakatuh
 
 Pengajuan peminjaman fasilitas MAKT Anda memerlukan sedikit *PERBAIKAN / REVISI* dengan rincian:
 
