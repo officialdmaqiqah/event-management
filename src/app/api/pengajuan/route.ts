@@ -72,8 +72,9 @@ export async function POST(req: Request) {
 
     // Send WA Notifications asynchronously (fire and forget)
     if (data && data.id) {
-      const adminUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/pengajuan/${data.id}`
-      const statusUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/cek-status?nomor=${data.nomor_pengajuan}`
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+      const adminUrl = `${appUrl}/admin/pengajuan/${data.id}`
+      const statusUrl = `${appUrl}/cek-status?nomor=${data.nomor_pengajuan}`
       
       // 1. To Admin
       let adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 

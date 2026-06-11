@@ -157,6 +157,23 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
 // TEMPLATE GENERATORS
 // -----------------------------------------
 
+export function formatIndonesianDate(isoString: string) {
+  try {
+    const d = new Date(isoString)
+    return new Intl.DateTimeFormat('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    }).format(d)
+  } catch (e) {
+    return isoString
+  }
+}
+
 export async function tplPengajuanBerhasil(nomor: string, namaEvent: string, url: string) {
   return `Assalamu’alaikum.
 Terima kasih, pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* telah berhasil kami terima.
@@ -168,26 +185,28 @@ Terima kasih.
 }
 
 export async function tplNotifikasiAdmin(nomor: string, namaPemohon: string, namaEvent: string, tglEvent: string, url: string) {
+  const formattedDate = formatIndonesianDate(tglEvent)
   return `*⚠️ PENGAJUAN BARU MASUK ⚠️*
 
 Ada pengajuan baru yang membutuhkan pengecekan admin:
 - Nomor: *${nomor}*
 - Pemohon: *${namaPemohon}*
 - Event: *${namaEvent}*
-- Tanggal: *${tglEvent}*
+- Tanggal: *${formattedDate}*
 
 Segera periksa dan proses di panel admin:
 ${url}`
 }
 
 export async function tplNotifikasiApprover(namaEvent: string, jenisEvent: string, namaPemohon: string, tglEvent: string, catatanAdmin: string, url: string) {
+  const formattedDate = formatIndonesianDate(tglEvent)
   return `*📝 PERMINTAAN APPROVAL KEGIATAN*
 
 Mohon review pengajuan kegiatan berikut:
 - Event: *${namaEvent}*
 - Jenis: *${jenisEvent}*
 - Pemohon: *${namaPemohon}*
-- Tanggal: *${tglEvent}*
+- Tanggal: *${formattedDate}*
 ${catatanAdmin ? `- Catatan Admin: _${catatanAdmin}_` : ''}
 
 Silakan berikan persetujuan atau penolakan melalui tautan berikut:
@@ -197,9 +216,10 @@ Terima kasih.`
 }
 
 export async function tplPengajuanDisetujui(nomor: string, namaEvent: string, tglEvent: string) {
+  const formattedDate = formatIndonesianDate(tglEvent)
   return `Assalamu’alaikum.
 Kabar baik! Pengajuan peminjaman MAKT Anda dengan nomor *${nomor}* untuk kegiatan *${namaEvent}* telah *DISETUJUI*.
-Tanggal Pelaksanaan: *${tglEvent}*
+Tanggal Pelaksanaan: *${formattedDate}*
 
 *Pemberitahuan Tambahan:*
 MAKT memiliki layanan pendaftaran online dan absensi online terintegrasi. Jika Anda ingin mengaktifkan fitur registrasi jamaah secara online untuk kegiatan Anda, silakan hubungi Admin.
