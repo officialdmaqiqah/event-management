@@ -86,8 +86,17 @@ function CekStatusContent() {
   }, [initialNomor])
 
   const handleSearch = async (searchNum: string, searchKontak: string) => {
-    const cleanNum = searchNum.trim().toUpperCase()
-    const cleanKontak = searchKontak.trim()
+    // Bersihkan # dan spasi dari nomor pengajuan
+    const cleanNum = searchNum.replace(/^#\s*/, '').trim().toUpperCase()
+    
+    // Format WA agar sama dengan format di database (628...)
+    let cleanKontak = searchKontak.trim()
+    let formattedWA = cleanKontak.replace(/\D/g, '')
+    if (formattedWA.startsWith('0')) {
+      formattedWA = '62' + formattedWA.substring(1)
+    } else if (formattedWA.startsWith('8')) {
+      formattedWA = '62' + formattedWA
+    }
 
     if (!cleanNum || !cleanKontak) {
       setErrorMsg("Mohon isi nomor pengajuan dan nomor WA / Email Anda.")
@@ -119,7 +128,7 @@ function CekStatusContent() {
       }
 
       // Verifikasi WA / Email
-      const waMatch = pData.whatsapp === cleanKontak
+      const waMatch = pData.whatsapp === formattedWA || pData.whatsapp === cleanKontak
       const emailMatch = pData.email && pData.email.toLowerCase() === cleanKontak.toLowerCase()
       
       if (!waMatch && !emailMatch) {
