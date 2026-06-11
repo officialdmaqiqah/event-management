@@ -72,7 +72,8 @@ export async function POST(req: Request) {
 
     // Send WA Notifications asynchronously (fire and forget)
     if (data && data.id) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'))
+      const isLocal = process.env.NODE_ENV === 'development'
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || (isLocal ? 'http://localhost:3000' : 'https://event.kubahtimah.com')
       const adminUrl = `${appUrl}/admin/pengajuan/${data.id}`
       const statusUrl = `${appUrl}/cek-status?nomor=${data.nomor_pengajuan}`
       
