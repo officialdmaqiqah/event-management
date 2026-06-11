@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       let adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 
       let adminName = "Admin MAKT"
       let isAdminFallback = false
+      let sysTemplate = null
 
       try {
         const supabaseAdmin = createAdminClient()
@@ -104,16 +105,17 @@ export async function POST(req: Request) {
           }
         }
         
-        // Fallback: Jika adminPhone masih dummy, cari super_admin pertama yang punya WA
-        if (adminPhone === "081234567890") {
-          const { data: superAdmins } = await supabaseAdmin.from('user_profiles')
-            .select('full_name, whatsapp')
-            .eq('system_role', 'super_admin')
-            .not('whatsapp', 'is', null)
-            .neq('whatsapp', '')
-            .limit(1)
-            
-          if (superAdmins && superAdmins.length > 0) {
+        // Selalu ambil template dari super admin
+        const { data: superAdmins } = await supabaseAdmin.from('user_profiles')
+          .select('full_name, whatsapp, wa_approval_request_template')
+          .eq('system_role', 'super_admin')
+          .limit(1)
+          
+        if (superAdmins && superAdmins.length > 0) {
+          sysTemplate = superAdmins[0].wa_approval_request_template
+          
+          // Fallback: Jika adminPhone masih dummy, cari super_admin pertama yang punya WA
+          if (adminPhone === "081234567890" && superAdmins[0].whatsapp) {
             adminPhone = superAdmins[0].whatsapp
             adminName = superAdmins[0].full_name || "Super Admin"
             isAdminFallback = true
@@ -127,10 +129,16 @@ export async function POST(req: Request) {
       if (isAdminFallback) {
         waMessage = await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl)
       } else {
-        waMessage = await tplNotifikasiApprover(body.nama_event, body.jenis_event, body.nama_pemohon, body.tanggal_mulai, "", adminUrl)
-      }
-
-      await sendWhatsAppNotification({
+        if (sysTemplate) {
+          waMessage = sysTemplate
+            .replace(/{{nama_approver}}/g, adminName)
+            .replace(/{{nama_event}}/g, body.nama_event)
+            .replace(/{{pemohon}}/g, body.nama_pemohon)
+            .replace(/{{link_approval}}/g, adminUrl)
+        } else {
+          waMessage = await tplNotifikasiApprover(body.nama_event, body.jenis_event, body.nama_pemohon, body.tanggal_mulai, "", adminUrl)
+        }
+      } await sendWhatsAppNotification({
         recipient_name: adminName,
         recipient_whatsapp: adminPhone,
         message: waMessage,

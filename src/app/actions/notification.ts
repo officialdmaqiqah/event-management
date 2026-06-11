@@ -167,8 +167,8 @@ function formatIndonesianDate(isoString: string) {
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      timeZoneName: 'short'
-    }).format(d)
+      timeZone: 'Asia/Jakarta'
+    }).format(d).replace(/\./g, ':') + ' WIB'
   } catch (e) {
     return isoString
   }
