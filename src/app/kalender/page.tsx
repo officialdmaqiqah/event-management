@@ -519,8 +519,7 @@ export default function PublicCalendarPage() {
                 {selectedEvent.banner_url && (
                   <div className="mt-2 pt-4 border-t border-slate-100">
                     <Button 
-                      variant="outline" 
-                      className="w-full gap-2 text-indigo-700 border-indigo-200 hover:bg-indigo-50 font-bold bg-indigo-50/50"
+                      className="w-full gap-2 text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md border-0 font-bold transition-all"
                       onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}
                     >
                       <FileImage className="h-4 w-4" /> Lihat Flyer Event
