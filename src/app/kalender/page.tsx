@@ -105,6 +105,9 @@ export default function PublicCalendarPage() {
       if (publicEventsData) {
         publicEventsData.forEach(pe => {
           if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
+          
+          const correspondingPengajuan = pengajuanData?.find(p => p.id === pe.event_request_id)
+
           mergedEvents.push({
             id: pe.id,
             nama_event: pe.title,
@@ -118,7 +121,7 @@ export default function PublicCalendarPage() {
             deskripsi_kegiatan: pe.description || undefined,
             is_public_event: true,
             public_slug: pe.registration_slug,
-            banner_url: pe.banner_url || undefined
+            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
           })
         })
       }

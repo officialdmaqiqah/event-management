@@ -710,6 +710,13 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         
       if (dbError) throw dbError;
       
+      if (fieldName === 'url_flyer') {
+        await supabase
+          .from('events')
+          .update({ banner_url: result.url })
+          .eq('event_request_id', pengajuan.id);
+      }
+      
       setPengajuan(prev => prev ? { ...prev, [fieldName]: result.url } : prev);
       
       setDialogState({
