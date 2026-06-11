@@ -18,7 +18,7 @@ export default async function AdminDashboard() {
   const isAdmin = user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
 
   // Statistik Pengajuan (Peminjaman)
-  let pendingQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).eq("status", "pending")
+  let pendingQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).in("status", ["submitted", "under_review", "revision_requested"])
   let approvedQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).eq("status", "approved")
   
   if (!isAdmin && user) {
