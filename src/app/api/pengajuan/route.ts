@@ -79,6 +79,7 @@ export async function POST(req: Request) {
       // 1. To Admin
       let adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 
       let adminName = "Admin MAKT"
+      let isAdminFallback = false
 
       try {
         const supabaseAdmin = createAdminClient()
@@ -114,18 +115,26 @@ export async function POST(req: Request) {
           if (superAdmins && superAdmins.length > 0) {
             adminPhone = superAdmins[0].whatsapp
             adminName = superAdmins[0].full_name || "Super Admin"
+            isAdminFallback = true
           }
         }
       } catch (err) {
         console.error("Gagal mendapatkan WA approver pertama:", err)
       }
 
+      let waMessage = ""
+      if (isAdminFallback) {
+        waMessage = await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl)
+      } else {
+        waMessage = await tplNotifikasiApprover(body.nama_event, body.jenis_event, body.nama_pemohon, body.tanggal_mulai, "", adminUrl)
+      }
+
       await sendWhatsAppNotification({
         recipient_name: adminName,
         recipient_whatsapp: adminPhone,
-        message: await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl),
+        message: waMessage,
         related_event_request_id: data.id
-      }).catch(e => console.error("WA Admin failed", e))
+      }).catch(e => console.error("WA Admin/Approver failed", e))
 
       // 2. To Pemohon
       if (body.whatsapp) {
