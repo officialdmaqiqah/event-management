@@ -11,7 +11,7 @@ import Link from "next/link"
 import { 
   Calendar, Clock, MapPin, User, Building, Phone, Mail, 
   FileText, CheckCircle, XCircle, AlertCircle, Shield, 
-  ArrowLeft, ExternalLink, FileDown, Send, Edit3, Lock, Award, ShieldCheck 
+  ArrowLeft, ExternalLink, FileDown, Send, Edit3, Lock, Award, ShieldCheck, Loader2, UploadCloud
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import ParticipantTab from "./ParticipantTab"
@@ -132,6 +132,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
   // Inline edit states
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false)
+  const [uploadingField, setUploadingField] = useState<string | null>(null)
   const [isEditingTujuan, setIsEditingTujuan] = useState(false)
   const [editTujuanVal, setEditTujuanVal] = useState("")
   const [isEditingKajian, setIsEditingKajian] = useState(false)
@@ -686,6 +687,46 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
     }
   }
 
+  const handleAdminUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: string, prefix: string) => {
+    if (!e.target.files || e.target.files.length === 0 || !pengajuan) return;
+    const file = e.target.files[0];
+    
+    setUploadingField(fieldName);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('prefix', `admin_${prefix}_${pengajuan.nomor_pengajuan}`);
+      
+      const { uploadFileAction } = await import('@/app/actions/upload');
+      const result = await uploadFileAction(formData);
+      
+      if (result.error) throw new Error(result.error);
+      
+      const { error: dbError } = await supabase
+        .from('pengajuan_peminjaman')
+        .update({ [fieldName]: result.url })
+        .eq('id', pengajuan.id);
+        
+      if (dbError) throw dbError;
+      
+      setPengajuan(prev => prev ? { ...prev, [fieldName]: result.url } : prev);
+      
+      setDialogState({
+        isOpen: true,
+        type: 'alert',
+        title: 'Upload Berhasil',
+        message: 'File telah berhasil diunggah dan disimpan ke database.',
+        action: () => {}
+      });
+    } catch (err: any) {
+      console.error(err);
+      showDialog('error', 'Gagal Mengunggah', err.message);
+    } finally {
+      setUploadingField(null);
+    }
+  }
+
   const handleReasonSubmit = () => {
     if (!statusReason.trim()) {
       alert("Alasan/catatan wajib diisi.")
@@ -1102,6 +1143,20 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       <FileDown className="h-3.5 w-3.5" /> Unduh
                     </Button>
                   </a>
+                ) : isSuperAdminUser ? (
+                  <div className="relative">
+                    <input 
+                      type="file" 
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                      onChange={(e) => handleAdminUpload(e, 'url_surat_peminjaman', 'surat')}
+                      disabled={uploadingField === 'url_surat_peminjaman'}
+                      accept=".pdf,.png,.jpg,.jpeg"
+                    />
+                    <Button variant="outline" size="sm" disabled={uploadingField === 'url_surat_peminjaman'} className="h-8 text-xs gap-1">
+                      {uploadingField === 'url_surat_peminjaman' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                      Upload
+                    </Button>
+                  </div>
                 ) : (
                   <Button variant="outline" size="sm" disabled className="h-8 text-xs">Kosong</Button>
                 )}
@@ -1124,6 +1179,20 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       <FileDown className="h-3.5 w-3.5" /> Unduh
                     </Button>
                   </a>
+                ) : isSuperAdminUser ? (
+                  <div className="relative">
+                    <input 
+                      type="file" 
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                      onChange={(e) => handleAdminUpload(e, 'url_proposal', 'proposal')}
+                      disabled={uploadingField === 'url_proposal'}
+                      accept=".pdf,.png,.jpg,.jpeg"
+                    />
+                    <Button variant="outline" size="sm" disabled={uploadingField === 'url_proposal'} className="h-8 text-xs gap-1">
+                      {uploadingField === 'url_proposal' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                      Upload
+                    </Button>
+                  </div>
                 ) : (
                   <Button variant="outline" size="sm" disabled className="h-8 text-xs">Kosong</Button>
                 )}
@@ -1146,6 +1215,20 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       <FileDown className="h-3.5 w-3.5" /> Lihat
                     </Button>
                   </a>
+                ) : isSuperAdminUser ? (
+                  <div className="relative">
+                    <input 
+                      type="file" 
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                      onChange={(e) => handleAdminUpload(e, 'url_flyer', 'flyer')}
+                      disabled={uploadingField === 'url_flyer'}
+                      accept=".png,.jpg,.jpeg,.pdf"
+                    />
+                    <Button variant="outline" size="sm" disabled={uploadingField === 'url_flyer'} className="h-8 text-xs gap-1">
+                      {uploadingField === 'url_flyer' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                      Upload
+                    </Button>
+                  </div>
                 ) : (
                   <Button variant="outline" size="sm" disabled className="h-8 text-xs">Kosong</Button>
                 )}
