@@ -1211,8 +1211,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 </div>
                 {pengajuan.url_flyer ? (
                   <a href={pengajuan.url_flyer} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
-                      <FileDown className="h-3.5 w-3.5" /> Lihat
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 text-emerald-700 hover:text-emerald-800 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+                      <ExternalLink className="h-3.5 w-3.5" /> Lihat Flyer
                     </Button>
                   </a>
                 ) : isSuperAdminUser ? (

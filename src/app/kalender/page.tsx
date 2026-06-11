@@ -80,7 +80,7 @@ export default function PublicCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, status
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, status, url_flyer
         `)
         .in("status", ["approved", "submitted", "under_review", "revision_requested"])
         .neq("privacy_event", "rahasia")
@@ -128,7 +128,8 @@ export default function PublicCalendarPage() {
           if (!linkedRequestIds.has(p.id)) {
             mergedEvents.push({
               ...(p as PengajuanEvent),
-              is_public_event: false
+              is_public_event: false,
+              banner_url: p.url_flyer || undefined
             })
           }
         })
@@ -438,7 +439,7 @@ export default function PublicCalendarPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm">
-              {selectedEvent.is_public_event && selectedEvent.banner_url && (
+              {selectedEvent.banner_url && (
                 <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
                   <img src={selectedEvent.banner_url} alt={selectedEvent.nama_event} className="w-full h-full object-cover" />
                 </div>
