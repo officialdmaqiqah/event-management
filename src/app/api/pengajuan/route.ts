@@ -81,6 +81,8 @@ export async function POST(req: Request) {
 
       try {
         const supabaseAdmin = createAdminClient()
+        
+        // Coba cari dari workflow
         const { data: jEvent } = await supabaseAdmin.from('jenis_event').select('id').eq('name', body.jenis_event).maybeSingle()
         if (jEvent) {
           const { data: wfSteps } = await supabaseAdmin.from('workflow_approval').select('*').eq('jenis_event_id', jEvent.id).eq('is_active', true).order('level', { ascending: true }).limit(1)
@@ -96,6 +98,21 @@ export async function POST(req: Request) {
               adminPhone = approvers[0].whatsapp
               adminName = approvers[0].full_name || step1.jabatan || adminName
             }
+          }
+        }
+        
+        // Fallback: Jika adminPhone masih dummy, cari super_admin pertama yang punya WA
+        if (adminPhone === "081234567890") {
+          const { data: superAdmins } = await supabaseAdmin.from('user_profiles')
+            .select('full_name, whatsapp')
+            .eq('system_role', 'super_admin')
+            .not('whatsapp', 'is', null)
+            .neq('whatsapp', '')
+            .limit(1)
+            
+          if (superAdmins && superAdmins.length > 0) {
+            adminPhone = superAdmins[0].whatsapp
+            adminName = superAdmins[0].full_name || "Super Admin"
           }
         }
       } catch (err) {
