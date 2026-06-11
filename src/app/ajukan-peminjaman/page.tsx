@@ -11,6 +11,7 @@ import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
 import { Calendar, Users, MapPin, FileText, ChevronRight, ChevronLeft, CheckCircle2, Building2, User, Phone, Mail, ClipboardList, Info } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { uploadFileAction } from "@/app/actions/upload"
 
 const AREA_OPTIONS = [
   "Ruang Utama (Masjid)",
@@ -282,11 +283,13 @@ export default function AjukanPeminjamanPage() {
   }
 
   const uploadFile = async (file: File, prefix: string) => {
-    const ext = file.name.split('.').pop()
-    const fileName = `${prefix}_${Date.now()}.${ext}`
-    const { data, error } = await supabase.storage.from('pengajuan_assets').upload(fileName, file)
-    if (error) throw new Error("Gagal upload file: " + error.message)
-    return supabase.storage.from('pengajuan_assets').getPublicUrl(fileName).data.publicUrl
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('prefix', prefix)
+    
+    const result = await uploadFileAction(formData)
+    if (result.error) throw new Error("Gagal upload file: " + result.error)
+    return result.url
   }
 
   const handleSubmit = async () => {
