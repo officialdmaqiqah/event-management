@@ -34,6 +34,7 @@ type PengajuanEvent = {
   banner_url?: string
   nama_ustadz?: string
   judul_kajian?: string
+  status?: string
 }
 
 export default function PublicCalendarPage() {
@@ -79,9 +80,9 @@ export default function PublicCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, status
         `)
-        .eq("status", "approved")
+        .in("status", ["approved", "submitted", "under_review", "revision_requested"])
         .neq("privacy_event", "rahasia")
       
       if (pengajuanError) throw pengajuanError
@@ -339,14 +340,17 @@ export default function PublicCalendarPage() {
                         // Privacy masking for "umum_saja"
                         const isMasked = ev.privacy_event === 'umum_saja'
                         const isTerbatas = ev.privacy_event === 'publik_terbatas'
-                        const displayTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
+                        const isPending = ev.status && ['submitted', 'under_review', 'revision_requested'].includes(ev.status)
+                        const baseTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
+                        const displayTitle = isPending ? `[Proses] ${baseTitle}` : baseTitle
                         
                         // Check if special guest / event or routine
                         const isRutin = !isMasked && Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
                         const isSpecial = !isMasked && !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
                         
                         let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
-                        if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
+                        if (isPending) bgColor = 'bg-white border-slate-400 border-dashed text-slate-500 opacity-80'
+                        else if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
                         else if (isTerbatas) bgColor = 'bg-rose-50 border-rose-200 text-rose-700 shadow-sm'
                         else if (isSpecial) bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
                         else if (isRutin) bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
@@ -386,16 +390,16 @@ export default function PublicCalendarPage() {
             <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-rose-200 border border-rose-300"></div> Internal/Undangan
+            <div className="w-3 h-3 rounded-full bg-slate-300"></div> Internal Umum
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-rose-200 border border-rose-300"></div> Khusus Internal
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-slate-300"></div> Internal Umum
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-200 border border-amber-300"></div> Kajian Spesial
+            <div className="w-3 h-3 rounded-full bg-white border border-slate-400 border-dashed"></div> Menunggu ACC (Proses)
           </div>
         </div>
       </main>
@@ -408,11 +412,18 @@ export default function PublicCalendarPage() {
             <CardHeader className="pb-2 border-b border-slate-100 bg-slate-50/50">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-2">
-                  {selectedEvent.privacy_event === 'publik_terbatas' && (
-                    <span className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-md w-fit">
-                      <Lock className="h-3 w-3" /> KHUSUS INTERNAL / UNDANGAN
-                    </span>
-                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {selectedEvent.privacy_event === 'publik_terbatas' && (
+                      <span className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-md w-fit">
+                        <Lock className="h-3 w-3" /> KHUSUS INTERNAL / UNDANGAN
+                      </span>
+                    )}
+                    {selectedEvent.status && ['submitted', 'under_review', 'revision_requested'].includes(selectedEvent.status) && (
+                      <span className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 border border-slate-300 border-dashed text-xs font-bold px-2.5 py-1 rounded-md w-fit">
+                        <Clock className="h-3 w-3" /> MENUNGGU PERSETUJUAN
+                      </span>
+                    )}
+                  </div>
                   <CardTitle className="text-lg font-bold text-slate-900 pr-4 leading-tight capitalize">
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Ada Kegiatan di MAKT' : selectedEvent.nama_event}
                   </CardTitle>
