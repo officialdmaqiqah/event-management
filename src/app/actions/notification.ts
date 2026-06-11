@@ -157,7 +157,7 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
 // TEMPLATE GENERATORS
 // -----------------------------------------
 
-export function formatIndonesianDate(isoString: string) {
+function formatIndonesianDate(isoString: string) {
   try {
     const d = new Date(isoString)
     return new Intl.DateTimeFormat('id-ID', {
