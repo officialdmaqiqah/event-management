@@ -130,7 +130,16 @@ export async function POST(req: Request) {
         waMessage = await tplNotifikasiAdmin(data.nomor_pengajuan, body.nama_pemohon, body.nama_event, body.tanggal_mulai, adminUrl)
       } else {
         if (sysTemplate) {
-          const tglFormat = body.tanggal_mulai ? (await import('@/app/actions/notification')).formatIndonesianDate(body.tanggal_mulai) : ''
+          let tglFormat = body.tanggal_mulai || ''
+          if (body.tanggal_mulai) {
+            try {
+              const d = new Date(body.tanggal_mulai)
+              tglFormat = new Intl.DateTimeFormat('id-ID', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+              }).format(d).replace(/\./g, ':') + ' WIB'
+            } catch (e) {}
+          }
           waMessage = sysTemplate
             .replace(/{{nama_approver}}/g, adminName)
             .replace(/{{nama_event}}/g, body.nama_event)
