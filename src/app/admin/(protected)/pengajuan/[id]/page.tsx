@@ -556,20 +556,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             try {
               const nextStep = allWorkflowSteps.find((s: any) => s.level === nextLevelVal)
               if (nextStep) {
-                let query = supabase.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null).neq('whatsapp', '')
-                if (nextStep.user_id) {
-                  query = query.eq('user_id', nextStep.user_id)
-                } else if (nextStep.jabatan) {
-                  query = query.ilike('jabatan', nextStep.jabatan)
-                } else {
-                  query = query.eq('system_role', 'super_admin')
-                }
-                
-                const { data: approvers } = await query.limit(1)
-                if (approvers && approvers.length > 0 && approvers[0].whatsapp) {
-                  approverPhone = approvers[0].whatsapp
-                  approverName = approvers[0].full_name || nextStep.jabatan || approverName
-                }
+                const { getApproverInfo } = await import('@/app/actions/notification')
+                const info = await getApproverInfo(nextStep)
+                approverPhone = info.approverPhone
+                approverName = info.approverName
               }
             } catch (err) {
               console.error("Gagal mendapatkan WA approver:", err)
@@ -579,13 +569,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
           // Ambil custom template dari super_admin jika ada
           let customWaMessage = ""
           try {
-            const { data: sysAdmin } = await supabase.from('user_profiles')
-              .select('wa_approval_request_template')
-              .eq('system_role', 'super_admin')
-              .limit(1)
+            const { getSuperAdminTemplate } = await import('@/app/actions/notification')
+            const tpl = await getSuperAdminTemplate('request')
             
-            if (sysAdmin && sysAdmin.length > 0 && sysAdmin[0].wa_approval_request_template) {
-              const tpl = sysAdmin[0].wa_approval_request_template
+            if (tpl) {
               const { formatIndonesianDate } = await import('@/app/actions/notification')
               const tglFormat = pengajuan.tanggal_mulai ? formatIndonesianDate(pengajuan.tanggal_mulai) : ''
               

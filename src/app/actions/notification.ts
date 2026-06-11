@@ -276,12 +276,55 @@ Pengajuan peminjaman fasilitas MAKT Anda memerlukan sedikit *PERBAIKAN / REVISI*
 
 ▪️ *No. Tiket:* ${nomor}
 ▪️ *Nama Kegiatan:* ${namaEvent}
-
-*Catatan Revisi dari Admin/Pejabat:* 
+▪️ *Catatan Revisi:* 
 _${catatan}_
 
-Mohon segera melengkapi kekurangan atau memperbaiki dokumen sesuai catatan di atas.
+Silakan lengkapi kekurangan berkas/persyaratan Anda secepatnya melalui tautan di bawah ini:
+${url}
+
+Terima kasih.
 
 Salam,
 Sekretariat MAKT`
+}
+
+export async function getApproverInfo(nextStep: any) {
+  const supabaseAdmin = createAdminClient()
+  let approverPhone = "081234567890"
+  let approverName = "Approver MAKT"
+  
+  if (!nextStep) return { approverPhone, approverName }
+
+  let query = supabaseAdmin.from('user_profiles').select('full_name, whatsapp').not('whatsapp', 'is', null).neq('whatsapp', '')
+  if (nextStep.user_id) {
+    query = query.eq('user_id', nextStep.user_id)
+  } else if (nextStep.jabatan) {
+    query = query.ilike('jabatan', nextStep.jabatan)
+  } else {
+    query = query.eq('system_role', 'super_admin')
+  }
+  
+  const { data: approvers } = await query.limit(1)
+  if (approvers && approvers.length > 0 && approvers[0].whatsapp) {
+    approverPhone = approvers[0].whatsapp
+    approverName = approvers[0].full_name || nextStep.jabatan || approverName
+  }
+
+  return { approverPhone, approverName }
+}
+
+export async function getSuperAdminTemplate(type: 'request' | 'result' | 'reminder' | 'minutes') {
+  const supabaseAdmin = createAdminClient()
+  const { data: sysAdmin } = await supabaseAdmin.from('user_profiles')
+    .select('*')
+    .eq('system_role', 'super_admin')
+    .limit(1)
+    
+  if (sysAdmin && sysAdmin.length > 0) {
+    if (type === 'request') return sysAdmin[0].wa_approval_request_template
+    if (type === 'result') return sysAdmin[0].wa_approval_result_template
+    if (type === 'reminder') return sysAdmin[0].wa_reminder_template
+    if (type === 'minutes') return sysAdmin[0].wa_minutes_template
+  }
+  return null
 }
