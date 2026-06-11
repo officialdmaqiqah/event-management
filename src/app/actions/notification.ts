@@ -210,16 +210,16 @@ ${url}`
 
 export async function tplNotifikasiApprover(namaEvent: string, jenisEvent: string, namaPemohon: string, tglEvent: string, catatanAdmin: string, url: string, namaApprover: string = "Bapak/Ibu") {
   const formattedDate = formatIndonesianDate(tglEvent)
-  return `📝 PERMINTAAN APPROVAL KEGIATAN
+  return `📝 *PERMINTAAN APPROVAL KEGIATAN*
 
-Assalamualaikum Bpk/Ibu ${namaApprover}
-Terdapat pengajuan baru di sistem Management Event System Masjid Agung Kubah Timah.
+Assalamualaikum Bpk/Ibu *${namaApprover}*
+Terdapat pengajuan baru di *Sistem Management Event System Masjid Agung Kubah Timah*.
 
 Mohon review pengajuan kegiatan berikut:
-- Event : ${namaEvent}
-- Jenis : ${jenisEvent}
-- Pemohon : ${namaPemohon}
-- Tanggal Event : ${formattedDate}${catatanAdmin ? `\n- Catatan : ${catatanAdmin}` : ''}
+- Event : *${namaEvent}*
+- Jenis : *${jenisEvent}*
+- Pemohon : *${namaPemohon}*
+- Tanggal Event : *${formattedDate}*${catatanAdmin ? `\n- Catatan : _${catatanAdmin}_` : ''}
 
 Silakan berikan persetujuan atau penolakan melalui tautan berikut:
 ${url}
