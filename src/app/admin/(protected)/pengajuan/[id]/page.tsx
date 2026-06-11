@@ -576,10 +576,35 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             }
           }
 
+          // Ambil custom template dari super_admin jika ada
+          let customWaMessage = ""
+          try {
+            const { data: sysAdmin } = await supabase.from('user_profiles')
+              .select('wa_approval_request_template')
+              .eq('system_role', 'super_admin')
+              .limit(1)
+            
+            if (sysAdmin && sysAdmin.length > 0 && sysAdmin[0].wa_approval_request_template) {
+              const tpl = sysAdmin[0].wa_approval_request_template
+              const { formatIndonesianDate } = await import('@/app/actions/notification')
+              const tglFormat = pengajuan.tanggal_mulai ? formatIndonesianDate(pengajuan.tanggal_mulai) : ''
+              
+              customWaMessage = tpl
+                .replace(/{{nama_approver}}/g, approverName)
+                .replace(/{{nama_event}}/g, pengajuan.nama_event)
+                .replace(/{{jenis_event}}/g, pengajuan.jenis_event || '-')
+                .replace(/{{tanggal_event}}/g, tglFormat)
+                .replace(/{{pemohon}}/g, pengajuan.nama_pemohon)
+                .replace(/{{link_approval}}/g, adminUrl)
+            }
+          } catch (e) {
+            console.error("Gagal load custom template", e)
+          }
+
           await sendWhatsAppNotification({
             recipient_name: approverName,
             recipient_whatsapp: approverPhone,
-            message: await tplNotifikasiApprover(pengajuan.nama_event, pengajuan.jenis_event, pengajuan.nama_pemohon, pengajuan.tanggal_mulai, reasonText, adminUrl),
+            message: customWaMessage || await tplNotifikasiApprover(pengajuan.nama_event, pengajuan.jenis_event, pengajuan.nama_pemohon, pengajuan.tanggal_mulai, reasonText, adminUrl, approverName),
             related_event_request_id: pengajuan.id
           })
         }
