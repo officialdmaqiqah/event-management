@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X, FileImage
 } from "lucide-react"
 import Link from "next/link"
 
@@ -45,6 +45,7 @@ export default function PublicCalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
   const [showFilters, setShowFilters] = useState(false)
+  const [previewFlyer, setPreviewFlyer] = useState<string | null>(null)
   
   // Filters
   const [search, setSearch] = useState("")
@@ -442,11 +443,6 @@ export default function PublicCalendarPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm">
-              {selectedEvent.banner_url && (
-                <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
-                  <img src={selectedEvent.banner_url} alt={selectedEvent.nama_event} className="w-full h-full object-cover" />
-                </div>
-              )}
               <div className="grid grid-cols-1 gap-3">
                 <div className="flex gap-3">
                   <Clock className="h-4.5 w-4.5 text-slate-400 shrink-0 mt-0.5" />
@@ -520,6 +516,18 @@ export default function PublicCalendarPage() {
                   </>
                 )}
 
+                {selectedEvent.banner_url && (
+                  <div className="mt-2 pt-4 border-t border-slate-100">
+                    <Button 
+                      variant="outline" 
+                      className="w-full gap-2 text-indigo-700 border-indigo-200 hover:bg-indigo-50 font-bold bg-indigo-50/50"
+                      onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}
+                    >
+                      <FileImage className="h-4 w-4" /> Lihat Flyer Event
+                    </Button>
+                  </div>
+                )}
+
                 {selectedEvent.is_public_event && selectedEvent.public_slug && (
                   <div className="mt-4 pt-4 border-t border-slate-200">
                     {new Date() > new Date(selectedEvent.tanggal_selesai) ? (
@@ -554,6 +562,28 @@ export default function PublicCalendarPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      {/* Flyer Preview Dialog */}
+      {previewFlyer && (
+        <div className="fixed inset-0 z-[60] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8" onClick={() => setPreviewFlyer(null)}>
+          <div className="relative max-w-4xl w-full h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={(e) => { e.stopPropagation(); setPreviewFlyer(null); }} 
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            <img 
+              src={previewFlyer} 
+              alt="Flyer Event" 
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
 
