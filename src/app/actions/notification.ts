@@ -21,24 +21,26 @@ function formatWhatsAppNumber(phone: string) {
 
 export async function sendWhatsAppNotification(payload: NotificationPayload) {
   try {
-    const supabase = createAdminClient()
+    let supabase;
+    try {
+      supabase = createAdminClient()
+    } catch (e) {
+      // Fallback if service_role_key is missing
+      supabase = createClient()
+    }
+
     let WA_GATEWAY_URL = process.env.WA_GATEWAY_URL || "https://xsender.id/api/send-message"
     let WA_API_KEY = process.env.WA_API_KEY
     let WA_SENDER_ID = process.env.WA_SENDER_ID || ""
 
-    // Fallback: Ambil dari database jika di .env tidak ada
+    // Fallback: Ambil dari database melalui secure RPC agar tidak terhalang RLS
     if (!WA_API_KEY) {
-      const { data: adminProfile } = await supabase
-        .from('user_profiles')
-        .select('wa_api_key, wa_sender_id')
-        .not('wa_api_key', 'is', null)
-        .limit(1)
-        .single()
+      const { data: config, error: configError } = await supabase.rpc('get_wa_config')
       
-      if (adminProfile?.wa_api_key) {
-        WA_API_KEY = adminProfile.wa_api_key
-        if (adminProfile.wa_sender_id) {
-          WA_SENDER_ID = adminProfile.wa_sender_id
+      if (!configError && config && config.api_key) {
+        WA_API_KEY = config.api_key
+        if (config.sender) {
+          WA_SENDER_ID = config.sender
         }
       }
     }
@@ -46,22 +48,28 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     const formattedNumber = formatWhatsAppNumber(payload.recipient_whatsapp)
 
     // 1. Insert into notification_logs as pending
-    const { data: logEntry, error: logError } = await supabase
-      .from("notification_logs")
-      .insert({
-        recipient_name: payload.recipient_name,
-        recipient_whatsapp: formattedNumber,
-        channel: "whatsapp",
-        message: payload.message,
-        status: "pending",
-        related_event_request_id: payload.related_event_request_id || null
-      })
-      .select()
-      .single()
-
-    if (logError) {
-      console.error("Gagal mencatat log notifikasi:", logError)
-      return { success: false, error: logError.message }
+    let logEntry: any = null;
+    try {
+      const { data, error: logError } = await supabase
+        .from("notification_logs")
+        .insert({
+          recipient_name: payload.recipient_name,
+          recipient_whatsapp: formattedNumber,
+          channel: "whatsapp",
+          message: payload.message,
+          status: "pending",
+          related_event_request_id: payload.related_event_request_id || null
+        })
+        .select()
+        .single()
+        
+      if (!logError && data) {
+        logEntry = data;
+      } else if (logError) {
+        console.error("Gagal mencatat log notifikasi (mungkin RLS anon key):", logError)
+      }
+    } catch (e) {
+      console.error("Error saat mencatat log notifikasi:", e)
     }
 
     // 2. Check if Gateway is configured
@@ -69,10 +77,12 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
       // SIMULATED MODE: Gateway not configured
       console.log(`[SIMULATED WA] To: ${formattedNumber} | Message: ${payload.message}`)
       
-      await supabase
-        .from("notification_logs")
-        .update({ status: "simulated_sent", sent_at: new Date().toISOString() })
-        .eq("id", logEntry.id)
+      if (logEntry) {
+        await supabase
+          .from("notification_logs")
+          .update({ status: "simulated_sent", sent_at: new Date().toISOString() })
+          .eq("id", logEntry.id)
+      }
 
       return { success: true, simulated: true }
     }
@@ -111,20 +121,30 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
       throw new Error(`Gateway API Error: ${responseData.msg || JSON.stringify(responseData)}`)
     }
 
-    // 4. Update status to sent
-    await supabase
-      .from("notification_logs")
-      .update({ status: "sent", sent_at: new Date().toISOString() })
-      .eq("id", logEntry.id)
-
-    return { success: true }
-
+    if (responseData.status) {
+      if (logEntry) {
+        await supabase
+          .from("notification_logs")
+          .update({ status: "sent", sent_at: new Date().toISOString() })
+          .eq("id", logEntry.id)
+      }
+      return { success: true, data: responseData }
+    } else {
+      console.error("API Gateway XSender mengembalikan error:", responseData.msg)
+      if (logEntry) {
+        await supabase
+          .from("notification_logs")
+          .update({ status: "failed", error_message: responseData.msg })
+          .eq("id", logEntry.id)
+      }
+      return { success: false, error: responseData.msg }
+    }
   } catch (err: any) {
     console.error("WhatsApp Notification Failed:", err)
     
     // Update log status to failed if possible
     try {
-      const supabase = createAdminClient()
+      const supabase = createClient()
       // find the latest pending log for this request (approximate since we don't pass the ID through the catch easily unless we scope it)
       // For a more robust approach, we could restructure the try/catch, but this is a simplified fallback.
     } catch (e) {}
