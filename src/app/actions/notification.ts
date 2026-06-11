@@ -190,8 +190,8 @@ Saat ini pengajuan Anda sedang dalam tahap *Pengecekan Admin* dan akan diteruska
 Anda dapat memantau perkembangan status permohonan Anda kapan saja melalui tautan berikut:
 ${url}
 
-Wassalamu'alaikum w. w.
-_Sekretariat MAKT_`
+Salam,
+Sekretariat MAKT`
 }
 
 export async function tplNotifikasiAdmin(nomor: string, namaPemohon: string, namaEvent: string, tglEvent: string, url: string) {
@@ -242,8 +242,8 @@ Jika Anda membutuhkan layanan pendaftaran jamaah online (E-Ticket) & absensi ter
 
 Mohon selalu mematuhi tata tertib kebersihan dan keamanan selama menggunakan fasilitas Masjid.
 
-Wassalamu'alaikum w. w.
-_Sekretariat MAKT_`
+Salam,
+Sekretariat MAKT`
 }
 
 export async function tplPengajuanDitolak(nomor: string, namaEvent: string, catatan: string) {
@@ -261,8 +261,8 @@ _${catatan || 'Tidak memenuhi syarat dan ketentuan penggunaan fasilitas masjid.'
 
 Kami memohon maaf atas ketidaknyamanan ini. Terima kasih atas partisipasi Anda.
 
-Wassalamu'alaikum w. w.
-_Sekretariat MAKT_`
+Salam,
+Sekretariat MAKT`
 }
 
 export async function tplPengajuanRevisi(nomor: string, namaEvent: string, catatan: string, url: string) {
@@ -280,6 +280,6 @@ _${catatan}_
 
 Mohon segera melengkapi kekurangan atau memperbaiki dokumen sesuai catatan di atas.
 
-Wassalamu'alaikum w. w.
-_Sekretariat MAKT_`
+Salam,
+Sekretariat MAKT`
 }
