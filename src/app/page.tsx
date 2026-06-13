@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Calendar as CalendarIcon, FileText, CheckCircle2, BellRing, QrCode, ClipboardList, MapPin, ArrowRight, ShieldCheck, Search, Sparkles, Building2, Image as ImageIcon, Lock } from "lucide-react"
+import { Calendar as CalendarIcon, FileText, CheckCircle2, BellRing, QrCode, ClipboardList, MapPin, ArrowRight, ShieldCheck, Search, Sparkles, Building2, Image as ImageIcon, Lock, AlertCircle, XCircle, Clock, AlertTriangle } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { FasilitasGrid } from "@/components/FasilitasGrid"
 
@@ -191,7 +191,7 @@ export default async function Home() {
             
             {upcomingEvents && upcomingEvents.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {upcomingEvents.map((evt) => (
+                {upcomingEvents.map((evt: any) => (
                   <EventCard key={evt.id} event={evt} />
                 ))}
               </div>
@@ -220,17 +220,69 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* VALUE PROPOSITION - Split Audience */}
-        <section className="py-24 bg-slate-50 relative">
+        {/* TANTANGAN SEBELUM DIGITALISASI (PAIN POINTS) */}
+        <section className="py-24 bg-slate-50 relative border-t border-slate-200/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-3">Keunggulan Sistem</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Lebih Dari Sekadar Tempat</h3>
+              <h2 className="text-xs font-bold text-rose-600 tracking-widest uppercase mb-3 flex items-center justify-center gap-1.5">
+                <AlertCircle className="h-4 w-4" /> Tantangan Manajemen Manual
+              </h2>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Kendala Sebelum Sistem Digital</h3>
+              <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">
+                Beberapa kendala klasik yang sering dihadapi jamaah, panitia, dan penyelenggara dalam mengelola kegiatan di masjid secara manual.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                {
+                  title: "Jadwal Simpang Siur",
+                  desc: "Jamaah sering ketinggalan info kajian ter-update atau mendapati jadwal bentrok karena tidak ada kalender pusat yang terintegrasi.",
+                  icon: AlertCircle,
+                  color: "text-rose-500 bg-rose-50 border-rose-100",
+                },
+                {
+                  title: "Birokrasi Rumit",
+                  desc: "Penyelenggara harus datang langsung ke sekretariat masjid membawa tumpukan berkas hanya untuk cek ketersediaan ruang dan meminta izin.",
+                  icon: Clock,
+                  color: "text-amber-500 bg-amber-50 border-amber-100",
+                },
+                {
+                  title: "Antrean & Absensi Kacau",
+                  desc: "Registrasi dan kehadiran panitia/peserta di lokasi masih menggunakan lembaran kertas fisik yang rentan tercecer atau dimanipulasi.",
+                  icon: XCircle,
+                  color: "text-red-500 bg-red-50 border-red-100",
+                },
+                {
+                  title: "Arsip Rapat Tercecer",
+                  desc: "Notulen rapat musyawarah penting dan dokumentasi pasca-event seringkali terselip atau hilang saat dibutuhkan kembali.",
+                  icon: AlertTriangle,
+                  color: "text-orange-500 bg-orange-50 border-orange-100",
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-white rounded-[2rem] border border-slate-100 p-8 flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                  <div className={`h-12 w-12 rounded-2xl border flex items-center justify-center mr-auto mb-6 ${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <item.icon className="h-6 w-6" />
+                  </div>
+                  <h4 className="font-bold text-slate-900 text-lg mb-2 capitalize">{item.title}</h4>
+                  <p className="text-slate-500 text-sm leading-relaxed font-medium">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* VALUE PROPOSITION - Split Audience */}
+        <section className="py-24 bg-white relative border-t border-slate-200/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-sm font-bold text-emerald-600 tracking-widest uppercase mb-3">Solusi & Keunggulan</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Solusi Terbaik Untuk Semua Pihak</h3>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
               {/* Kolom Jamaah */}
-              <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] shadow-sm border border-emerald-100">
+              <div className="bg-slate-50 p-8 sm:p-10 rounded-[2.5rem] shadow-sm border border-emerald-100/50">
                 <div className="flex items-center gap-4 mb-8">
                   <div className="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
                     <MapPin className="h-6 w-6" />
