@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Calendar as CalendarIcon, FileText, CheckCircle2, BellRing, QrCode, ClipboardList, MapPin, ArrowRight, ShieldCheck, Search, Sparkles, Building2, Image as ImageIcon, Lock } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
+import { FasilitasGrid } from "@/components/FasilitasGrid"
 
 // Komponen Card Kalender
 function EventCard({ event }: { event: any }) {
@@ -56,6 +57,7 @@ const FASILITAS_MAKT = [
     id: "pelataran-depan",
     nama: "Halaman Pelataran Depan",
     deskripsi: "Area terbuka yang luas dengan pemandangan langsung kubah timah nan ikonik. Sering digunakan untuk festival Islami dan resepsi.",
+    image: "/pelataran-depan.jpg",
   },
   {
     id: "pelataran-samping",
@@ -209,26 +211,7 @@ export default async function Home() {
               <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto font-medium">Fasilitas ikonik yang nyaman, disiapkan untuk menyambut langkah Anda dalam menuntut ilmu dan merangkai momen penuh berkah.</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {FASILITAS_MAKT.map((fasilitas, i) => (
-                <div key={i} className="group rounded-3xl overflow-hidden bg-slate-50 shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-500">
-                  {/* Image Placeholder Frame */}
-                  <div className="relative h-64 bg-slate-100 flex items-center justify-center overflow-hidden">
-                    <div className="absolute inset-0 bg-slate-200/50 group-hover:scale-105 transition-transform duration-700 ease-in-out"></div>
-                    <div className="relative z-10 flex flex-col items-center text-slate-400">
-                      <ImageIcon className="h-10 w-10 mb-2 opacity-50" />
-                      <span className="text-xs font-semibold uppercase tracking-wider">Tempat Foto {fasilitas.nama}</span>
-                    </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-8">
-                    <h4 className="text-xl font-extrabold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors">{fasilitas.nama}</h4>
-                    <p className="text-slate-500 leading-relaxed text-sm font-medium">{fasilitas.deskripsi}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <FasilitasGrid fasilitasMakt={FASILITAS_MAKT} />
           </div>
         </section>
 
