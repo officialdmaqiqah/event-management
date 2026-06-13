@@ -8,8 +8,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MeetingPhoto } from "@/types/notulen"
 import { Image as ImageIcon, UploadCloud, Trash2, Loader2, Save, Eye, EyeOff, ShieldAlert } from "lucide-react"
+import { 
+  fetchPhotosAction,
+  uploadMeetingPhotoAction,
+  updatePhotoCaptionAction,
+  updatePhotoVisibilityAction,
+  deletePhotoAction
+} from "@/app/actions/panitiaActions"
 
-export default function DokumentasiTab({ pengajuanId }: { pengajuanId: string }) {
+export default function DokumentasiTab({ 
+  pengajuanId,
+  isGuest = false,
+  eventId
+}: { 
+  pengajuanId?: string,
+  isGuest?: boolean,
+  eventId?: string
+}) {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [meetingMinutesId, setMeetingMinutesId] = useState<string | null>(null)
@@ -21,24 +36,34 @@ export default function DokumentasiTab({ pengajuanId }: { pengajuanId: string })
 
   useEffect(() => {
     fetchData()
-  }, [pengajuanId])
+  }, [pengajuanId, eventId])
 
   const fetchData = async () => {
     setLoading(true)
-    const { data: mnData } = await supabase
-      .from("meeting_minutes")
-      .select("id")
-      .eq("pengajuan_id", pengajuanId)
-      .single()
+    if (isGuest && eventId) {
+      const res = await fetchPhotosAction(eventId)
+      if (res.error) {
+        console.error("Gagal memuat foto:", res.error)
+      } else {
+        if (res.meetingMinutesId) setMeetingMinutesId(res.meetingMinutesId)
+        if (res.photos) setPhotos(res.photos)
+      }
+    } else if (pengajuanId) {
+      const { data: mnData } = await supabase
+        .from("meeting_minutes")
+        .select("id")
+        .eq("pengajuan_id", pengajuanId)
+        .maybeSingle()
 
-    if (mnData) {
-      setMeetingMinutesId(mnData.id)
-      const { data: photoData } = await supabase
-        .from("meeting_photos")
-        .select("*")
-        .eq("meeting_minutes_id", mnData.id)
-        .order("created_at", { ascending: true })
-      if (photoData) setPhotos(photoData)
+      if (mnData) {
+        setMeetingMinutesId(mnData.id)
+        const { data: photoData } = await supabase
+          .from("meeting_photos")
+          .select("*")
+          .eq("meeting_minutes_id", mnData.id)
+          .order("created_at", { ascending: true })
+        if (photoData) setPhotos(photoData)
+      }
     }
     setLoading(false)
   }
@@ -65,29 +90,46 @@ export default function DokumentasiTab({ pengajuanId }: { pengajuanId: string })
           continue
         }
 
-        const fileExt = file.name.split('.').pop()
-        const fileName = `${pengajuanId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-        
-        const { error: uploadError } = await supabase.storage
-          .from('meeting_documentation')
-          .upload(fileName, file)
+        if (isGuest && eventId) {
+          const formData = new FormData()
+          formData.append('file', file)
+          formData.append('eventId', eventId)
+          formData.append('meetingMinutesId', meetingMinutesId)
+          formData.append('pengajuanId', pengajuanId || '')
 
-        if (uploadError) throw uploadError
+          const res = await uploadMeetingPhotoAction(formData)
+          if (res.error) {
+            alert(`Gagal mengunggah ${file.name}: ${res.error}`)
+            continue
+          }
+          if (res.photo) {
+            setPhotos(prev => [...prev, res.photo])
+          }
+        } else {
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${pengajuanId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+          
+          const { error: uploadError } = await supabase.storage
+            .from('meeting_documentation')
+            .upload(fileName, file)
 
-        const { data: publicUrlData } = supabase.storage
-          .from('meeting_documentation')
-          .getPublicUrl(fileName)
+          if (uploadError) throw uploadError
 
-        const { data: photoData, error: dbError } = await supabase.from('meeting_photos').insert({
-          meeting_minutes_id: meetingMinutesId,
-          photo_url: publicUrlData.publicUrl,
-          caption: "",
-          visibility: 'internal'
-        }).select().single()
+          const { data: publicUrlData } = supabase.storage
+            .from('meeting_documentation')
+            .getPublicUrl(fileName)
 
-        if (dbError) throw dbError
+          const { data: photoData, error: dbError } = await supabase.from('meeting_photos').insert({
+            meeting_minutes_id: meetingMinutesId,
+            photo_url: publicUrlData.publicUrl,
+            caption: "",
+            visibility: 'internal'
+          }).select().single()
 
-        setPhotos(prev => [...prev, photoData])
+          if (dbError) throw dbError
+
+          setPhotos(prev => [...prev, photoData])
+        }
       }
     } catch (err: any) {
       console.error(err)
@@ -102,12 +144,26 @@ export default function DokumentasiTab({ pengajuanId }: { pengajuanId: string })
   const updateCaption = async (id: string, caption: string) => {
     // Optimistic update
     setPhotos(photos.map(p => p.id === id ? { ...p, caption } : p))
-    await supabase.from("meeting_photos").update({ caption }).eq("id", id)
+    if (isGuest && eventId) {
+      const res = await updatePhotoCaptionAction(eventId, id, caption)
+      if (res.error) {
+        alert("Gagal memperbarui keterangan: " + res.error)
+      }
+    } else {
+      await supabase.from("meeting_photos").update({ caption }).eq("id", id)
+    }
   }
 
   const updateVisibility = async (id: string, visibility: string) => {
     setPhotos(photos.map(p => p.id === id ? { ...p, visibility: visibility as any } : p))
-    await supabase.from("meeting_photos").update({ visibility }).eq("id", id)
+    if (isGuest && eventId) {
+      const res = await updatePhotoVisibilityAction(eventId, id, visibility)
+      if (res.error) {
+        alert("Gagal memperbarui visibilitas: " + res.error)
+      }
+    } else {
+      await supabase.from("meeting_photos").update({ visibility }).eq("id", id)
+    }
   }
 
   const deletePhoto = async (id: string) => {
@@ -116,22 +172,31 @@ export default function DokumentasiTab({ pengajuanId }: { pengajuanId: string })
     // Find photo url
     const photo = photos.find(p => p.id === id)
     if (photo) {
-      // Delete from DB
-      await supabase.from("meeting_photos").delete().eq("id", id)
-      
-      // Attempt to delete from storage by extracting path
-      try {
-        const urlObj = new URL(photo.photo_url)
-        const pathParts = urlObj.pathname.split('/meeting_documentation/')
-        if (pathParts.length > 1) {
-          const filePath = decodeURIComponent(pathParts[1])
-          await supabase.storage.from('meeting_documentation').remove([filePath])
+      if (isGuest && eventId) {
+        const res = await deletePhotoAction(eventId, id)
+        if (res.error) {
+          alert("Gagal menghapus foto: " + res.error)
+        } else {
+          setPhotos(photos.filter(p => p.id !== id))
         }
-      } catch (e) {
-        console.error("Storage delete failed", e)
+      } else {
+        // Delete from DB
+        await supabase.from("meeting_photos").delete().eq("id", id)
+        
+        // Attempt to delete from storage by extracting path
+        try {
+          const urlObj = new URL(photo.photo_url)
+          const pathParts = urlObj.pathname.split('/meeting_documentation/')
+          if (pathParts.length > 1) {
+            const filePath = decodeURIComponent(pathParts[1])
+            await supabase.storage.from('meeting_documentation').remove([filePath])
+          }
+        } catch (e) {
+          console.error("Storage delete failed", e)
+        }
+        
+        setPhotos(photos.filter(p => p.id !== id))
       }
-      
-      setPhotos(photos.filter(p => p.id !== id))
     }
   }
 

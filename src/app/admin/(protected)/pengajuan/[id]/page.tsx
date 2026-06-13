@@ -14,10 +14,6 @@ import {
   ArrowLeft, ExternalLink, FileDown, Send, Edit3, Lock, Award, ShieldCheck, Loader2, UploadCloud
 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import ParticipantTab from "./ParticipantTab"
-import NotulenTab from "./NotulenTab"
-import DokumentasiTab from "./DokumentasiTab"
-import LaporanTab from "./LaporanTab"
 import { 
   sendWhatsAppNotification, 
   tplPengajuanDisetujui, 
@@ -126,9 +122,6 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const [showReasonInput, setShowReasonInput] = useState(false)
   const [targetStatus, setTargetStatus] = useState<string>("")
   const [statusReason, setStatusReason] = useState("")
-
-  // Tabs state
-  const [activeTab, setActiveTab] = useState<'detail' | 'absensi' | 'notulen' | 'dokumentasi' | 'laporan'>('detail')
 
   // Inline edit states
   const [isSuperAdminUser, setIsSuperAdminUser] = useState(false)
@@ -816,42 +809,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         )}
       </div>
 
-      {/* Tabs Switcher */}
-      <div className="flex gap-6 border-b border-slate-200 mt-2 overflow-x-auto print:hidden">
-        <button 
-          onClick={() => setActiveTab('detail')} 
-          className={`pb-3 text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'detail' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Detail Pengajuan
-        </button>
-        <button 
-          onClick={() => setActiveTab('absensi')} 
-          className={`pb-3 text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'absensi' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Peserta & Absensi
-        </button>
-        <button 
-          onClick={() => setActiveTab('notulen')} 
-          className={`pb-3 text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'notulen' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Notulen
-        </button>
-        <button 
-          onClick={() => setActiveTab('dokumentasi')} 
-          className={`pb-3 text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dokumentasi' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Dokumentasi
-        </button>
-        <button 
-          onClick={() => setActiveTab('laporan')} 
-          className={`pb-3 text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'laporan' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
-        >
-          Laporan
-        </button>
-      </div>
-
-      {activeTab === 'detail' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column (Details) */}
         <div className="lg:col-span-2 space-y-6">
@@ -1533,12 +1491,6 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
         </div>
         </div>
-      )}
-      
-      {activeTab === 'absensi' && <ParticipantTab pengajuanId={id} />}
-      {activeTab === 'notulen' && <NotulenTab pengajuanId={id} pengajuanData={pengajuan} />}
-      {activeTab === 'dokumentasi' && <DokumentasiTab pengajuanId={id} />}
-      {activeTab === 'laporan' && <LaporanTab pengajuanId={id} pengajuanData={pengajuan} />}
 
       <CustomDialog 
         isOpen={dialogState.isOpen} 

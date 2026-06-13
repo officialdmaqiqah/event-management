@@ -5,8 +5,21 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Printer, FileText, Globe, Shield, Lock } from "lucide-react"
+import { fetchMeetingMinutesAction, fetchPhotosAction } from "@/app/actions/panitiaActions"
 
-export default function LaporanTab({ pengajuanId, pengajuanData, isPublic = false }: { pengajuanId: string, pengajuanData: any, isPublic?: boolean }) {
+export default function LaporanTab({ 
+  pengajuanId, 
+  pengajuanData, 
+  isPublic = false,
+  isGuest = false,
+  eventId
+}: { 
+  pengajuanId?: string, 
+  pengajuanData?: any, 
+  isPublic?: boolean,
+  isGuest?: boolean,
+  eventId?: string
+}) {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   
@@ -18,48 +31,72 @@ export default function LaporanTab({ pengajuanId, pengajuanData, isPublic = fals
 
   useEffect(() => {
     fetchData()
-  }, [pengajuanId])
+  }, [pengajuanId, eventId])
 
   const fetchData = async () => {
     setLoading(true)
     
-    // Fetch participants
-    const { data: pData } = await supabase
-      .from("participants")
-      .select("*")
-      .eq("event_request_id", pengajuanId)
-      .order("created_at", { ascending: true })
-    if (pData) setParticipants(pData)
-
-    // Fetch Notulen
-    const { data: mnData } = await supabase
-      .from("meeting_minutes")
-      .select("*")
-      .eq("pengajuan_id", pengajuanId)
-      .single()
-
-    if (mnData) {
-      setNotulen(mnData)
-      
-      // Fetch Action Items
-      const { data: aiData } = await supabase
-        .from("meeting_action_items")
+    if (isGuest && eventId) {
+      // Fetch participants by eventId
+      const { data: pData } = await supabase
+        .from("participants")
         .select("*")
-        .eq("meeting_minutes_id", mnData.id)
+        .eq("event_id", eventId)
         .order("created_at", { ascending: true })
-      if (aiData) setActionItems(aiData)
+      if (pData) setParticipants(pData)
 
-      // Fetch Photos
-      const { data: phData } = await supabase
-        .from("meeting_photos")
+      // Fetch meeting minutes & action items using server action
+      const resMinutes = await fetchMeetingMinutesAction(eventId)
+      if (resMinutes.minutes) {
+        setNotulen(resMinutes.minutes)
+        if (resMinutes.actionItems) setActionItems(resMinutes.actionItems)
+        
+        // Fetch photos using server action
+        const resPhotos = await fetchPhotosAction(eventId)
+        if (resPhotos.photos) {
+          const visiblePhotos = isPublic ? resPhotos.photos.filter(p => p.visibility === 'public') : resPhotos.photos
+          setPhotos(visiblePhotos)
+        }
+      }
+    } else if (pengajuanId) {
+      // Fetch participants
+      const { data: pData } = await supabase
+        .from("participants")
         .select("*")
-        .eq("meeting_minutes_id", mnData.id)
+        .eq("event_request_id", pengajuanId)
         .order("created_at", { ascending: true })
-      
-      if (phData) {
-        // If public, only show public photos
-        const visiblePhotos = isPublic ? phData.filter(p => p.visibility === 'public') : phData
-        setPhotos(visiblePhotos)
+      if (pData) setParticipants(pData)
+
+      // Fetch Notulen
+      const { data: mnData } = await supabase
+        .from("meeting_minutes")
+        .select("*")
+        .eq("pengajuan_id", pengajuanId)
+        .maybeSingle()
+
+      if (mnData) {
+        setNotulen(mnData)
+        
+        // Fetch Action Items
+        const { data: aiData } = await supabase
+          .from("meeting_action_items")
+          .select("*")
+          .eq("meeting_minutes_id", mnData.id)
+          .order("created_at", { ascending: true })
+        if (aiData) setActionItems(aiData)
+
+        // Fetch Photos
+        const { data: phData } = await supabase
+          .from("meeting_photos")
+          .select("*")
+          .eq("meeting_minutes_id", mnData.id)
+          .order("created_at", { ascending: true })
+        
+        if (phData) {
+          // If public, only show public photos
+          const visiblePhotos = isPublic ? phData.filter(p => p.visibility === 'public') : phData
+          setPhotos(visiblePhotos)
+        }
       }
     }
     

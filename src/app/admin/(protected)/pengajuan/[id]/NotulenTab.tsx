@@ -10,9 +10,26 @@ import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { MeetingMinutes, MeetingActionItem } from "@/types/notulen"
-import { FileText, Save, CheckCircle, Plus, Trash2, Edit, Globe, Lock, ShieldAlert, EyeOff } from "lucide-react"
+import { FileText, Save, CheckCircle, Plus, Trash2, Globe, Lock, ShieldAlert, EyeOff } from "lucide-react"
+import { 
+  fetchMeetingMinutesAction, 
+  saveMeetingMinutesAction, 
+  togglePublishAction, 
+  addActionItemAction, 
+  deleteActionItemAction 
+} from "@/app/actions/panitiaActions"
 
-export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId: string, pengajuanData: any }) {
+export default function NotulenTab({ 
+  pengajuanId, 
+  pengajuanData,
+  isGuest = false,
+  eventId
+}: { 
+  pengajuanId?: string, 
+  pengajuanData?: any,
+  isGuest?: boolean,
+  eventId?: string
+}) {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -21,16 +38,23 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
 
   // Form State
   const [form, setForm] = useState<Partial<MeetingMinutes>>({
-    meeting_title: pengajuanData?.nama_event || "",
+    meeting_title: pengajuanData?.nama_event || pengajuanData?.title || "",
     meeting_type: pengajuanData?.jenis_event || "",
-    meeting_date: pengajuanData?.tanggal_mulai ? new Date(pengajuanData.tanggal_mulai).toISOString().split('T')[0] : "",
-    start_time: pengajuanData?.tanggal_mulai ? new Date(pengajuanData.tanggal_mulai).toTimeString().substring(0,5) : "",
-    end_time: pengajuanData?.tanggal_selesai ? new Date(pengajuanData.tanggal_selesai).toTimeString().substring(0,5) : "",
-    location: pengajuanData?.area_fasilitas?.join(", ") || "",
+    meeting_date: pengajuanData?.tanggal_mulai || pengajuanData?.start_datetime 
+      ? new Date(pengajuanData.tanggal_mulai || pengajuanData.start_datetime).toISOString().split('T')[0] 
+      : "",
+    start_time: pengajuanData?.tanggal_mulai || pengajuanData?.start_datetime 
+      ? new Date(pengajuanData.tanggal_mulai || pengajuanData.start_datetime).toTimeString().substring(0,5) 
+      : "",
+    end_time: pengajuanData?.tanggal_selesai || pengajuanData?.end_datetime 
+      ? new Date(pengajuanData.tanggal_selesai || pengajuanData.end_datetime).toTimeString().substring(0,5) 
+      : "",
+    location: Array.isArray(pengajuanData?.area_fasilitas) 
+      ? pengajuanData.area_fasilitas.join(", ") 
+      : (pengajuanData?.location || ""),
     chairperson_name: pengajuanData?.nama_pemohon || "",
     secretary_name: "",
-    agenda: pengajuanData?.deskripsi_kegiatan || "",
-    discussion_summary: "",
+    agenda: pengajuanData?.deskripsi_kegiatan || pengajuanData?.description || "",
     discussion_summary: "",
     decisions: "",
     important_notes: "",
@@ -41,51 +65,126 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
 
   useEffect(() => {
     fetchNotulen()
-  }, [pengajuanId])
+  }, [pengajuanId, eventId])
 
   const fetchNotulen = async () => {
     setLoading(true)
-    const { data: mnData, error: mnError } = await supabase
-      .from("meeting_minutes")
-      .select("*")
-      .eq("pengajuan_id", pengajuanId)
-      .single()
-
-    if (mnData) {
-      setNotulen(mnData)
-      setForm(mnData)
-      
-      const { data: aiData } = await supabase
-        .from("meeting_action_items")
+    if (isGuest && eventId) {
+      const res = await fetchMeetingMinutesAction(eventId)
+      if (res.error) {
+        console.error("Gagal memuat notulen:", res.error)
+      } else {
+        if (res.minutes) {
+          setNotulen(res.minutes)
+          setForm(res.minutes)
+        } else {
+          // Initialize defaults
+          setForm({
+            meeting_title: pengajuanData?.nama_event || pengajuanData?.title || "",
+            meeting_type: pengajuanData?.jenis_event || "",
+            meeting_date: pengajuanData?.tanggal_mulai || pengajuanData?.start_datetime 
+              ? new Date(pengajuanData.tanggal_mulai || pengajuanData.start_datetime).toISOString().split('T')[0] 
+              : "",
+            start_time: pengajuanData?.tanggal_mulai || pengajuanData?.start_datetime 
+              ? new Date(pengajuanData.tanggal_mulai || pengajuanData.start_datetime).toTimeString().substring(0,5) 
+              : "",
+            end_time: pengajuanData?.tanggal_selesai || pengajuanData?.end_datetime 
+              ? new Date(pengajuanData.tanggal_selesai || pengajuanData.end_datetime).toTimeString().substring(0,5) 
+              : "",
+            location: Array.isArray(pengajuanData?.area_fasilitas) 
+              ? pengajuanData.area_fasilitas.join(", ") 
+              : (pengajuanData?.location || ""),
+            chairperson_name: pengajuanData?.nama_pemohon || "",
+            secretary_name: "",
+            agenda: pengajuanData?.deskripsi_kegiatan || pengajuanData?.description || "",
+            discussion_summary: "",
+            decisions: "",
+            important_notes: "",
+            status: 'draft',
+            privacy_level: 'internal',
+            is_published: false
+          })
+        }
+        if (res.actionItems) {
+          setActionItems(res.actionItems)
+        }
+      }
+    } else if (pengajuanId) {
+      const { data: mnData } = await supabase
+        .from("meeting_minutes")
         .select("*")
-        .eq("meeting_minutes_id", mnData.id)
-        .order("created_at", { ascending: true })
+        .eq("pengajuan_id", pengajuanId)
+        .maybeSingle()
+
+      if (mnData) {
+        setNotulen(mnData)
+        setForm(mnData)
         
-      if (aiData) setActionItems(aiData)
+        const { data: aiData } = await supabase
+          .from("meeting_action_items")
+          .select("*")
+          .eq("meeting_minutes_id", mnData.id)
+          .order("created_at", { ascending: true })
+          
+        if (aiData) setActionItems(aiData)
+      } else {
+        setForm({
+          meeting_title: pengajuanData?.nama_event || "",
+          meeting_type: pengajuanData?.jenis_event || "",
+          meeting_date: pengajuanData?.tanggal_mulai ? new Date(pengajuanData.tanggal_mulai).toISOString().split('T')[0] : "",
+          start_time: pengajuanData?.tanggal_mulai ? new Date(pengajuanData.tanggal_mulai).toTimeString().substring(0,5) : "",
+          end_time: pengajuanData?.tanggal_selesai ? new Date(pengajuanData.tanggal_selesai).toTimeString().substring(0,5) : "",
+          location: pengajuanData?.area_fasilitas?.join(", ") || "",
+          chairperson_name: pengajuanData?.nama_pemohon || "",
+          secretary_name: "",
+          agenda: pengajuanData?.deskripsi_kegiatan || "",
+          discussion_summary: "",
+          decisions: "",
+          important_notes: "",
+          status: 'draft',
+          privacy_level: 'internal',
+          is_published: false
+        })
+      }
     }
     setLoading(false)
   }
 
   const handleSave = async (isFinal: boolean = false) => {
     setSaving(true)
-    const payload = {
-      pengajuan_id: pengajuanId,
-      ...form,
-      status: isFinal ? 'finalized' : 'draft',
-      updated_at: new Date().toISOString()
-    }
-
-    if (notulen?.id) {
-      const { error } = await supabase.from("meeting_minutes").update(payload).eq("id", notulen.id)
-      if (!error) {
-        setNotulen({ ...notulen, ...payload } as MeetingMinutes)
+    if (isGuest && eventId) {
+      const res = await saveMeetingMinutesAction(eventId, form, isFinal)
+      if (res.error) {
+        alert("Gagal menyimpan: " + res.error)
+      } else if (res.minutes) {
+        setNotulen(res.minutes)
+        setForm(res.minutes)
         alert(isFinal ? "Laporan difinalisasi!" : "Draft berhasil disimpan.")
       }
     } else {
-      const { data, error } = await supabase.from("meeting_minutes").insert(payload).select().single()
-      if (data) {
-        setNotulen(data)
-        alert("Draft notulen berhasil dibuat.")
+      const payload = {
+        pengajuan_id: pengajuanId,
+        ...form,
+        status: isFinal ? 'finalized' : 'draft',
+        updated_at: new Date().toISOString()
+      }
+
+      if (notulen?.id) {
+        const { error } = await supabase.from("meeting_minutes").update(payload).eq("id", notulen.id)
+        if (!error) {
+          setNotulen({ ...notulen, ...payload } as MeetingMinutes)
+          alert(isFinal ? "Laporan difinalisasi!" : "Draft berhasil disimpan.")
+        } else {
+          alert("Gagal memperbarui draft.")
+        }
+      } else {
+        const { data, error } = await supabase.from("meeting_minutes").insert(payload).select().single()
+        if (data) {
+          setNotulen(data)
+          alert("Draft notulen berhasil dibuat.")
+        } else {
+          alert("Gagal membuat draft.")
+        }
       }
     }
     setSaving(false)
@@ -98,18 +197,30 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
     
     setSaving(true)
     const newPublishStatus = !form.is_published
-    const payload = {
-      is_published: newPublishStatus,
-      published_at: newPublishStatus ? new Date().toISOString() : null
-    }
 
-    const { error } = await supabase.from("meeting_minutes").update(payload).eq("id", notulen.id)
-    if (!error) {
-      setNotulen({ ...notulen, ...payload } as MeetingMinutes)
-      setForm({ ...form, ...payload })
-      alert(newPublishStatus ? "Laporan berhasil dipublikasikan ke publik!" : "Laporan ditarik dari publik (Unpublished).")
+    if (isGuest && eventId) {
+      const res = await togglePublishAction(eventId, notulen.id, newPublishStatus)
+      if (res.error) {
+        alert("Gagal memperbarui status publikasi: " + res.error)
+      } else if (res.minutes) {
+        setNotulen(res.minutes)
+        setForm(res.minutes)
+        alert(newPublishStatus ? "Laporan berhasil dipublikasikan ke publik!" : "Laporan ditarik dari publik (Unpublished).")
+      }
     } else {
-      alert("Gagal memperbarui status publikasi.")
+      const payload = {
+        is_published: newPublishStatus,
+        published_at: newPublishStatus ? new Date().toISOString() : null
+      }
+
+      const { error } = await supabase.from("meeting_minutes").update(payload).eq("id", notulen.id)
+      if (!error) {
+        setNotulen({ ...notulen, ...payload } as MeetingMinutes)
+        setForm({ ...form, ...payload })
+        alert(newPublishStatus ? "Laporan berhasil dipublikasikan ke publik!" : "Laporan ditarik dari publik (Unpublished).")
+      } else {
+        alert("Gagal memperbarui status publikasi.")
+      }
     }
     setSaving(false)
   }
@@ -122,22 +233,47 @@ export default function NotulenTab({ pengajuanId, pengajuanData }: { pengajuanId
     if (!notulen?.id) return alert("Simpan draft notulen terlebih dahulu sebelum menambah Action Item!")
     
     setAddingAi(true)
-    const { data, error } = await supabase.from("meeting_action_items").insert({
-      meeting_minutes_id: notulen.id,
-      ...newAi
-    }).select().single()
+    if (isGuest && eventId) {
+      const res = await addActionItemAction(eventId, notulen.id, newAi)
+      if (res.error) {
+        alert("Gagal menambah Action Item: " + res.error)
+      } else if (res.actionItem) {
+        setActionItems([...actionItems, res.actionItem])
+        setNewAi({ description: "", assignee_name: "", deadline: "", status: 'pending', notes: "" })
+      }
+    } else {
+      const { data, error } = await supabase.from("meeting_action_items").insert({
+        meeting_minutes_id: notulen.id,
+        ...newAi
+      }).select().single()
 
-    if (data) {
-      setActionItems([...actionItems, data])
-      setNewAi({ description: "", assignee_name: "", deadline: "", status: 'pending', notes: "" })
+      if (data) {
+        setActionItems([...actionItems, data])
+        setNewAi({ description: "", assignee_name: "", deadline: "", status: 'pending', notes: "" })
+      } else {
+        alert("Gagal menambah Action Item.")
+      }
     }
     setAddingAi(false)
   }
 
   const handleDeleteAi = async (id: string) => {
     if (confirm("Hapus action item ini?")) {
-      await supabase.from("meeting_action_items").delete().eq("id", id)
-      setActionItems(actionItems.filter(ai => ai.id !== id))
+      if (isGuest && eventId) {
+        const res = await deleteActionItemAction(eventId, id)
+        if (res.error) {
+          alert("Gagal menghapus: " + res.error)
+        } else {
+          setActionItems(actionItems.filter(ai => ai.id !== id))
+        }
+      } else {
+        const { error } = await supabase.from("meeting_action_items").delete().eq("id", id)
+        if (!error) {
+          setActionItems(actionItems.filter(ai => ai.id !== id))
+        } else {
+          alert("Gagal menghapus Action Item.")
+        }
+      }
     }
   }
 
