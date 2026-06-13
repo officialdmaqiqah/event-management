@@ -70,6 +70,7 @@ const FASILITAS_MAKT = [
     id: "halaman-belakang",
     nama: "Halaman Belakang (Area Pasir)",
     deskripsi: "Area santai berbasis alam. Tempat sempurna untuk kegiatan edukasi anak (TPA/TPQ), outbound mini, atau acara bernuansa kasual.",
+    image: "/halaman-belakang.jpg",
   },
   {
     id: "lapangan-parkir",
