@@ -64,6 +64,7 @@ const FASILITAS_MAKT = [
     id: "pelataran-samping",
     nama: "Halaman Pelataran Samping",
     deskripsi: "Lahan paving semi-outdoor yang fleksibel. Biasa dimanfaatkan untuk bazar UMKM, pameran buku, dan kegiatan komunitas.",
+    image: "/pelataran-samping.jpg",
   },
   {
     id: "halaman-belakang",
