@@ -381,3 +381,28 @@ export async function guestAddParticipantAction(eventId: string, pData: any) {
     return { error: error.message }
   }
 }
+
+// 12. Check in a registered participant manually
+export async function checkInParticipantAction(eventId: string, participantId: string) {
+  try {
+    await verifyEventAndGetRequestId(eventId)
+    const supabaseAdmin = createAdminClient()
+
+    const { data, error } = await supabaseAdmin
+      .from('participants')
+      .update({
+        status: 'attended',
+        checked_in_at: new Date().toISOString(),
+        check_in_method: 'manual'
+      })
+      .eq('id', participantId)
+      .select()
+      .single()
+
+    if (error) throw error
+    return { participant: data }
+  } catch (error: any) {
+    console.error('checkInParticipantAction error:', error)
+    return { error: error.message }
+  }
+}
