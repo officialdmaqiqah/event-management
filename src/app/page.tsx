@@ -53,6 +53,7 @@ const FASILITAS_MAKT = [
     id: "ruang-lt2",
     nama: "Ruang Lt. 2",
     deskripsi: "Ruangan privat yang nyaman. Ideal untuk musyawarah, rapat pimpinan, diskusi kelompok terbatas, kelas training, atau pelatihan.",
+    image: "/ruang-lt2.jpg",
   },
   {
     id: "pelataran-depan",
