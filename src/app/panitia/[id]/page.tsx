@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { 
   Users, UserCheck, Camera, ShieldCheck, MapPin, Calendar, 
-  FileText, Image as ImageIcon, Printer, Plus, Loader2 
+  FileText, Image as ImageIcon, Printer, Plus, Loader2, Link as LinkIcon, ExternalLink 
 } from "lucide-react"
 import NotulenTab from "@/app/admin/(protected)/pengajuan/[id]/NotulenTab"
 import DokumentasiTab from "@/app/admin/(protected)/pengajuan/[id]/DokumentasiTab"
@@ -34,6 +34,20 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
   const [showAddForm, setShowAddForm] = useState(false)
   const [newParticipant, setNewParticipant] = useState({ full_name: "", whatsapp: "", organization: "" })
   const [addingParticipant, setAddingParticipant] = useState(false)
+
+  // Link pendaftaran & copy state
+  const [copied, setCopied] = useState(false)
+  const registrationUrl = event?.registration_slug 
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/${event.registration_slug}` 
+    : ''
+
+  const handleCopyLink = () => {
+    if (registrationUrl) {
+      navigator.clipboard.writeText(registrationUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    }
+  }
 
   useEffect(() => {
     fetchData()
@@ -217,6 +231,58 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
                 </CardContent>
               </Card>
             </div>
+
+            {/* Tautan Pendaftaran & QR Code */}
+            {event.registration_slug && (
+              <Card className="shadow-sm border border-slate-200 rounded-2xl overflow-hidden bg-white p-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="space-y-3 flex-1 w-full">
+                    <div>
+                      <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                        <LinkIcon className="h-4.5 w-4.5 text-indigo-600" /> Tautan Pendaftaran Peserta (Public)
+                      </h4>
+                      <p className="text-xs text-slate-500">Bagikan tautan ini kepada jamaah/peserta untuk melakukan pendaftaran online.</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full">
+                      <input 
+                        readOnly 
+                        value={registrationUrl} 
+                        className="flex-1 text-xs border border-slate-200 bg-slate-50 rounded-lg p-2.5 font-mono select-all focus:outline-none"
+                      />
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={handleCopyLink}
+                          className={`h-9 text-xs font-bold ${copied ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-slate-800 hover:bg-slate-900 text-white'}`}
+                        >
+                          {copied ? "Tersalin!" : "Salin Link"}
+                        </Button>
+                        <a href={registrationUrl} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-initial">
+                          <Button variant="outline" className="w-full sm:w-auto h-9 text-xs font-semibold gap-1">
+                            Buka Form <ExternalLink className="h-3.5 w-3.5" />
+                          </Button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-end">
+                    <div className="text-center sm:text-left">
+                      <h5 className="text-xs font-bold text-slate-700">QR Code Pendaftaran</h5>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Scan untuk mendaftar di lokasi.</p>
+                    </div>
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(registrationUrl)}`} 
+                      alt="QR Code Pendaftaran" 
+                      className="w-20 h-20 border border-slate-200 p-1 bg-white rounded-lg shadow-sm hover:scale-105 transition-transform cursor-zoom-in"
+                      onClick={() => {
+                        window.open(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(registrationUrl)}`, '_blank')
+                      }}
+                      title="Klik untuk memperbesar QR Code"
+                    />
+                  </div>
+                </div>
+              </Card>
+            )}
 
             {/* Attendance Title and Add Form toggle */}
             <div className="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
