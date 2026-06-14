@@ -65,7 +65,7 @@ const TwitterIcon = () => (
 const getEventUrl = (event: any) => {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://event.kubahtimah.com'
   const base = origin.includes('localhost') ? 'https://event.kubahtimah.com' : origin
-  return event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender`
+  return event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender?event=${event.id}`
 }
 
 const formatShareDate = (startStr: string, endStr: string) => {
@@ -601,7 +601,7 @@ export default function AdminCalendarPage() {
               </div>
 
               {selectedEvent.banner_url && (
-                <div className="mt-2 pt-2 border-t border-slate-200">
+                <div className="mt-3">
                   <Button 
                     className="w-full gap-2 text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md border-0 font-bold transition-all"
                     onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}
@@ -612,7 +612,7 @@ export default function AdminCalendarPage() {
               )}
 
               {selectedEvent.is_public_event && selectedEvent.public_slug && (
-                <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="mt-2">
                   {new Date() > new Date(selectedEvent.tanggal_selesai) ? (
                     <Button disabled className="w-full bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed font-medium">
                       Pendaftaran Ditutup (Event Berakhir)
@@ -628,7 +628,7 @@ export default function AdminCalendarPage() {
               )}
 
                {selectedEvent.privacy_event !== 'umum_saja' && selectedEvent.privacy_event !== 'rahasia' && (
-                  <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-200">
+                  <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-200">
                     <div className="relative">
                       <Button
                         variant="outline"
