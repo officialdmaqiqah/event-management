@@ -64,6 +64,12 @@ const TwitterIcon = () => (
 )
 
 // Helper functions for sharing & calendar
+const getEventUrl = (event: any) => {
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://event.kubahtimah.com'
+  const base = origin.includes('localhost') ? 'https://event.kubahtimah.com' : origin
+  return event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender`
+}
+
 const formatShareDate = (startStr: string, endStr: string) => {
   try {
     const start = new Date(startStr)
@@ -87,7 +93,7 @@ const formatUTC = (dateStr: string) => {
 
 const generateShareText = (event: any) => {
   const { date, time } = formatShareDate(event.tanggal_mulai, event.tanggal_selesai)
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   
   if (event.nama_ustadz || event.judul_kajian) {
     return `🕌 *HADIRILAH & SYIARKANLAH KAJIAN ISLAM* 🕌\n*Masjid Agung Kubah Timah*\n\n📌 *TEMA KAJIAN:*\n👉 "${event.judul_kajian || event.nama_event}"\n\n👤 *Narasumber/Ustadz:*\nUst. ${event.nama_ustadz || 'Belum ditentukan'}\n\n📅 *WAKTU PELAKSANAAN:*\n• Hari/Tanggal: ${date}\n• Waktu: ${time} WIB\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Informasi & Pendaftaran:*\n${eventUrl}`
@@ -103,17 +109,17 @@ const handleWhatsAppShare = (event: any) => {
 
 const handleTelegramShare = (event: any) => {
   const text = generateShareText(event)
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(text)}`, '_blank')
 }
 
 const handleFacebookShare = (event: any) => {
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank')
 }
 
 const handleTwitterShare = (event: any) => {
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   const text = `Hadirilah kegiatan "${event.nama_event}" di Masjid Agung Kubah Timah!`
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(eventUrl)}`, '_blank')
 }
@@ -129,7 +135,7 @@ const handleCopyText = async (event: any) => {
 }
 
 const handleGoogleCalendar = (event: any) => {
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   const startDateUTC = formatUTC(event.tanggal_mulai)
   const endDateUTC = formatUTC(event.tanggal_selesai)
   const details = `${event.deskripsi_kegiatan || ''}\n\nDetail Event: ${eventUrl}`
@@ -140,7 +146,7 @@ const handleGoogleCalendar = (event: any) => {
 }
 
 const handleDownloadICS = (event: any) => {
-  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const eventUrl = getEventUrl(event)
   const startDateUTC = formatUTC(event.tanggal_mulai)
   const endDateUTC = formatUTC(event.tanggal_selesai)
   
@@ -149,7 +155,7 @@ const handleDownloadICS = (event: any) => {
     'VERSION:2.0',
     'PRODID:-//Masjid Agung Kubah Timah//Jadwal Event//ID',
     'BEGIN:VEVENT',
-    `UID:${event.id}@kubah-timah.com`,
+    `UID:${event.id}@kubahtimah.com`,
     `DTSTAMP:${startDateUTC}`,
     `DTSTART:${startDateUTC}`,
     `DTEND:${endDateUTC}`,
