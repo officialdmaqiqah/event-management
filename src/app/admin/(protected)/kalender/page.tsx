@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { 
   ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles, BookOpen,
-  FileImage, X
+  FileImage, X, CalendarPlus, Copy
 } from "lucide-react"
 import Link from "next/link"
 
@@ -34,6 +34,139 @@ type PengajuanEvent = {
   banner_url?: string
   nama_ustadz?: string
   judul_kajian?: string
+}
+
+// SVG Icons for Social Media Share
+const WhatsAppIcon = () => (
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.713-1.458L0 24zm6.59-3.791c1.56.927 3.494 1.441 5.393 1.442 5.593 0 10.144-4.55 10.146-10.143.001-2.71-1.05-5.257-2.959-7.17-1.91-1.913-4.453-2.966-7.164-2.967-5.593 0-10.144 4.55-10.147 10.145-.001 1.958.513 3.868 1.488 5.568l-.587 2.144 2.193-.575zM17.41 14.286c-.294-.148-1.741-.859-2.01-.958-.269-.099-.466-.148-.662.146-.196.294-.76.958-.931 1.155-.171.196-.343.221-.637.073-.294-.148-1.243-.458-2.37-1.465-.877-.782-1.47-1.747-1.641-2.042-.172-.294-.018-.453.13-.601.133-.133.294-.343.441-.515.147-.171.196-.294.294-.49.098-.196.049-.367-.024-.515-.074-.148-.662-1.597-.908-2.189-.24-.578-.48-.5-.662-.51-.171-.007-.367-.007-.564-.007-.196 0-.515.074-.784.368-.269.294-1.029.1-1.029 2.454 0 1.447 1.054 2.846 1.201 3.042.147.196 2.074 3.168 5.023 4.444.702.304 1.25.485 1.677.62.705.224 1.347.193 1.854.117.564-.084 1.741-.711 1.986-1.396.246-.686.246-1.275.172-1.396-.073-.122-.269-.196-.564-.343z"/>
+  </svg>
+)
+
+const TelegramIcon = () => (
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+    <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.61l-1.89 8.92c-.14.63-.51.79-1.04.49l-2.88-2.12-1.39 1.34c-.15.15-.28.28-.58.28l.2-2.94 5.36-4.84c.23-.21-.05-.32-.35-.12L8.27 13.5l-2.85-.89c-.62-.19-.63-.62.13-.92L16.63 7.42c.51-.19.96.11.93 1.19z" />
+  </svg>
+)
+
+const FacebookIcon = () => (
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+    <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+  </svg>
+)
+
+const TwitterIcon = () => (
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+)
+
+// Helper functions for sharing & calendar
+const formatShareDate = (startStr: string, endStr: string) => {
+  try {
+    const start = new Date(startStr)
+    const end = new Date(endStr)
+    const formatDay = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(start)
+    const formatTime = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`
+    return { date: formatDay, time: formatTime }
+  } catch (e) {
+    return { date: '-', time: '-' }
+  }
+}
+
+const formatUTC = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr)
+    return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+  } catch (e) {
+    return ''
+  }
+}
+
+const generateShareText = (event: any) => {
+  const { date, time } = formatShareDate(event.tanggal_mulai, event.tanggal_selesai)
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  
+  if (event.nama_ustadz || event.judul_kajian) {
+    return `🕌 *HADIRILAH & SYIARKANLAH KAJIAN ISLAM* 🕌\n*Masjid Agung Kubah Timah*\n\n📌 *TEMA KAJIAN:*\n👉 "${event.judul_kajian || event.nama_event}"\n\n👤 *Narasumber/Ustadz:*\nUst. ${event.nama_ustadz || 'Belum ditentukan'}\n\n📅 *WAKTU PELAKSANAAN:*\n• Hari/Tanggal: ${date}\n• Waktu: ${time} WIB\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Informasi & Pendaftaran:*\n${eventUrl}`
+  } else {
+    return `📢 *INFORMASI KEGIATAN MAKT* 📢\n*Masjid Agung Kubah Timah*\n\n📅 *${event.nama_event}*\n_${event.jenis_event}_\n\n• Waktu: ${date} (${time} WIB)\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
+  }
+}
+
+const handleWhatsAppShare = (event: any) => {
+  const text = generateShareText(event)
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
+}
+
+const handleTelegramShare = (event: any) => {
+  const text = generateShareText(event)
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(text)}`, '_blank')
+}
+
+const handleFacebookShare = (event: any) => {
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank')
+}
+
+const handleTwitterShare = (event: any) => {
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const text = `Hadirilah kegiatan "${event.nama_event}" di Masjid Agung Kubah Timah!`
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(eventUrl)}`, '_blank')
+}
+
+const handleCopyText = async (event: any) => {
+  const text = generateShareText(event)
+  try {
+    await navigator.clipboard.writeText(text)
+    alert("Teks undangan berhasil disalin!")
+  } catch (err) {
+    console.error("Gagal menyalin teks", err)
+  }
+}
+
+const handleGoogleCalendar = (event: any) => {
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const startDateUTC = formatUTC(event.tanggal_mulai)
+  const endDateUTC = formatUTC(event.tanggal_selesai)
+  const details = `${event.deskripsi_kegiatan || ''}\n\nDetail Event: ${eventUrl}`
+  const location = `${(event.area_fasilitas as string[]).join(', ')} - Masjid Agung Kubah Timah`
+  
+  const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.nama_event)}&dates=${startDateUTC}/${endDateUTC}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`
+  window.open(gCalUrl, '_blank')
+}
+
+const handleDownloadICS = (event: any) => {
+  const eventUrl = event.public_slug ? `https://kubah-timah.com/${event.public_slug}` : 'https://kubah-timah.com/kalender'
+  const startDateUTC = formatUTC(event.tanggal_mulai)
+  const endDateUTC = formatUTC(event.tanggal_selesai)
+  
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Masjid Agung Kubah Timah//Jadwal Event//ID',
+    'BEGIN:VEVENT',
+    `UID:${event.id}@kubah-timah.com`,
+    `DTSTAMP:${startDateUTC}`,
+    `DTSTART:${startDateUTC}`,
+    `DTEND:${endDateUTC}`,
+    `SUMMARY:${event.nama_event}`,
+    `DESCRIPTION:${(event.deskripsi_kegiatan || '').replace(/\n/g, '\\n')}\\n\\nDetail: ${eventUrl}`,
+    `LOCATION:${(event.area_fasilitas as string[]).join(', ')} - Masjid Agung Kubah Timah`,
+    `URL:${eventUrl}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n')
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', `${event.nama_event.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 
 export default function AdminCalendarPage() {
@@ -483,6 +616,80 @@ export default function AdminCalendarPage() {
                       </Button>
                     </Link>
                   )}
+                </div>
+              )}
+
+              {selectedEvent.privacy_event !== 'umum_saja' && selectedEvent.privacy_event !== 'rahasia' && (
+                <div className="mt-4 pt-4 border-t border-slate-200 space-y-4">
+                  <div>
+                    <span className="block font-bold text-slate-700 text-xs mb-2">Bagikan Kegiatan:</span>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-emerald-700 border-emerald-100 hover:bg-emerald-50 bg-emerald-50/20"
+                        onClick={() => handleWhatsAppShare(selectedEvent)}
+                      >
+                        <WhatsAppIcon /> WhatsApp
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-sky-700 border-sky-100 hover:bg-sky-50 bg-sky-50/20"
+                        onClick={() => handleTelegramShare(selectedEvent)}
+                      >
+                        <TelegramIcon /> Telegram
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-blue-700 border-blue-100 hover:bg-blue-50 bg-blue-50/20"
+                        onClick={() => handleFacebookShare(selectedEvent)}
+                      >
+                        <FacebookIcon /> Facebook
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-slate-800 border-slate-200 hover:bg-slate-50 bg-slate-50/20"
+                        onClick={() => handleTwitterShare(selectedEvent)}
+                      >
+                        <TwitterIcon /> X
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-slate-700 border-slate-200 hover:bg-slate-50"
+                        onClick={() => handleCopyText(selectedEvent)}
+                        title="Salin Undangan Lengkap"
+                      >
+                        <Copy className="w-4 h-4 text-slate-500" /> Salin Teks
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="block font-bold text-slate-700 text-xs mb-2">Tambahkan Pengingat Kalender HP:</span>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-indigo-700 border-indigo-100 hover:bg-indigo-50 bg-indigo-50/20"
+                        onClick={() => handleGoogleCalendar(selectedEvent)}
+                      >
+                        <CalendarPlus className="w-4 h-4 text-indigo-500" /> Google Calendar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 gap-1.5 text-xs font-semibold text-rose-700 border-rose-100 hover:bg-rose-50 bg-rose-50/20"
+                        onClick={() => handleDownloadICS(selectedEvent)}
+                        title="Untuk Apple Calendar, Outlook, atau Calendar HP Bawaan"
+                      >
+                        <CalendarDays className="w-4 h-4 text-rose-500" /> Kalender HP (iCal)
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               )}
             </CardContent>
