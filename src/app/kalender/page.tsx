@@ -70,7 +70,7 @@ export default function PublicCalendarPage() {
 
   const fetchJenisOptions = async () => {
     const { data } = await supabase.from('jenis_event').select('name').order('name')
-    if (data) setJenisOptions(data.map(d => d.name))
+    if (data) setJenisOptions((data as any[]).map(d => d.name))
   }
 
   const fetchEvents = async () => {
@@ -104,10 +104,10 @@ export default function PublicCalendarPage() {
       const linkedRequestIds = new Set()
 
       if (publicEventsData) {
-        publicEventsData.forEach(pe => {
+        (publicEventsData as any[]).forEach(pe => {
           if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
           
-          const correspondingPengajuan = pengajuanData?.find(p => p.id === pe.event_request_id)
+          const correspondingPengajuan = (pengajuanData as any[])?.find(p => p.id === pe.event_request_id)
 
           mergedEvents.push({
             id: pe.id,
@@ -128,7 +128,7 @@ export default function PublicCalendarPage() {
       }
 
       if (pengajuanData) {
-        pengajuanData.forEach(p => {
+        (pengajuanData as any[]).forEach(p => {
           if (!linkedRequestIds.has(p.id)) {
             mergedEvents.push({
               ...(p as PengajuanEvent),
@@ -436,7 +436,7 @@ export default function PublicCalendarPage() {
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Acara Internal / Umum' : selectedEvent.jenis_event}
                   </CardDescription>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setSelectedEvent(null)} className="h-8 w-8 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm border border-slate-200 -mr-2 -mt-2">
+                 <Button variant="ghost" size="sm" onClick={() => setSelectedEvent(null)} className="h-8 w-8 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm border border-slate-200 -mr-2 -mt-2">
                   <span className="sr-only">Tutup</span>
                   &times;
                 </Button>
@@ -463,7 +463,7 @@ export default function PublicCalendarPage() {
                       <span className="text-slate-600 text-xs italic">Dirahasiakan (Dipakai Internal)</span>
                     ) : (
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {selectedEvent.area_fasilitas.map(a => (
+                        {(selectedEvent.area_fasilitas as any[]).map(a => (
                           <span key={a} className="bg-slate-100 border border-slate-200 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">{a}</span>
                         ))}
                       </div>
@@ -568,11 +568,11 @@ export default function PublicCalendarPage() {
       {previewFlyer && (
         <div className="fixed inset-0 z-[60] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8" onClick={() => setPreviewFlyer(null)}>
           <div className="relative max-w-4xl w-full h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
-            <Button 
+             <Button 
               variant="ghost" 
-              size="icon" 
+              size="sm" 
               onClick={(e) => { e.stopPropagation(); setPreviewFlyer(null); }} 
-              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all"
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all flex items-center justify-center"
             >
               <X className="h-6 w-6" />
             </Button>

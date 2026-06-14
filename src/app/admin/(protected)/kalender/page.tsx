@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { 
   ChevronLeft, ChevronRight, Search, Filter, 
-  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles, BookOpen
+  MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Eye, Sparkles, BookOpen,
+  FileImage, X
 } from "lucide-react"
 import Link from "next/link"
 
@@ -43,6 +44,7 @@ export default function AdminCalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
   const [showFilters, setShowFilters] = useState(false)
+  const [previewFlyer, setPreviewFlyer] = useState<string | null>(null)
   
   // Filters
   const [search, setSearch] = useState("")
@@ -66,7 +68,7 @@ export default function AdminCalendarPage() {
 
   const fetchJenisOptions = async () => {
     const { data } = await supabase.from('jenis_event').select('name').order('name')
-    if (data) setJenisOptions(data.map(d => d.name))
+    if (data) setJenisOptions((data as any[]).map(d => d.name))
   }
 
   const fetchEvents = async () => {
@@ -77,7 +79,7 @@ export default function AdminCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, url_flyer
         `)
         .eq("status", "approved")
       
@@ -99,8 +101,11 @@ export default function AdminCalendarPage() {
       const linkedRequestIds = new Set()
 
       if (publicEventsData) {
-        publicEventsData.forEach(pe => {
+        (publicEventsData as any[]).forEach(pe => {
           if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
+          
+          const correspondingPengajuan = (pengajuanData as any[])?.find(p => p.id === pe.event_request_id)
+          
           mergedEvents.push({
             id: pe.id,
             nama_event: pe.title,
@@ -114,17 +119,18 @@ export default function AdminCalendarPage() {
             deskripsi_kegiatan: pe.description || undefined,
             is_public_event: true,
             public_slug: pe.registration_slug,
-            banner_url: pe.banner_url || undefined
+            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
           })
         })
       }
 
       if (pengajuanData) {
-        pengajuanData.forEach(p => {
+        (pengajuanData as any[]).forEach(p => {
           if (!linkedRequestIds.has(p.id)) {
             mergedEvents.push({
               ...(p as PengajuanEvent),
-              is_public_event: false
+              is_public_event: false,
+              banner_url: p.url_flyer || undefined
             })
           }
         })
@@ -382,14 +388,14 @@ export default function AdminCalendarPage() {
                   </CardTitle>
                   <CardDescription className="mt-1">{selectedEvent.jenis_event}</CardDescription>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setSelectedEvent(null)} className="h-8 w-8 text-slate-400 hover:text-slate-600 rounded-full">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedEvent(null)} className="h-8 w-8 text-slate-400 hover:text-slate-600 rounded-full">
                   <span className="sr-only">Tutup</span>&times;
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm bg-slate-50">
-              {selectedEvent.is_public_event && selectedEvent.banner_url && (
-                <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+              {selectedEvent.banner_url && (
+                <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer" onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}>
                   <img src={selectedEvent.banner_url} alt={selectedEvent.nama_event} className="w-full h-full object-cover" />
                 </div>
               )}
@@ -430,7 +436,7 @@ export default function AdminCalendarPage() {
                   <div>
                     <span className="block font-semibold text-slate-700">Area / Fasilitas</span>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {selectedEvent.area_fasilitas.map(a => (
+                      {(selectedEvent.area_fasilitas as any[]).map(a => (
                         <span key={a} className="bg-white border border-slate-200 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium shadow-sm">{a}</span>
                       ))}
                     </div>
@@ -458,6 +464,17 @@ export default function AdminCalendarPage() {
                 )}
               </div>
 
+              {selectedEvent.banner_url && (
+                <div className="mt-2 pt-2 border-t border-slate-200">
+                  <Button 
+                    className="w-full gap-2 text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md border-0 font-bold transition-all"
+                    onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}
+                  >
+                    <FileImage className="h-4 w-4" /> Lihat Flyer Event
+                  </Button>
+                </div>
+              )}
+
               {selectedEvent.is_public_event && selectedEvent.public_slug && (
                 <div className="mt-4 pt-4 border-t border-slate-200">
                   {new Date() > new Date(selectedEvent.tanggal_selesai) ? (
@@ -475,6 +492,28 @@ export default function AdminCalendarPage() {
               )}
             </CardContent>
           </Card>
+        </div>
+      )}
+
+      {/* Flyer Preview Dialog */}
+      {previewFlyer && (
+        <div className="fixed inset-0 z-[60] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8" onClick={() => setPreviewFlyer(null)}>
+          <div className="relative max-w-4xl w-full h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={(e) => { e.stopPropagation(); setPreviewFlyer(null); }} 
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all flex items-center justify-center"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            <img 
+              src={previewFlyer} 
+              alt="Flyer Event" 
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
 
