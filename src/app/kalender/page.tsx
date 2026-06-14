@@ -15,7 +15,7 @@ import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X, FileImage,
-  CalendarPlus, Copy
+  CalendarPlus, Copy, Share2
 } from "lucide-react"
 import Link from "next/link"
 
@@ -180,6 +180,8 @@ export default function PublicCalendarPage() {
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
   const [showFilters, setShowFilters] = useState(false)
   const [previewFlyer, setPreviewFlyer] = useState<string | null>(null)
+  const [showShareMenu, setShowShareMenu] = useState(false)
+  const [showCalMenu, setShowCalMenu] = useState(false)
   
   // Filters
   const [search, setSearch] = useState("")
@@ -315,6 +317,8 @@ export default function PublicCalendarPage() {
 
   const openEventDetails = (ev: PengajuanEvent) => {
     setSelectedEvent(ev)
+    setShowShareMenu(false)
+    setShowCalMenu(false)
   }
 
   return (
@@ -570,7 +574,7 @@ export default function PublicCalendarPage() {
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Acara Internal / Umum' : selectedEvent.jenis_event}
                   </CardDescription>
                 </div>
-                 <Button variant="ghost" size="sm" onClick={() => setSelectedEvent(null)} className="h-8 w-8 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm border border-slate-200 -mr-2 -mt-2">
+                 <Button variant="ghost" size="sm" onClick={() => { setSelectedEvent(null); setShowShareMenu(false); setShowCalMenu(false); }} className="h-8 w-8 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm border border-slate-200 -mr-2 -mt-2">
                   <span className="sr-only">Tutup</span>
                   &times;
                 </Button>
@@ -684,75 +688,105 @@ export default function PublicCalendarPage() {
                 )}
 
                 {selectedEvent.privacy_event !== 'umum_saja' && (
-                  <div className="mt-4 pt-4 border-t border-slate-100 space-y-4">
-                    <div>
-                      <span className="block font-bold text-slate-700 text-xs mb-2">Bagikan Kegiatan:</span>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-emerald-700 border-emerald-100 hover:bg-emerald-50 bg-emerald-50/20"
-                          onClick={() => handleWhatsAppShare(selectedEvent)}
-                        >
-                          <WhatsAppIcon /> WhatsApp
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-sky-700 border-sky-100 hover:bg-sky-50 bg-sky-50/20"
-                          onClick={() => handleTelegramShare(selectedEvent)}
-                        >
-                          <TelegramIcon /> Telegram
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-blue-700 border-blue-100 hover:bg-blue-50 bg-blue-50/20"
-                          onClick={() => handleFacebookShare(selectedEvent)}
-                        >
-                          <FacebookIcon /> Facebook
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-slate-800 border-slate-200 hover:bg-slate-50 bg-slate-50/20"
-                          onClick={() => handleTwitterShare(selectedEvent)}
-                        >
-                          <TwitterIcon /> X
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-slate-700 border-slate-200 hover:bg-slate-50"
-                          onClick={() => handleCopyText(selectedEvent)}
-                          title="Salin Undangan Lengkap"
-                        >
-                          <Copy className="w-4 h-4 text-slate-500" /> Salin Teks
-                        </Button>
-                      </div>
+                  <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100">
+                    <div className="relative">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 text-slate-700 font-semibold"
+                        onClick={() => {
+                          setShowShareMenu(!showShareMenu);
+                          setShowCalMenu(false);
+                        }}
+                      >
+                        <Share2 className="w-4 h-4" /> Bagikan Acara
+                      </Button>
+                      {showShareMenu && (
+                        <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-20 p-1.5 py-2 space-y-1">
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleWhatsAppShare(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <WhatsAppIcon /> WhatsApp
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-sky-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleTelegramShare(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <TelegramIcon /> Telegram
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleFacebookShare(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <FacebookIcon /> Facebook
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-black rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleTwitterShare(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <TwitterIcon /> X
+                          </button>
+                          <div className="border-t border-slate-100 my-1"></div>
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleCopyText(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <Copy className="w-3.5 h-3.5 text-slate-500" /> Salin Teks
+                          </button>
+                        </div>
+                      )}
                     </div>
 
-                    <div>
-                      <span className="block font-bold text-slate-700 text-xs mb-2">Tambahkan Pengingat Kalender HP:</span>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-indigo-700 border-indigo-100 hover:bg-indigo-50 bg-indigo-50/20"
-                          onClick={() => handleGoogleCalendar(selectedEvent)}
-                        >
-                          <CalendarPlus className="w-4 h-4 text-indigo-500" /> Google Calendar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-3 gap-1.5 text-xs font-semibold text-rose-700 border-rose-100 hover:bg-rose-50 bg-rose-50/20"
-                          onClick={() => handleDownloadICS(selectedEvent)}
-                          title="Untuk Apple Calendar, Outlook, atau Calendar HP Bawaan"
-                        >
-                          <CalendarDays className="w-4 h-4 text-rose-500" /> Kalender HP (iCal)
-                        </Button>
-                      </div>
+                    <div className="relative">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 text-slate-700 font-semibold"
+                        onClick={() => {
+                          setShowCalMenu(!showCalMenu);
+                          setShowShareMenu(false);
+                        }}
+                      >
+                        <CalendarPlus className="w-4 h-4" /> Ingatkan Saya
+                      </Button>
+                      {showCalMenu && (
+                        <div className="absolute bottom-full right-0 mb-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-20 p-1.5 py-2 space-y-1">
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleGoogleCalendar(selectedEvent);
+                              setShowCalMenu(false);
+                            }}
+                          >
+                            <CalendarPlus className="w-3.5 h-3.5 text-indigo-500" /> Google Calendar
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-rose-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleDownloadICS(selectedEvent);
+                              setShowCalMenu(false);
+                            }}
+                          >
+                            <CalendarDays className="w-3.5 h-3.5 text-rose-500" /> Kalender HP (iCal)
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
