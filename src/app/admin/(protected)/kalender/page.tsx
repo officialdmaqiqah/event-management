@@ -394,11 +394,6 @@ export default function AdminCalendarPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm bg-slate-50">
-              {selectedEvent.banner_url && (
-                <div className="w-full h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer" onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}>
-                  <img src={selectedEvent.banner_url} alt={selectedEvent.nama_event} className="w-full h-full object-cover" />
-                </div>
-              )}
               <div className="grid grid-cols-1 gap-3">
                 {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
                   <div className={`flex gap-3 p-2 rounded-lg border ${(!selectedEvent.deskripsi_kegiatan?.toLowerCase().includes('rutin') && !selectedEvent.nama_event.toLowerCase().includes('rutin') && !selectedEvent.nama_pemohon?.toLowerCase().includes('rutin') && !selectedEvent.jenis_event?.toLowerCase().includes('rutin')) ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
