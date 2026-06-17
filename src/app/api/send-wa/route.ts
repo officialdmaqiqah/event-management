@@ -37,6 +37,7 @@ export async function POST(req: Request) {
       approval_result_template: "",
       reminder_template: "",
       minutes_template: "",
+      approval_reminder_template: "",
       is_enabled: false
     }
 
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
           if (userProfile.wa_approval_result_template) activeConfig.approval_result_template = userProfile.wa_approval_result_template
           if (userProfile.wa_reminder_template) activeConfig.reminder_template = userProfile.wa_reminder_template
           if (userProfile.wa_minutes_template) activeConfig.minutes_template = userProfile.wa_minutes_template
+          if (userProfile.wa_approval_reminder_template) activeConfig.approval_reminder_template = userProfile.wa_approval_reminder_template
           
           console.log("Using Premium Custom WA Config for event:", event_id)
         }
@@ -119,9 +121,7 @@ export async function POST(req: Request) {
       messageBody = messageBody.replace(/\{\{link_notulen\}\}/g, link_notulen || "")
     } else if (type === 'approval_reminder') {
       const defaultTpl = "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo {{nama_approver}},\nKami mengingatkan bahwa terdapat pengajuan kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
-      messageBody = activeConfig.approval_request_template || defaultTpl // fallback to request template if custom not exists, or just use defaultTpl
-      // If activeConfig doesn't have a specific reminder template for approval, we just use the default.
-      messageBody = defaultTpl
+      messageBody = activeConfig.approval_reminder_template || defaultTpl
       messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")
       messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
       messageBody = messageBody.replace(/\{\{pemohon\}\}/g, pemohon || "")

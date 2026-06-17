@@ -24,7 +24,8 @@ export default function SettingsPage() {
     wa_approval_request_template: "",
     wa_approval_result_template: "",
     wa_reminder_template: "",
-    wa_minutes_template: ""
+    wa_minutes_template: "",
+    wa_approval_reminder_template: ""
   })
 
   const [testNumber, setTestNumber] = useState("")
@@ -56,7 +57,8 @@ export default function SettingsPage() {
           wa_approval_request_template: data.wa_approval_request_template || "📝 *PERMINTAAN APPROVAL KEGIATAN*\n\nAssalamualaikum Bpk/Ibu *{{nama_approver}}*\nTerdapat pengajuan baru di *Sistem Management Event System Masjid Agung Kubah Timah*.\n\nMohon review pengajuan kegiatan berikut:\n- Event : *{{nama_event}}*\n- Jenis : *{{jenis_event}}*\n- Pemohon : *{{pemohon}}*\n- Tanggal Event : *{{tanggal_event}}*\n\nSilakan berikan persetujuan atau penolakan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih.",
           wa_approval_result_template: data.wa_approval_result_template || "*Informasi Status Pengajuan*\n\nHalo *{{nama_pemohon}}*,\nPengajuan kegiatan *{{nama_event}}* Anda telah berstatus: *{{status_pengajuan}}*.\n\nCatatan: *{{catatan}}*\n\nSilakan cek detail lengkapnya di sini:\n{{link_status}}\n\nTerima kasih.",
           wa_reminder_template: data.wa_reminder_template || "*Pengingat Acara BESOK*\n\nHalo *{{nama}}*,\nKami mengingatkan bahwa acara *{{nama_event}}* akan berlangsung esok hari.\n\nMohon siapkan tiket Anda untuk absensi:\n{{link_tiket}}\n\nSampai jumpa di lokasi!",
-          wa_minutes_template: data.wa_minutes_template || "*Publikasi Notulen Rapat*\n\nPemberitahuan: Notulen hasil rapat *{{nama_event}}* telah diterbitkan secara resmi.\n\nSilakan baca selengkapnya dan tindak lanjuti hasil keputusannya melalui tautan berikut:\n{{link_notulen}}\n\nTerima kasih."
+          wa_minutes_template: data.wa_minutes_template || "*Publikasi Notulen Rapat*\n\nPemberitahuan: Notulen hasil rapat *{{nama_event}}* telah diterbitkan secara resmi.\n\nSilakan baca selengkapnya dan tindak lanjuti hasil keputusannya melalui tautan berikut:\n{{link_notulen}}\n\nTerima kasih.",
+          wa_approval_reminder_template: data.wa_approval_reminder_template || "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo *{{nama_approver}}*,\nKami mengingatkan bahwa terdapat pengajuan kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
         })
       }
     }
@@ -89,7 +91,8 @@ export default function SettingsPage() {
         wa_approval_request_template: formData.wa_approval_request_template,
         wa_approval_result_template: formData.wa_approval_result_template,
         wa_reminder_template: formData.wa_reminder_template,
-        wa_minutes_template: formData.wa_minutes_template
+        wa_minutes_template: formData.wa_minutes_template,
+        wa_approval_reminder_template: formData.wa_approval_reminder_template
       })
       .eq('user_id', user.id)
 
@@ -391,6 +394,22 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_approval_request_template" name="wa_approval_request_template" rows={6}
                     value={formData.wa_approval_request_template} onChange={handleChange} 
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Reminder Approval Tertunda */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
+                    <MessageSquare className="w-4 h-4 text-red-500" />
+                    <Label htmlFor="wa_approval_reminder_template" className="font-bold text-base">Pengingat Approval (Tertunda > 24 Jam)</Label>
+                  </div>
+                  <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_approver}}"}</code>, <code>{"{{nama_event}}"}</code>, <code>{"{{pemohon}}"}</code>, <code>{"{{link_approval}}"}</code>
+                  </CardDescription>
+                  <textarea 
+                    id="wa_approval_reminder_template" name="wa_approval_reminder_template" rows={6}
+                    value={formData.wa_approval_reminder_template} onChange={handleChange} 
                     className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
                   />
                 </div>
