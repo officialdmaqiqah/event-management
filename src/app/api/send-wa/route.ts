@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       event_title, 
       link_tiket, 
       footer,
-      template_type, // 'registration' | 'approval_request' | 'approval_result' | 'reminder' | 'minutes'
+      template_type, // 'registration' | 'approval_request' | 'approval_result' | 'reminder' | 'minutes' | 'approval_reminder'
       // Additional variables for other templates
       nama_approver,
       pemohon,
@@ -117,6 +117,15 @@ export async function POST(req: Request) {
       messageBody = activeConfig.minutes_template || defaultTpl
       messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
       messageBody = messageBody.replace(/\{\{link_notulen\}\}/g, link_notulen || "")
+    } else if (type === 'approval_reminder') {
+      const defaultTpl = "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo {{nama_approver}},\nKami mengingatkan bahwa terdapat pengajuan kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
+      messageBody = activeConfig.approval_request_template || defaultTpl // fallback to request template if custom not exists, or just use defaultTpl
+      // If activeConfig doesn't have a specific reminder template for approval, we just use the default.
+      messageBody = defaultTpl
+      messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")
+      messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
+      messageBody = messageBody.replace(/\{\{pemohon\}\}/g, pemohon || "")
+      messageBody = messageBody.replace(/\{\{link_approval\}\}/g, link_approval || "")
     }
 
     const payload = {
