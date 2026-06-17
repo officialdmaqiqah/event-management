@@ -81,6 +81,7 @@ function NewEventForm() {
       let query = supabase.from('pengajuan_peminjaman')
         .select('id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, area_fasilitas, nama_pemohon, nama_lembaga, deskripsi_kegiatan')
         .eq('status', 'approved')
+        .gte('tanggal_selesai', new Date().toISOString())
         .order('tanggal_mulai', { ascending: false })
 
       const { data } = await query
