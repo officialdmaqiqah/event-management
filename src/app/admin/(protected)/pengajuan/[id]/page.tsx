@@ -133,6 +133,15 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const [editJudulVal, setEditJudulVal] = useState("")
   const [editNamaEventVal, setEditNamaEventVal] = useState("")
 
+  // Edit states for Informasi Pemohon
+  const [isEditingPemohon, setIsEditingPemohon] = useState(false)
+  const [editPemohon, setEditPemohon] = useState<Partial<Pengajuan>>({})
+
+  // Edit states for Rincian Event
+  const [isEditingEvent, setIsEditingEvent] = useState(false)
+  const [editEvent, setEditEvent] = useState<Partial<Pengajuan>>({})
+
+
   useEffect(() => {
     fetchUserAndData()
   }, [id])
@@ -817,88 +826,221 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
           {/* Card 1: Data Pemohon */}
           <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
             <div className="h-1 bg-indigo-500" />
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
-                <User className="h-4.5 w-4.5 text-indigo-600" /> Informasi Pemohon
-              </CardTitle>
-              <CardDescription className="text-xs">Informasi identitas penanggungjawab peminjam</CardDescription>
+            <CardHeader className="pb-3 flex flex-row items-start justify-between">
+              <div>
+                <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
+                  <User className="h-4.5 w-4.5 text-indigo-600" /> Informasi Pemohon
+                </CardTitle>
+                <CardDescription className="text-xs mt-1">Informasi identitas penanggungjawab peminjam</CardDescription>
+              </div>
+              {isSuperAdminUser && !isEditingPemohon && (
+                <Button size="sm" variant="outline" className="h-8 text-xs text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => {
+                  setEditPemohon({
+                    nama_pemohon: pengajuan.nama_pemohon,
+                    tipe_pemohon: pengajuan.tipe_pemohon,
+                    nama_lembaga: pengajuan.nama_lembaga,
+                    whatsapp: pengajuan.whatsapp,
+                    email: pengajuan.email,
+                    alamat: pengajuan.alamat
+                  })
+                  setIsEditingPemohon(true)
+                }}>
+                  <Edit3 className="h-3 w-3 mr-1" /> Edit Data
+                </Button>
+              )}
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm pt-2">
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Pemohon</span>
-                <span className="font-semibold text-slate-800 capitalize">{pengajuan.nama_pemohon}</span>
-              </div>
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Tipe Pemohon</span>
-                <span className="font-semibold text-slate-800 capitalize">{pengajuan.tipe_pemohon}</span>
-              </div>
-              {pengajuan.nama_lembaga && (
-                <div className="space-y-1 sm:col-span-2">
-                  <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Lembaga / Instansi</span>
-                  <span className="font-semibold text-slate-800 flex items-center gap-1.5">
-                    <Building className="h-4 w-4 text-slate-400" />
-                    {pengajuan.nama_lembaga}
-                  </span>
+              {isEditingPemohon ? (
+                <div className="col-span-1 sm:col-span-2 space-y-4 bg-indigo-50/50 p-4 rounded-lg border border-indigo-100/50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Pemohon</Label>
+                      <Input value={editPemohon.nama_pemohon || ''} onChange={e => setEditPemohon({...editPemohon, nama_pemohon: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Tipe Pemohon</Label>
+                      <select 
+                        className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" 
+                        value={editPemohon.tipe_pemohon || ''} 
+                        onChange={e => setEditPemohon({...editPemohon, tipe_pemohon: e.target.value as any})}
+                      >
+                        <option value="pribadi">Pribadi</option>
+                        <option value="lembaga">Lembaga</option>
+                        <option value="komunitas">Komunitas</option>
+                        <option value="instansi">Instansi</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Lembaga / Instansi</Label>
+                      <Input value={editPemohon.nama_lembaga || ''} onChange={e => setEditPemohon({...editPemohon, nama_lembaga: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nomor WhatsApp</Label>
+                      <Input value={editPemohon.whatsapp || ''} onChange={e => setEditPemohon({...editPemohon, whatsapp: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Alamat Email</Label>
+                      <Input type="email" value={editPemohon.email || ''} onChange={e => setEditPemohon({...editPemohon, email: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Alamat Lengkap</Label>
+                      <textarea value={editPemohon.alamat || ''} onChange={e => setEditPemohon({...editPemohon, alamat: e.target.value})} className="flex min-h-[60px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 justify-end pt-2">
+                    <Button variant="ghost" size="sm" onClick={() => setIsEditingPemohon(false)} disabled={updating}>Batal</Button>
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                      setUpdating(true)
+                      try {
+                        const { error } = await supabase.from("pengajuan_peminjaman").update(editPemohon).eq("id", pengajuan.id)
+                        if (error) throw error
+                        setPengajuan({...pengajuan, ...editPemohon} as Pengajuan)
+                        setIsEditingPemohon(false)
+                      } catch (err: any) {
+                        alert("Gagal menyimpan: " + err.message)
+                      } finally {
+                        setUpdating(false)
+                      }
+                    }}>
+                      {updating ? "Menyimpan..." : "Simpan Perubahan"}
+                    </Button>
+                  </div>
                 </div>
+              ) : (
+                <>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Pemohon</span>
+                    <span className="font-semibold text-slate-800 capitalize">{pengajuan.nama_pemohon}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Tipe Pemohon</span>
+                    <span className="font-semibold text-slate-800 capitalize">{pengajuan.tipe_pemohon}</span>
+                  </div>
+                  {pengajuan.nama_lembaga && (
+                    <div className="space-y-1 sm:col-span-2">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Lembaga / Instansi</span>
+                      <span className="font-semibold text-slate-800 flex items-center gap-1.5">
+                        <Building className="h-4 w-4 text-slate-400" />
+                        {pengajuan.nama_lembaga}
+                      </span>
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Nomor WhatsApp</span>
+                    <a 
+                      href={`https://wa.me/${(pengajuan.whatsapp || '').replace(/[^0-9]/g, '')}`} 
+                      target="_blank" 
+                      className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
+                    >
+                      <Phone className="h-3.5 w-3.5" />
+                      {pengajuan.whatsapp}
+                    </a>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Alamat Email</span>
+                    <a 
+                      href={`mailto:${pengajuan.email}`} 
+                      className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
+                    >
+                      <Mail className="h-3.5 w-3.5" />
+                      {pengajuan.email}
+                    </a>
+                  </div>
+                  <div className="space-y-1 sm:col-span-2">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Alamat Lengkap</span>
+                    <span className="font-medium text-slate-700 block bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                      {pengajuan.alamat}
+                    </span>
+                  </div>
+                </>
               )}
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Nomor WhatsApp</span>
-                <a 
-                  href={`https://wa.me/${(pengajuan.whatsapp || '').replace(/[^0-9]/g, '')}`} 
-                  target="_blank" 
-                  className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
-                >
-                  <Phone className="h-3.5 w-3.5" />
-                  {pengajuan.whatsapp}
-                </a>
-              </div>
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Alamat Email</span>
-                <a 
-                  href={`mailto:${pengajuan.email}`} 
-                  className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
-                >
-                  <Mail className="h-3.5 w-3.5" />
-                  {pengajuan.email}
-                </a>
-              </div>
-              <div className="space-y-1 sm:col-span-2">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Alamat Lengkap</span>
-                <span className="font-medium text-slate-700 block bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                  {pengajuan.alamat}
-                </span>
-              </div>
             </CardContent>
           </Card>
 
           {/* Card 2: Data Event */}
           <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
             <div className="h-1 bg-blue-500" />
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
-                <Calendar className="h-4.5 w-4.5 text-blue-600" /> Rincian Event & Fasilitas
-              </CardTitle>
-              <CardDescription className="text-xs">Informasi lengkap agenda dan fasilitas yang dipinjam</CardDescription>
+            <CardHeader className="pb-3 flex flex-row items-start justify-between">
+              <div>
+                <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
+                  <Calendar className="h-4.5 w-4.5 text-blue-600" /> Rincian Event & Fasilitas
+                </CardTitle>
+                <CardDescription className="text-xs mt-1">Informasi lengkap agenda dan fasilitas yang dipinjam</CardDescription>
+              </div>
+              {isSuperAdminUser && !isEditingEvent && (
+                <Button size="sm" variant="outline" className="h-8 text-xs text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => {
+                  setEditEvent({
+                    nama_event: pengajuan.nama_event,
+                    jenis_event: pengajuan.jenis_event,
+                    estimasi_peserta: pengajuan.estimasi_peserta,
+                    deskripsi_kegiatan: pengajuan.deskripsi_kegiatan
+                  })
+                  setIsEditingEvent(true)
+                }}>
+                  <Edit3 className="h-3 w-3 mr-1" /> Edit Event
+                </Button>
+              )}
             </CardHeader>
             <CardContent className="space-y-4 pt-2 text-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Event</span>
-                  <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_event}</span>
+              {isEditingEvent ? (
+                <div className="space-y-4 bg-blue-50/50 p-4 rounded-lg border border-blue-100/50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Event</Label>
+                      <Input value={editEvent.nama_event || ''} onChange={e => setEditEvent({...editEvent, nama_event: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Jenis Event</Label>
+                      <Input value={editEvent.jenis_event || ''} onChange={e => setEditEvent({...editEvent, jenis_event: e.target.value})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Estimasi Peserta</Label>
+                      <Input type="number" value={editEvent.estimasi_peserta || 0} onChange={e => setEditEvent({...editEvent, estimasi_peserta: parseInt(e.target.value) || 0})} className="h-9 bg-white" />
+                    </div>
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Deskripsi Kegiatan</Label>
+                      <textarea value={editEvent.deskripsi_kegiatan || ''} onChange={e => setEditEvent({...editEvent, deskripsi_kegiatan: e.target.value})} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 justify-end pt-2">
+                    <Button variant="ghost" size="sm" onClick={() => setIsEditingEvent(false)} disabled={updating}>Batal</Button>
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                      setUpdating(true)
+                      try {
+                        const { error } = await supabase.from("pengajuan_peminjaman").update(editEvent).eq("id", pengajuan.id)
+                        if (error) throw error
+                        setPengajuan({...pengajuan, ...editEvent} as Pengajuan)
+                        setIsEditingEvent(false)
+                      } catch (err: any) {
+                        alert("Gagal menyimpan: " + err.message)
+                      } finally {
+                        setUpdating(false)
+                      }
+                    }}>
+                      {updating ? "Menyimpan..." : "Simpan Perubahan"}
+                    </Button>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <span className="text-xs text-slate-400 font-semibold block uppercase">Jenis Event</span>
-                  <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs inline-block mt-0.5">{pengajuan.jenis_event}</span>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Event</span>
+                    <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_event}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Jenis Event</span>
+                    <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs inline-block mt-0.5">{pengajuan.jenis_event}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Estimasi Peserta</span>
+                    <span className="font-semibold text-slate-800">{pengajuan.estimasi_peserta} Orang</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-slate-400 font-semibold block uppercase">Waktu Pengajuan Dibuat</span>
+                    <span className="font-semibold text-slate-800">{formatDate(pengajuan.created_at)}</span>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <span className="text-xs text-slate-400 font-semibold block uppercase">Estimasi Peserta</span>
-                  <span className="font-semibold text-slate-800">{pengajuan.estimasi_peserta} Orang</span>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-xs text-slate-400 font-semibold block uppercase">Waktu Pengajuan Dibuat</span>
-                  <span className="font-semibold text-slate-800">{formatDate(pengajuan.created_at)}</span>
-                </div>
-              </div>
+              )}
 
               {/* Detail Khusus Kajian/Tabligh Akbar */}
               {(pengajuan.jenis_event.toLowerCase().includes('kajian') || pengajuan.jenis_event.toLowerCase().includes('tabligh') || pengajuan.nama_ustadz || pengajuan.judul_kajian) && (
@@ -1042,12 +1184,14 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 )}
               </div>
 
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block uppercase">Deskripsi Kegiatan</span>
-                <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 leading-relaxed text-xs whitespace-pre-wrap capitalize">
-                  {pengajuan.deskripsi_kegiatan}
-                </p>
-              </div>
+              {!isEditingEvent && (
+                <div className="space-y-1">
+                  <span className="text-xs text-slate-400 font-semibold block uppercase">Deskripsi Kegiatan</span>
+                  <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100/50 leading-relaxed text-xs whitespace-pre-wrap capitalize">
+                    {pengajuan.deskripsi_kegiatan}
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-1">
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Fasilitas / Area Masjid yang Dipinjam</span>
