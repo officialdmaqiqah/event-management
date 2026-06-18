@@ -55,20 +55,27 @@ export async function GET(req: Request) {
         .eq('level', pengajuan.current_approval_level)
         .single()
 
-      if (wfError || !workflow?.user_id) {
+      if (wfError || (!workflow?.user_id && !workflow?.jabatan)) {
         console.log(`No approver found for pengajuan ${pengajuan.id} at level ${pengajuan.current_approval_level}`)
         continue
       }
 
       // Find the user's phone number and profile
-      const { data: profile, error: profError } = await supabase
+      let profileQuery = supabase
         .from('user_profiles')
         .select('full_name, whatsapp')
-        .eq('id', workflow.user_id)
-        .single()
+        
+      if (workflow.user_id) {
+        profileQuery = profileQuery.eq('id', workflow.user_id)
+      } else if (workflow.jabatan) {
+        profileQuery = profileQuery.ilike('jabatan', workflow.jabatan)
+      }
+
+      const { data: profiles, error: profError } = await profileQuery.limit(1)
+      const profile = profiles && profiles.length > 0 ? profiles[0] : null
 
       if (profError || !profile?.whatsapp) {
-        console.log(`No whatsapp number for approver ${workflow.user_id}`)
+        console.log(`No whatsapp number for approver level ${pengajuan.current_approval_level}`)
         continue
       }
 
