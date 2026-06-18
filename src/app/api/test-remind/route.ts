@@ -31,10 +31,12 @@ export async function GET(req: Request) {
     }
 
     const remindersSent = []
+    const debugLogs = []
     const baseUrl = new URL(req.url).origin
 
     // 2. Iterate through pending pengajuan
     for (const pengajuan of pendingPengajuan) {
+      debugLogs.push(`Processing pengajuan ${pengajuan.id}`)
       // Look up jenis_event ID
       const { data: jEvent } = await supabase
         .from('jenis_event')
@@ -43,7 +45,7 @@ export async function GET(req: Request) {
         .maybeSingle()
         
       if (!jEvent) {
-        console.log(`Jenis event ${pengajuan.jenis_event} not found for pengajuan ${pengajuan.id}`)
+        debugLogs.push(`Jenis event ${pengajuan.jenis_event} not found`)
         continue
       }
 
@@ -56,7 +58,7 @@ export async function GET(req: Request) {
         .single()
 
       if (wfError || (!workflow?.user_id && !workflow?.jabatan)) {
-        console.log(`No approver found for pengajuan ${pengajuan.id} at level ${pengajuan.current_approval_level}`)
+        debugLogs.push(`No approver found for level ${pengajuan.current_approval_level}, wfError: ${wfError?.message}`)
         continue
       }
 
@@ -75,10 +77,11 @@ export async function GET(req: Request) {
       const profile = profiles && profiles.length > 0 ? profiles[0] : null
 
       if (profError || !profile?.whatsapp) {
-        console.log(`No whatsapp number for approver level ${pengajuan.current_approval_level}`)
+        debugLogs.push(`No whatsapp number for approver level ${pengajuan.current_approval_level}`)
         continue
       }
 
+      // 3. Send WA message via our own API
       const eventTitle = pengajuan.nama_event || 'Event'
       
       const payload = {
@@ -86,11 +89,12 @@ export async function GET(req: Request) {
         template_type: 'approval_reminder',
         nama_approver: profile.full_name || workflow.jabatan,
         event_title: eventTitle,
-        pemohon: 'Pemohon', // Or we could fetch user_id of pengajuan, but let's keep it simple
-        link_approval: `${baseUrl}/dashboard/approvals`, // Assuming this is the link
+        pemohon: 'Pemohon',
+        link_approval: `${baseUrl}/dashboard/approvals`,
       }
 
       try {
+        debugLogs.push(`Sending WA to ${profile.whatsapp} for ${eventTitle}`)
         const waRes = await fetch(`${baseUrl}/api/send-wa`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -105,18 +109,21 @@ export async function GET(req: Request) {
             .eq('id', pengajuan.id)
 
           remindersSent.push(pengajuan.id)
+          debugLogs.push(`Success sending WA`)
         } else {
-          console.error(`Failed to send WA to ${profile.whatsapp}:`, await waRes.text())
+          const errText = await waRes.text()
+          debugLogs.push(`Failed to send WA: ${errText}`)
         }
-      } catch (waErr) {
-        console.error(`Exception sending WA to ${profile.whatsapp}:`, waErr)
+      } catch (waErr: any) {
+        debugLogs.push(`Exception sending WA: ${waErr.message || String(waErr)}`)
       }
     }
 
     return NextResponse.json({ 
       message: 'Cron job completed', 
       reminders_sent_count: remindersSent.length,
-      pengajuan_ids: remindersSent 
+      pengajuan_ids: remindersSent,
+      debug_logs: debugLogs
     })
 
   } catch (error: any) {
