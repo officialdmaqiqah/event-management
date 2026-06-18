@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
     const { data: pendingPengajuan, error: fetchError } = await supabase
       .from('pengajuan_peminjaman')
-      .select('id, nomor_pengajuan, status, jenis_event_id, current_approval_level, updated_at, last_reminder_sent_at, nama_event')
+      .select('id, nomor_pengajuan, status, jenis_event, current_approval_level, updated_at, last_reminder_sent_at, nama_event')
       .in('status', ['submitted', 'under_review'])
       .lt('updated_at', twentyFourHoursAgo)
       // also ensure last_reminder is null OR < 24 hours ago
@@ -35,11 +35,23 @@ export async function GET(req: Request) {
 
     // 2. Iterate through pending pengajuan
     for (const pengajuan of pendingPengajuan) {
+      // Look up jenis_event ID
+      const { data: jEvent } = await supabase
+        .from('jenis_event')
+        .select('id')
+        .eq('name', pengajuan.jenis_event)
+        .maybeSingle()
+        
+      if (!jEvent) {
+        console.log(`Jenis event ${pengajuan.jenis_event} not found for pengajuan ${pengajuan.id}`)
+        continue
+      }
+
       // Find the approver for this level
       const { data: workflow, error: wfError } = await supabase
         .from('workflow_approval')
         .select('user_id, jabatan')
-        .eq('jenis_event_id', pengajuan.jenis_event_id)
+        .eq('jenis_event_id', jEvent.id)
         .eq('level', pengajuan.current_approval_level)
         .single()
 
