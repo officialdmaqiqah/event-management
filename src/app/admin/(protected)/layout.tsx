@@ -55,8 +55,8 @@ export default async function AdminLayout({
               </Link>
             )}
 
-            {/* 2. Event Publik & Tiketing (Hanya Super Admin) */}
-            {isAdmin && (
+            {/* 2. Event Publik & Tiketing */}
+            {(isAdmin || (profile && profile.is_approved)) && (
               <Link href="/admin/events">
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
                   Event Publik

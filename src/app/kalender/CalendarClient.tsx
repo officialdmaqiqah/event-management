@@ -271,11 +271,11 @@ export default function CalendarClient() {
             tanggal_mulai: pe.start_datetime,
             tanggal_selesai: pe.end_datetime || pe.start_datetime,
             area_fasilitas: [pe.location],
-            privacy_event: 'detail_publik', // public events are fully visible
-            nama_pemohon: pe.organizer_name || 'Admin MAKT',
-            nama_lembaga: null,
-            deskripsi_kegiatan: pe.description || undefined,
-            is_public_event: true,
+            privacy_event: correspondingPengajuan?.privacy_event || 'detail_publik',
+            nama_pemohon: pe.organizer_name || correspondingPengajuan?.nama_pemohon || 'Admin MAKT',
+            nama_lembaga: correspondingPengajuan?.nama_lembaga || null,
+            deskripsi_kegiatan: pe.description || correspondingPengajuan?.deskripsi_kegiatan || undefined,
+            is_public_event: correspondingPengajuan?.privacy_event !== 'publik_terbatas', // Sembunyikan tombol pendaftaran publik di kalender jika ini khusus internal
             public_slug: pe.registration_slug,
             banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
           })
