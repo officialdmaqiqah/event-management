@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
     const { data: pendingPengajuan, error: fetchError } = await supabase
       .from('pengajuan_peminjaman')
-      .select('id, nomor_pengajuan, status, jenis_event_id, current_approval_level, updated_at, last_reminder_sent_at, events ( title )')
+      .select('id, nomor_pengajuan, status, jenis_event_id, current_approval_level, updated_at, last_reminder_sent_at, nama_event')
       .in('status', ['submitted', 'under_review'])
       .lt('updated_at', twentyFourHoursAgo)
       // also ensure last_reminder is null OR < 24 hours ago
@@ -60,8 +60,7 @@ export async function GET(req: Request) {
         continue
       }
 
-      // 3. Send WA message via our own API
-      const eventTitle = Array.isArray(pengajuan.events) ? pengajuan.events[0]?.title : (pengajuan.events as any)?.title || 'Event'
+      const eventTitle = pengajuan.nama_event || 'Event'
       
       const payload = {
         number: profile.whatsapp,
