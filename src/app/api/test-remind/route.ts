@@ -101,8 +101,8 @@ export async function GET(req: Request) {
       pengajuan_ids: remindersSent 
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Cron Error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error.message || String(error) }, { status: 500 })
   }
 }
