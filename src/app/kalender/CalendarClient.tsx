@@ -262,7 +262,14 @@ export default function CalendarClient() {
         (publicEventsData as any[]).forEach(pe => {
           if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
           
-          const correspondingPengajuan = (pengajuanData as any[])?.find(p => p.id === pe.event_request_id)
+          let correspondingPengajuan = (pengajuanData as any[])?.find(p => p.id === pe.event_request_id)
+          // Fallback if event_request_id is null (for older events or unlinked events)
+          if (!correspondingPengajuan) {
+            correspondingPengajuan = (pengajuanData as any[])?.find(p => p.nama_event?.toLowerCase() === pe.title?.toLowerCase())
+            if (correspondingPengajuan) {
+              linkedRequestIds.add(correspondingPengajuan.id)
+            }
+          }
 
           mergedEvents.push({
             id: pe.id,
