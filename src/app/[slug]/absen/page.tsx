@@ -25,7 +25,7 @@ function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   return Math.floor(R * c);
 }
 
-export default function RegistrationPage({ params }: { params: { slug: string } }) {
+export default function DirectAbsenPage({ params }: { params: { slug: string } }) {
   const supabase = createClient()
   const router = useRouter()
   const [event, setEvent] = useState<any>(null)
@@ -60,13 +60,7 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
       return
     }
 
-    // Hitung jumlah pendaftar saat ini
-    const { count } = await supabase
-      .from('participants')
-      .select('*', { count: 'exact', head: true })
-      .eq('event_id', (eventData as any).id)
-
-    setEvent({ ...eventData, current_participants: count || 0 })
+    setEvent(eventData)
     setLoading(false)
   }
 
@@ -99,7 +93,6 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
         status: 'attended', // Langsung hadir
         checked_in_at: new Date().toISOString(),
         custom_responses: customResponses
-
       }
     ])
 
@@ -117,13 +110,6 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
     setSubmitting(true)
     setError(null)
 
-    // Cek Quota
-    if (event.quota && event.current_participants >= event.quota) {
-      setError("Mohon maaf, kuota pendaftaran untuk event ini sudah penuh.")
-      setSubmitting(false)
-      return
-    }
-
     // Format Nama (Title Case & hapus spasi berlebih)
     const formattedName = formData.full_name
       .trim()
@@ -138,19 +124,16 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
       formattedWA = '62' + formattedWA.substring(1)
     }
 
-    // Update state agar UI berubah (opsional, tapi bagus untuk feedback)
     setFormData(prev => ({ ...prev, full_name: formattedName, whatsapp: formattedWA }))
 
-    // Cek duplikasi nomor WhatsApp untuk event ini menggunakan nomor yang sudah di-format
+    // Cek duplikasi nomor WhatsApp untuk event ini
     const { data: existingParticipant, error: checkError } = await supabase
       .from('participants')
-      .select('id')
+      .select('id, status')
       .eq('event_id', event.id)
       .eq('whatsapp', formattedWA)
       .maybeSingle()
       
-    console.log("Check duplicate WA:", existingParticipant, checkError)
-
     if (checkError) {
       setError("Nomor WA ini sudah terdaftar")
       setSubmitting(false)
@@ -158,94 +141,76 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
     }
 
     if (existingParticipant) {
-      setError("Nomor WA ini sudah terdaftar")
+      if (existingParticipant.status === 'attended') {
+        setError("Anda sudah melakukan absen sebelumnya")
+        setSubmitting(false)
+        return
+      } else {
+        // Jika sudah daftar tapi belum absen, update statusnya jadi attended
+        const { error: updateError } = await supabase
+          .from('participants')
+          .update({ 
+            status: 'attended', 
+            checked_in_at: new Date().toISOString() 
+          })
+          .eq('id', existingParticipant.id)
+          
+        if (updateError) {
+          setError(updateError.message)
+          setSubmitting(false)
+          return
+        }
+        
+        setSuccessDirect(true)
+        setSubmitting(false)
+        return
+      }
+    }
+
+    // Validasi Waktu
+    const now = new Date()
+    if (event.checkin_start_datetime && now < new Date(event.checkin_start_datetime)) {
+      setError(`Absen belum dibuka. Absen akan dibuka pada ${format(new Date(event.checkin_start_datetime), "dd MMM yyyy, HH:mm")}`)
+      setSubmitting(false)
+      return
+    }
+    if (event.checkin_end_datetime && now > new Date(event.checkin_end_datetime)) {
+      setError(`Absen sudah ditutup sejak ${format(new Date(event.checkin_end_datetime), "dd MMM yyyy, HH:mm")}`)
       setSubmitting(false)
       return
     }
 
-    // Jika mode Direct Check-in
-    if (!event.requires_registration) {
-      const now = new Date()
-      if (event.checkin_start_datetime && now < new Date(event.checkin_start_datetime)) {
-        setError(`Absen belum dibuka. Absen akan dibuka pada ${format(new Date(event.checkin_start_datetime), "dd MMM yyyy, HH:mm")}`)
-        setSubmitting(false)
-        return
-      }
-      if (event.checkin_end_datetime && now > new Date(event.checkin_end_datetime)) {
-        setError(`Absen sudah ditutup sejak ${format(new Date(event.checkin_end_datetime), "dd MMM yyyy, HH:mm")}`)
+    // Validasi Lokasi
+    if (event.latitude && event.longitude) {
+      if (!navigator.geolocation) {
+        setError("Browser Anda tidak mendukung deteksi lokasi (GPS).")
         setSubmitting(false)
         return
       }
 
-      if (event.latitude && event.longitude) {
-        if (!navigator.geolocation) {
-          setError("Browser Anda tidak mendukung deteksi lokasi (GPS).")
-          setSubmitting(false)
-          return
-        }
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const userLat = position.coords.latitude
-            const userLng = position.coords.longitude
-            const distance = getDistance(userLat, userLng, event.latitude, event.longitude)
-            
-            if (distance > event.radius_meters) {
-              setError(`Anda berada di luar area absen! (Jarak Anda: ${distance}m, Maksimal: ${event.radius_meters}m)`)
-              setSubmitting(false)
-            } else {
-              handleDirectCheckin(userLat, userLng, formattedName, formattedWA)
-            }
-          },
-          (err) => {
-            setError("Gagal mendapatkan lokasi GPS. Pastikan Anda memberikan izin lokasi pada browser.")
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLat = position.coords.latitude
+          const userLng = position.coords.longitude
+          const distance = getDistance(userLat, userLng, event.latitude, event.longitude)
+          
+          if (distance > event.radius_meters) {
+            setError(`Anda berada di luar area absen! (Jarak Anda: ${distance}m, Maksimal: ${event.radius_meters}m)`)
             setSubmitting(false)
-          },
-          { enableHighAccuracy: true }
-        )
-        return
-      } else {
-        // Direct check-in tanpa validasi GPS
-        handleDirectCheckin(0, 0, formattedName, formattedWA)
-        return
-      }
-    }
-
-    // Alur Normal (Pre-Registration)
-    const ticketCode = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const { error: insertError } = await supabase.from('participants').insert([
-      {
-        event_id: event.id,
-        full_name: formattedName,
-        whatsapp: formattedWA,
-        gender: formData.gender,
-        organization: formData.organization,
-        ticket_code: ticketCode,
-        custom_responses: customResponses
-
-      }
-    ])
-
-    if (insertError) {
-      setError(insertError.message)
-      setSubmitting(false)
+          } else {
+            handleDirectCheckin(userLat, userLng, formattedName, formattedWA)
+          }
+        },
+        (err) => {
+          setError("Gagal mendapatkan lokasi GPS. Pastikan Anda memberikan izin lokasi pada browser.")
+          setSubmitting(false)
+        },
+        { enableHighAccuracy: true }
+      )
+      return
     } else {
-      // Kirim WhatsApp (Tidak di-await agar tidak memperlambat UI)
-      const ticketUrl = `${window.location.origin}/${params.slug}/ticket/${ticketCode}`
-      
-      fetch('/api/send-wa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          number: formattedWA,
-          nama: formattedName,
-          event_id: event.id,
-          event_title: event.title,
-          link_tiket: ticketUrl
-        })
-      }).catch(err => console.error("Failed to send WA:", err))
-
-      router.push(`/${params.slug}/success?ticket=${ticketCode}`)
+      handleDirectCheckin(0, 0, formattedName, formattedWA)
+      return
     }
   }
 
@@ -275,14 +240,10 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
     )
   }
 
-  const isDirectCheckin = !event.requires_registration
-
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
       <div className="max-w-4xl mx-auto space-y-10 relative z-10">
         
-        {/* Banner Section */}
-        {/* Banner Section */}
         {event.banner_url && (
           <div className="w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900/5 flex justify-center items-center border border-white/50 backdrop-blur-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -307,7 +268,7 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
           )}
           
           <span className="px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold tracking-wide uppercase">
-            {isDirectCheckin ? 'Form Absensi Kehadiran' : 'Pendaftaran Event'}
+            Form Absensi Kehadiran
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">{event.title}</h1>
           <p className="text-xl text-slate-600 font-medium">{event.type}</p>
@@ -356,33 +317,6 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                     </div>
                   </div>
                 )}
-
-                {event.organizer_contact && (
-                  <div className="flex items-start">
-                    <div className="bg-indigo-100 p-2 rounded-lg mr-4 mt-0.5">
-                      <Phone className="h-5 w-5 text-indigo-600" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-700 text-sm uppercase tracking-wider mb-1">Kontak Person</div>
-                      <div className="text-slate-600 font-medium leading-relaxed">{event.organizer_contact}</div>
-                    </div>
-                  </div>
-                )}
-                
-                {(event.description || event.agenda) && <hr className="border-slate-200" />}
-                
-                {event.description && (
-                  <div>
-                    <div className="font-semibold text-slate-700 text-sm uppercase tracking-wider mb-2">Deskripsi</div>
-                    <p className="text-slate-600 text-sm whitespace-pre-wrap leading-relaxed">{event.description}</p>
-                  </div>
-                )}
-                {event.agenda && (
-                  <div>
-                    <div className="font-semibold text-slate-700 text-sm uppercase tracking-wider mb-2">Agenda</div>
-                    <p className="text-slate-600 text-sm whitespace-pre-wrap leading-relaxed">{event.agenda}</p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
@@ -393,11 +327,9 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl -ml-20 -mb-20"></div>
               
               <CardHeader className="relative z-10 pb-2">
-                <CardTitle className="text-2xl text-slate-800">Data Peserta</CardTitle>
+                <CardTitle className="text-2xl text-slate-800">Absensi Langsung</CardTitle>
                 <CardDescription className="text-base text-slate-500">
-                  {isDirectCheckin 
-                    ? "Isi form di bawah ini untuk mengonfirmasi kehadiran Anda di lokasi." 
-                    : "Silakan isi data diri Anda untuk mendapatkan E-Ticket QR Code."}
+                  Isi form di bawah ini untuk mengonfirmasi kehadiran Anda di lokasi tanpa harus mendaftar tiket terlebih dahulu.
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10 pt-4">
@@ -406,8 +338,8 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                     <div className="bg-slate-100 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
                       <Clock className="w-10 h-10 text-slate-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 mb-2">Pendaftaran Ditutup</h3>
-                    <p className="text-slate-500">Mohon maaf, event ini telah berakhir sehingga sistem tidak lagi menerima pendaftaran atau absensi kehadiran baru.</p>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Absensi Ditutup</h3>
+                    <p className="text-slate-500">Mohon maaf, event ini telah berakhir sehingga sistem tidak lagi menerima absensi kehadiran baru.</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
@@ -417,7 +349,7 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                       </div>
                     )}
                   
-                  {isDirectCheckin && event.latitude && (
+                  {event.latitude && (
                     <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-start gap-3">
                       <Navigation className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <p className="text-sm text-blue-800 font-medium">
@@ -492,22 +424,8 @@ export default function RegistrationPage({ params }: { params: { slug: string } 
                   <Button type="submit" className="w-full h-14 text-lg mt-8 font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl hover:shadow-2xl transition-all rounded-xl" disabled={submitting}>
                     {submitting 
                       ? "Memproses..." 
-                      : (isDirectCheckin ? "Absen Kehadiran Sekarang" : "Daftar & Dapatkan Tiket")}
+                      : "Absen Kehadiran Sekarang"}
                   </Button>
-
-                  {!isDirectCheckin && (
-                    <div className="mt-4 pt-4 border-t border-slate-200">
-                      <p className="text-sm text-center text-slate-500 mb-3">Sudah berada di lokasi dan ingin langsung absen?</p>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        className="w-full h-12 text-blue-600 border-blue-200 hover:bg-blue-50 bg-white/50"
-                        onClick={() => router.push(`/${params.slug}/absen`)}
-                      >
-                        Langsung Absen (Tanpa Daftar)
-                      </Button>
-                    </div>
-                  )}
                 </form>
                 )}
               </CardContent>
