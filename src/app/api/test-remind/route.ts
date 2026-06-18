@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
     if (fetchError) {
       console.error('Error fetching pengajuan:', fetchError)
-      return NextResponse.json({ error: 'Database error' }, { status: 500 })
+      return NextResponse.json({ error: 'Database error', details: fetchError }, { status: 500 })
     }
 
     if (!pendingPengajuan || pendingPengajuan.length === 0) {
