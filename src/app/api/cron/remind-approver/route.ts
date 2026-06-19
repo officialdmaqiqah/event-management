@@ -69,7 +69,7 @@ export async function GET(req: Request) {
         .select('full_name, whatsapp')
         
       if (workflow.user_id) {
-        profileQuery = profileQuery.eq('id', workflow.user_id)
+        profileQuery = profileQuery.eq('user_id', workflow.user_id)
       } else if (workflow.jabatan) {
         profileQuery = profileQuery.ilike('jabatan', workflow.jabatan)
       }
