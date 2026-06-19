@@ -8,18 +8,23 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role f
 export async function GET(req: Request) {
   try {
     const supabase = createClient(supabaseUrl, supabaseKey)
+    const { searchParams } = new URL(req.url)
+    const isForce = searchParams.get('force') === '1'
 
-    // 1. Get pengajuan that are pending/under review and updated > 24h ago
-    // and reminder hasn't been sent in the last 24h.
-    const twentyFourHoursAgo = new Date(Date.now() - 1 * 60 * 1000).toISOString() // 1 minute for testing
-
-    const { data: pendingPengajuan, error: fetchError } = await supabase
+    // 1. Get pengajuan that are pending/under review
+    let query = supabase
       .from('pengajuan_peminjaman')
       .select('id, nomor_pengajuan, status, jenis_event, current_approval_level, updated_at, last_reminder_sent_at, nama_event')
       .in('status', ['submitted', 'under_review'])
-      .lt('updated_at', twentyFourHoursAgo)
-      // also ensure last_reminder is null OR < 24 hours ago
-      .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyFourHoursAgo}`)
+
+    if (!isForce) {
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      query = query
+        .lt('updated_at', twentyFourHoursAgo)
+        .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyFourHoursAgo}`)
+    }
+
+    const { data: pendingPengajuan, error: fetchError } = await query
 
     if (fetchError) {
       console.error('Error fetching pengajuan:', fetchError)
@@ -30,11 +35,20 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: 'No pending approvals need reminding' })
     }
 
-    const remindersSent = []
-    const debugLogs = []
+    const remindersSent: string[] = []
+    const debugLogs: string[] = []
     const baseUrl = new URL(req.url).origin
+    
+    // Group pengajuan by approver's whatsapp
+    interface ApproverGroup {
+      whatsapp: string;
+      nama_approver: string;
+      events: string[];
+      pengajuan_ids: string[];
+    }
+    const approverMap = new Map<string, ApproverGroup>()
 
-    // 2. Iterate through pending pengajuan
+    // 2. Iterate through pending pengajuan to group them
     for (const pengajuan of pendingPengajuan) {
       debugLogs.push(`Processing pengajuan ${pengajuan.id}`)
       // Look up jenis_event ID
@@ -81,20 +95,33 @@ export async function GET(req: Request) {
         continue
       }
 
-      // 3. Send WA message via our own API
       const eventTitle = pengajuan.nama_event || 'Event'
       
-      const payload = {
-        number: profile.whatsapp,
-        template_type: 'approval_reminder',
+      const group = approverMap.get(profile.whatsapp) || {
+        whatsapp: profile.whatsapp,
         nama_approver: profile.full_name || workflow.jabatan,
-        event_title: eventTitle,
-        pemohon: 'Pemohon',
+        events: [],
+        pengajuan_ids: []
+      }
+      
+      group.events.push(`- ${eventTitle}`)
+      group.pengajuan_ids.push(pengajuan.id)
+      approverMap.set(profile.whatsapp, group)
+    }
+
+    // 3. Send grouped WA messages
+    for (const group of Array.from(approverMap.values())) {
+      const payload = {
+        number: group.whatsapp,
+        template_type: 'approval_reminder_summary',
+        nama_approver: group.nama_approver,
+        count: group.events.length,
+        event_list: group.events.join('\n'),
         link_approval: `${baseUrl}/dashboard/approvals`,
       }
 
       try {
-        debugLogs.push(`Sending WA to ${profile.whatsapp} for ${eventTitle}`)
+        debugLogs.push(`Sending WA summary to ${group.whatsapp} with ${group.events.length} events`)
         const waRes = await fetch(`${baseUrl}/api/send-wa`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -102,17 +129,21 @@ export async function GET(req: Request) {
         })
         
         if (waRes.ok) {
-          // 4. Update last_reminder_sent_at
-          await supabase
+          // 4. Update last_reminder_sent_at for all in this group
+          const { error: updErr } = await supabase
             .from('pengajuan_peminjaman')
             .update({ last_reminder_sent_at: new Date().toISOString() })
-            .eq('id', pengajuan.id)
+            .in('id', group.pengajuan_ids)
 
-          remindersSent.push(pengajuan.id)
-          debugLogs.push(`Success sending WA`)
+          if (!updErr) {
+            remindersSent.push(...group.pengajuan_ids)
+            debugLogs.push(`Success sending WA summary and updating db`)
+          } else {
+             debugLogs.push(`Success sending WA summary but failed to update db: ${updErr.message}`)
+          }
         } else {
           const errText = await waRes.text()
-          debugLogs.push(`Failed to send WA: ${errText}`)
+          debugLogs.push(`Failed to send WA summary: ${errText}`)
         }
       } catch (waErr: any) {
         debugLogs.push(`Exception sending WA: ${waErr.message || String(waErr)}`)

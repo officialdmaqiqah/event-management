@@ -32,8 +32,17 @@ export async function GET(req: Request) {
 
     const remindersSent = []
     const baseUrl = new URL(req.url).origin
+    
+    // Group pengajuan by approver's whatsapp
+    interface ApproverGroup {
+      whatsapp: string;
+      nama_approver: string;
+      events: string[];
+      pengajuan_ids: string[];
+    }
+    const approverMap = new Map<string, ApproverGroup>()
 
-    // 2. Iterate through pending pengajuan
+    // 2. Iterate through pending pengajuan to group them
     for (const pengajuan of pendingPengajuan) {
       // Look up jenis_event ID
       const { data: jEvent } = await supabase
@@ -42,10 +51,7 @@ export async function GET(req: Request) {
         .eq('name', pengajuan.jenis_event)
         .maybeSingle()
         
-      if (!jEvent) {
-        console.log(`Jenis event ${pengajuan.jenis_event} not found for pengajuan ${pengajuan.id}`)
-        continue
-      }
+      if (!jEvent) continue
 
       // Find the approver for this level
       const { data: workflow, error: wfError } = await supabase
@@ -55,10 +61,7 @@ export async function GET(req: Request) {
         .eq('level', pengajuan.current_approval_level)
         .single()
 
-      if (wfError || (!workflow?.user_id && !workflow?.jabatan)) {
-        console.log(`No approver found for pengajuan ${pengajuan.id} at level ${pengajuan.current_approval_level}`)
-        continue
-      }
+      if (wfError || (!workflow?.user_id && !workflow?.jabatan)) continue
 
       // Find the user's phone number and profile
       let profileQuery = supabase
@@ -74,20 +77,31 @@ export async function GET(req: Request) {
       const { data: profiles, error: profError } = await profileQuery.limit(1)
       const profile = profiles && profiles.length > 0 ? profiles[0] : null
 
-      if (profError || !profile?.whatsapp) {
-        console.log(`No whatsapp number for approver level ${pengajuan.current_approval_level}`)
-        continue
-      }
+      if (profError || !profile?.whatsapp) continue
 
       const eventTitle = pengajuan.nama_event || 'Event'
       
-      const payload = {
-        number: profile.whatsapp,
-        template_type: 'approval_reminder',
+      const group = approverMap.get(profile.whatsapp) || {
+        whatsapp: profile.whatsapp,
         nama_approver: profile.full_name || workflow.jabatan,
-        event_title: eventTitle,
-        pemohon: 'Pemohon', // Or we could fetch user_id of pengajuan, but let's keep it simple
-        link_approval: `${baseUrl}/dashboard/approvals`, // Assuming this is the link
+        events: [],
+        pengajuan_ids: []
+      }
+      
+      group.events.push(`- ${eventTitle}`)
+      group.pengajuan_ids.push(pengajuan.id)
+      approverMap.set(profile.whatsapp, group)
+    }
+
+    // 3. Send grouped WA messages
+    for (const group of Array.from(approverMap.values())) {
+      const payload = {
+        number: group.whatsapp,
+        template_type: 'approval_reminder_summary',
+        nama_approver: group.nama_approver,
+        count: group.events.length,
+        event_list: group.events.join('\n'),
+        link_approval: `${baseUrl}/dashboard/approvals`,
       }
 
       try {
@@ -98,18 +112,20 @@ export async function GET(req: Request) {
         })
         
         if (waRes.ok) {
-          // 4. Update last_reminder_sent_at
-          await supabase
+          // 4. Update last_reminder_sent_at for all in this group
+          const { error: updErr } = await supabase
             .from('pengajuan_peminjaman')
             .update({ last_reminder_sent_at: new Date().toISOString() })
-            .eq('id', pengajuan.id)
+            .in('id', group.pengajuan_ids)
 
-          remindersSent.push(pengajuan.id)
+          if (!updErr) {
+            remindersSent.push(...group.pengajuan_ids)
+          }
         } else {
-          console.error(`Failed to send WA to ${profile.whatsapp}:`, await waRes.text())
+          console.error(`Failed to send WA to ${group.whatsapp}:`, await waRes.text())
         }
       } catch (waErr) {
-        console.error(`Exception sending WA to ${profile.whatsapp}:`, waErr)
+        console.error(`Exception sending WA to ${group.whatsapp}:`, waErr)
       }
     }
 

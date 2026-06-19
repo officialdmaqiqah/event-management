@@ -21,7 +21,9 @@ export async function POST(req: Request) {
       link_approval,
       status_pengajuan,
       catatan,
-      link_notulen
+      link_notulen,
+      count,
+      event_list
     } = await req.json()
 
     if (!number) {
@@ -125,6 +127,16 @@ export async function POST(req: Request) {
       messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")
       messageBody = messageBody.replace(/\{\{nama_event\}\}/g, event_title || "")
       messageBody = messageBody.replace(/\{\{pemohon\}\}/g, pemohon || "")
+      messageBody = messageBody.replace(/\{\{link_approval\}\}/g, link_approval || "")
+    } else if (type === 'approval_reminder_summary') {
+      const defaultTpl = "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo {{nama_approver}},\nKami mengingatkan bahwa terdapat *{{count}} pengajuan kegiatan* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nDaftar Kegiatan:\n{{event_list}}\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
+      // Kita gunakan defaultTpl jika custom tidak tersedia
+      messageBody = defaultTpl
+      messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")
+      // @ts-ignore
+      messageBody = messageBody.replace(/\{\{count\}\}/g, String(count || ""))
+      // @ts-ignore
+      messageBody = messageBody.replace(/\{\{event_list\}\}/g, event_list || "")
       messageBody = messageBody.replace(/\{\{link_approval\}\}/g, link_approval || "")
     }
 
