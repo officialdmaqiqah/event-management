@@ -129,7 +129,7 @@ export async function POST(req: Request) {
       messageBody = messageBody.replace(/\{\{pemohon\}\}/g, pemohon || "")
       messageBody = messageBody.replace(/\{\{link_approval\}\}/g, link_approval || "")
     } else if (type === 'approval_reminder_summary') {
-      const defaultTpl = "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo {{nama_approver}},\nKami mengingatkan bahwa terdapat *{{count}} pengajuan kegiatan* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nDaftar Kegiatan:\n{{event_list}}\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
+      const defaultTpl = "*Pengingat Approval [Tertunda > 24 Jam]*\n\nBpk/Ibu. *{{nama_approver}}*,\nKami mengingatkan bahwa terdapat pengajuan kegiatan yang **masih menunggu keputusan Anda lebih dari 24 jam**\n\nDaftar kegiatan :\n{{event_list}}\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
       // Kita gunakan defaultTpl jika custom tidak tersedia
       messageBody = defaultTpl
       messageBody = messageBody.replace(/\{\{nama_approver\}\}/g, nama_approver || "")

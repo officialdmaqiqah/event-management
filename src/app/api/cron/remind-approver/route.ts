@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
     const { data: pendingPengajuan, error: fetchError } = await supabase
       .from('pengajuan_peminjaman')
-      .select('id, nomor_pengajuan, status, jenis_event, current_approval_level, updated_at, last_reminder_sent_at, nama_event')
+      .select('id, nomor_pengajuan, status, jenis_event, current_approval_level, updated_at, last_reminder_sent_at, nama_event, tanggal_mulai, nama_pemohon')
       .in('status', ['submitted', 'under_review'])
       .lt('updated_at', twentyFourHoursAgo)
       // also ensure last_reminder is null OR < 24 hours ago
@@ -88,7 +88,13 @@ export async function GET(req: Request) {
         pengajuan_ids: []
       }
       
-      group.events.push(`- ${eventTitle}`)
+      let tgl = '-'
+      if (pengajuan.tanggal_mulai) {
+        tgl = new Date(pengajuan.tanggal_mulai).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+      }
+      
+      const idx = group.events.length + 1
+      group.events.push(`${idx}. ${eventTitle}, ${tgl}, ${pengajuan.nama_pemohon || '-'}`)
       group.pengajuan_ids.push(pengajuan.id)
       approverMap.set(profile.whatsapp, group)
     }
@@ -101,7 +107,7 @@ export async function GET(req: Request) {
         nama_approver: group.nama_approver,
         count: group.events.length,
         event_list: group.events.join('\n'),
-        link_approval: `${baseUrl}/dashboard/approvals`,
+        link_approval: `${baseUrl}/admin/approval`,
       }
 
       try {
