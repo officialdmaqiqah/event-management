@@ -737,8 +737,7 @@ export default function CalendarClient() {
                   <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-100">
                     {((selectedEvent as any).url_flyer || selectedEvent.banner_url) && (
                       <Button 
-                        variant="outline" 
-                        className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 font-semibold shadow-sm transition-all flex items-center justify-center"
+                        className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center h-12 rounded-xl border-0"
                         onClick={() => {
                           trackAnalyticsEvent('view_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
                           setPreviewFlyer((selectedEvent as any).url_flyer || selectedEvent.banner_url!)
