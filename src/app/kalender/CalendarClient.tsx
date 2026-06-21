@@ -10,6 +10,7 @@ import {
 import { id as localeID } from "date-fns/locale"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { trackAnalyticsEvent } from "@/app/actions/analytics"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
@@ -131,6 +132,7 @@ const handleNativeShare = async (event: any) => {
         }
       }
 
+      trackAnalyticsEvent('share_native', getEventUrl(event), { event_id: event.id }).catch(() => {})
       await navigator.share(shareData)
     } catch (err) {
       console.log('Error sharing natively', err)
@@ -147,23 +149,27 @@ const handleNativeShare = async (event: any) => {
 
 const handleWhatsAppShare = (event: any) => {
   const text = generateShareText(event)
+  trackAnalyticsEvent('share_wa', getEventUrl(event), { event_id: event.id }).catch(() => {})
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
 }
 
 const handleTelegramShare = (event: any) => {
   const text = generateShareText(event)
   const eventUrl = getEventUrl(event)
+  trackAnalyticsEvent('share_telegram', eventUrl, { event_id: event.id }).catch(() => {})
   window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(text)}`, '_blank')
 }
 
 const handleFacebookShare = (event: any) => {
   const eventUrl = getEventUrl(event)
+  trackAnalyticsEvent('share_facebook', eventUrl, { event_id: event.id }).catch(() => {})
   window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank')
 }
 
 const handleTwitterShare = (event: any) => {
   const eventUrl = getEventUrl(event)
   const text = `Hadirilah kegiatan "${event.nama_event}" di Masjid Agung Kubah Timah!`
+  trackAnalyticsEvent('share_x', eventUrl, { event_id: event.id }).catch(() => {})
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(eventUrl)}`, '_blank')
 }
 
@@ -193,6 +199,8 @@ const handleDownloadICS = (event: any) => {
   const startDateUTC = formatUTC(event.tanggal_mulai)
   const endDateUTC = formatUTC(event.tanggal_selesai)
   
+  trackAnalyticsEvent('download_ics', eventUrl, { event_id: event.id }).catch(() => {})
+
   const icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -232,16 +240,13 @@ export default function CalendarClient() {
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [showCalMenu, setShowCalMenu] = useState(false)
   
-  // Filters
   const [search, setSearch] = useState("")
   const [filterJenis, setFilterJenis] = useState("")
   const [filterArea, setFilterArea] = useState("")
   const [jenisOptions, setJenisOptions] = useState<string[]>([])
   
-  // Modal Details
   const [selectedEvent, setSelectedEvent] = useState<PengajuanEvent | null>(null)
   
-  // Hardcoded areas for filter (or dynamically derived)
   const AREA_OPTIONS = [
     "Ruang Utama (Masjid)", "Aula Serbaguna", "Halaman Utama", 
     "Ruang Rapat Lt. 1", "Ruang Rapat Lt. 2", "Perpustakaan", 
@@ -274,7 +279,6 @@ export default function CalendarClient() {
   const fetchEvents = async () => {
     setLoading(true)
     try {
-      // 1. Fetch pengajuan
       const { data: pengajuanData, error: pengajuanError } = await supabase
         .from("pengajuan_peminjaman")
         .select(`
@@ -286,7 +290,6 @@ export default function CalendarClient() {
       
       if (pengajuanError) throw pengajuanError
 
-      // 2. Fetch public events
       const { data: publicEventsData, error: publicEventsError } = await supabase
         .from("events")
         .select(`
@@ -297,7 +300,6 @@ export default function CalendarClient() {
 
       if (publicEventsError) throw publicEventsError
 
-      // 3. Merge data
       const mergedEvents: PengajuanEvent[] = []
       const linkedRequestIds = new Set()
 
@@ -306,7 +308,6 @@ export default function CalendarClient() {
           if (pe.event_request_id) linkedRequestIds.add(pe.event_request_id)
           
           let correspondingPengajuan = (pengajuanData as any[])?.find(p => p.id === pe.event_request_id)
-          // Fallback if event_request_id is null (for older events or unlinked events)
           if (!correspondingPengajuan) {
             correspondingPengajuan = (pengajuanData as any[])?.find(p => p.nama_event?.toLowerCase() === pe.title?.toLowerCase())
             if (correspondingPengajuan) {
@@ -325,7 +326,7 @@ export default function CalendarClient() {
             nama_pemohon: pe.organizer_name || correspondingPengajuan?.nama_pemohon || 'Admin MAKT',
             nama_lembaga: correspondingPengajuan?.nama_lembaga || null,
             deskripsi_kegiatan: pe.description || correspondingPengajuan?.deskripsi_kegiatan || undefined,
-            is_public_event: correspondingPengajuan?.privacy_event !== 'publik_terbatas', // Sembunyikan tombol pendaftaran publik di kalender jika ini khusus internal
+            is_public_event: correspondingPengajuan?.privacy_event !== 'publik_terbatas', 
             public_slug: pe.registration_slug,
             banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
           })
@@ -352,12 +353,10 @@ export default function CalendarClient() {
     }
   }
 
-  // Next / Prev navigations
   const nextTime = () => setCurrentDate(viewMode === 'month' ? addMonths(currentDate, 1) : addWeeks(currentDate, 1))
   const prevTime = () => setCurrentDate(viewMode === 'month' ? subMonths(currentDate, 1) : subWeeks(currentDate, 1))
   const goToday = () => setCurrentDate(new Date())
 
-  // Render variables
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(monthStart)
   const startDate = startOfWeek(viewMode === 'month' ? monthStart : currentDate, { weekStartsOn: 1 })
@@ -365,7 +364,6 @@ export default function CalendarClient() {
   const dateFormat = "d"
   const days = eachDayOfInterval({ start: startDate, end: endDate })
 
-  // Apply filters
   const filteredEvents = events.filter(ev => {
     if (search && !ev.nama_event.toLowerCase().includes(search.toLowerCase())) return false
     if (filterJenis && ev.jenis_event !== filterJenis) return false
@@ -385,6 +383,7 @@ export default function CalendarClient() {
   }
 
   const openEventDetails = (ev: PengajuanEvent) => {
+    trackAnalyticsEvent('view_event_detail', getEventUrl(ev), { event_id: ev.id }).catch(() => {})
     setSelectedEvent(ev)
     setShowShareMenu(false)
     setShowCalMenu(false)
@@ -392,7 +391,6 @@ export default function CalendarClient() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans pb-12">
-      {/* Header Public Nav (Simple) */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg text-indigo-700 flex items-center gap-2">
@@ -410,8 +408,6 @@ export default function CalendarClient() {
       </header>
 
       <main className="flex-1 container mx-auto p-4 sm:p-6 lg:max-w-6xl">
-        
-        {/* Page Title & Controls */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
@@ -419,7 +415,6 @@ export default function CalendarClient() {
             </h1>
             <p className="text-slate-500 mt-1 text-sm max-w-2xl">
               Jadwal kegiatan dan pemakaian fasilitas Masjid Agung Kubah Timah. 
-              Hari tanpa tanda berarti fasilitas kemungkinan besar tersedia.
             </p>
           </div>
 
@@ -427,7 +422,7 @@ export default function CalendarClient() {
             <Button 
               variant={viewMode === 'month' ? 'default' : 'ghost'} 
               size="sm" 
-              onClick={() => setViewMode('month')}
+              onClick={() => { setViewMode('month'); trackAnalyticsEvent('view_mode', 'month').catch(() => {}) }}
               className={viewMode === 'month' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
             >
               <Grid className="h-4 w-4 mr-1.5" /> Bulan
@@ -435,7 +430,7 @@ export default function CalendarClient() {
             <Button 
               variant={viewMode === 'week' ? 'default' : 'ghost'} 
               size="sm" 
-              onClick={() => setViewMode('week')}
+              onClick={() => { setViewMode('week'); trackAnalyticsEvent('view_mode', 'week').catch(() => {}) }}
               className={viewMode === 'week' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
             >
               <List className="h-4 w-4 mr-1.5" /> Minggu
@@ -443,7 +438,6 @@ export default function CalendarClient() {
           </div>
         </div>
 
-        {/* Filter Bar */}
         <Card className="mb-6 border border-slate-200 shadow-sm bg-white">
           <div 
             className="p-3 sm:p-4 flex flex-row items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
@@ -487,7 +481,6 @@ export default function CalendarClient() {
           )}
         </Card>
 
-        {/* Calendar Header Navigation */}
         <div className="flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
           <Button variant="outline" size="sm" onClick={prevTime} className="h-9">
             <ChevronLeft className="h-4 w-4 mr-1" /> Prev
@@ -504,9 +497,7 @@ export default function CalendarClient() {
           </div>
         </div>
 
-        {/* Calendar Grid */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          {/* Days Header */}
           <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
             {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map(day => (
               <div key={day} className="py-2.5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -515,7 +506,6 @@ export default function CalendarClient() {
             ))}
           </div>
 
-          {/* Calendar Body */}
           {loading ? (
             <div className="p-20 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" /></div>
           ) : (
@@ -549,14 +539,12 @@ export default function CalendarClient() {
 
                     <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                       {dayEvents.map(ev => {
-                        // Privacy masking for "umum_saja"
                         const isMasked = ev.privacy_event === 'umum_saja'
                         const isTerbatas = ev.privacy_event === 'publik_terbatas'
                         const isPending = ev.status && ['submitted', 'under_review', 'revision_requested'].includes(ev.status)
                         const baseTitle = isMasked ? 'Ada Kegiatan di MAKT' : ev.nama_event
                         const displayTitle = isPending ? `[Proses] ${baseTitle}` : baseTitle
                         
-                        // Check if special guest / event or routine
                         const isRutin = !isMasked && Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
                         const isSpecial = !isMasked && !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
                         
@@ -596,7 +584,6 @@ export default function CalendarClient() {
           )}
         </div>
 
-        {/* Legend */}
         <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 justify-center sm:justify-start">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik
@@ -616,7 +603,6 @@ export default function CalendarClient() {
         </div>
       </main>
 
-      {/* Event Details Dialog */}
       {selectedEvent && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
           <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -678,6 +664,29 @@ export default function CalendarClient() {
                   </div>
                 </div>
 
+                {((selectedEvent as any).url_flyer || selectedEvent.banner_url) && (
+                      <div className="relative group">
+                        <img 
+                          src={(selectedEvent as any).url_flyer || selectedEvent.banner_url} 
+                          alt="Flyer Event" 
+                          className="w-full rounded-xl object-cover max-h-96 shadow-md border border-slate-100" 
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="shadow-xl bg-white/90 hover:bg-white text-slate-800 border-0"
+                            onClick={() => {
+                              trackAnalyticsEvent('view_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
+                              setPreviewFlyer((selectedEvent as any).url_flyer || selectedEvent.banner_url!)
+                            }}
+                          >
+                            <FileImage className="w-4 h-4 mr-2" /> Lihat Flyer
+                          </Button>
+                        </div>
+                      </div>
+                )}
+
                 {(selectedEvent.privacy_event === 'detail_publik' || selectedEvent.privacy_event === 'publik_terbatas') && (
                   <>
                     {(selectedEvent.nama_ustadz || selectedEvent.judul_kajian) && (
@@ -721,17 +730,6 @@ export default function CalendarClient() {
                       </div>
                     )}
                   </>
-                )}
-
-                {selectedEvent.banner_url && (
-                  <div className="mt-3">
-                    <Button 
-                      className="w-full gap-2 text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md border-0 font-bold transition-all"
-                      onClick={() => setPreviewFlyer(selectedEvent.banner_url!)}
-                    >
-                      <FileImage className="h-4 w-4" /> Lihat Flyer Event
-                    </Button>
-                  </div>
                 )}
 
                 {selectedEvent.is_public_event && selectedEvent.public_slug && (

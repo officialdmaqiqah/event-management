@@ -402,7 +402,7 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
                     <MessageSquare className="w-4 h-4 text-red-500" />
-                    <Label htmlFor="wa_approval_reminder_template" className="font-bold text-base">Pengingat Approval (Tertunda > 24 Jam)</Label>
+                    <Label htmlFor="wa_approval_reminder_template" className="font-bold text-base">Pengingat Approval (Tertunda &gt; 24 Jam)</Label>
                   </div>
                   <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
                     <span className="font-semibold">Variabel:</span> <code>{"{{nama_approver}}"}</code>, <code>{"{{count}}"}</code>, <code>{"{{event_list}}"}</code>, <code>{"{{link_approval}}"}</code>

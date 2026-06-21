@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import { Analytics } from "@/components/Analytics";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       </head>
       <body className={`${outfit.className} bg-slate-50 text-slate-900`}>
         {children}
+        <Analytics />
         <FloatingWhatsApp />
       </body>
     </html>

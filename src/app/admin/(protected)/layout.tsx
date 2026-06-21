@@ -70,6 +70,11 @@ export default async function AdminLayout({
                 Kalender
               </Button>
             </Link>
+            <Link href="/admin/analytics">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-indigo-600 px-2 sm:px-3 text-xs sm:text-sm">
+                Statistik
+              </Button>
+            </Link>
 
             {/* 4. Sistem & Pengaturan */}
             <Link href="/admin/settings">
