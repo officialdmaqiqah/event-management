@@ -102,6 +102,49 @@ const generateShareText = (event: any) => {
   }
 }
 
+const handleNativeShare = async (event: any) => {
+  const eventUrl = getEventUrl(event)
+  const flyerUrl = event.banner_url || event.url_flyer
+  
+  if (navigator.share) {
+    try {
+      const shareData: any = {
+        title: event.nama_event,
+      }
+
+      if (event.nama_ustadz || event.judul_kajian) {
+        shareData.text = `Hadirilah kajian "${event.judul_kajian || event.nama_event}" bersama Ust. ${event.nama_ustadz || 'Belum ditentukan'}.\n\nDetail: ${eventUrl}`
+      } else {
+        shareData.text = `Hadirilah kegiatan ${event.nama_event} di Masjid Agung Kubah Timah.\n\nDetail: ${eventUrl}`
+      }
+
+      if (flyerUrl) {
+        try {
+          const response = await fetch(flyerUrl)
+          const blob = await response.blob()
+          const file = new File([blob], `flyer-${event.id || 'event'}.jpg`, { type: blob.type })
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            shareData.files = [file]
+          }
+        } catch (e) {
+          console.error("Failed to fetch flyer for sharing", e)
+        }
+      }
+
+      await navigator.share(shareData)
+    } catch (err) {
+      console.log('Error sharing natively', err)
+      // If user aborted, err.name is AbortError, don't fallback to WA in that case
+      if ((err as Error).name !== 'AbortError') {
+        handleWhatsAppShare(event)
+      }
+    }
+  } else {
+    // fallback to WA
+    handleWhatsAppShare(event)
+  }
+}
+
 const handleWhatsAppShare = (event: any) => {
   const text = generateShareText(event)
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank')
@@ -729,6 +772,16 @@ export default function CalendarClient() {
                       </Button>
                       {showShareMenu && (
                         <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-20 p-1.5 py-2 space-y-1">
+                          <button
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 rounded-md transition-all flex items-center gap-2"
+                            onClick={() => {
+                              handleNativeShare(selectedEvent);
+                              setShowShareMenu(false);
+                            }}
+                          >
+                            <FileImage className="w-3.5 h-3.5 text-emerald-600" /> WA Status / IG Story
+                          </button>
+                          <div className="border-t border-slate-100 my-1"></div>
                           <button
                             className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 rounded-md transition-all flex items-center gap-2"
                             onClick={() => {
