@@ -665,26 +665,16 @@ export default function CalendarClient() {
                 </div>
 
                 {((selectedEvent as any).url_flyer || selectedEvent.banner_url) && (
-                      <div className="relative group">
-                        <img 
-                          src={(selectedEvent as any).url_flyer || selectedEvent.banner_url} 
-                          alt="Flyer Event" 
-                          className="w-full rounded-xl object-cover max-h-96 shadow-md border border-slate-100" 
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="shadow-xl bg-white/90 hover:bg-white text-slate-800 border-0"
-                            onClick={() => {
-                              trackAnalyticsEvent('view_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
-                              setPreviewFlyer((selectedEvent as any).url_flyer || selectedEvent.banner_url!)
-                            }}
-                          >
-                            <FileImage className="w-4 h-4 mr-2" /> Lihat Flyer
-                          </Button>
-                        </div>
-                      </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 mt-2 mb-2 font-medium shadow-sm transition-all flex items-center justify-center py-6"
+                    onClick={() => {
+                      trackAnalyticsEvent('view_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
+                      setPreviewFlyer((selectedEvent as any).url_flyer || selectedEvent.banner_url!)
+                    }}
+                  >
+                    <FileImage className="w-5 h-5 mr-2" /> Lihat Flyer Kajian
+                  </Button>
                 )}
 
                 {(selectedEvent.privacy_event === 'detail_publik' || selectedEvent.privacy_event === 'publik_terbatas') && (
