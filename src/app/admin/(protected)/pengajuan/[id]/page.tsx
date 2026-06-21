@@ -576,8 +576,15 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             const tpl = await getSuperAdminTemplate('request')
             
             if (tpl) {
-              const { formatIndonesianDate } = await import('@/app/actions/notification')
-              const tglFormat = pengajuan.tanggal_mulai ? formatIndonesianDate(pengajuan.tanggal_mulai) : ''
+              let tglFormat = pengajuan.tanggal_mulai || '';
+              if (tglFormat) {
+                try {
+                  tglFormat = new Intl.DateTimeFormat('id-ID', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
+                  }).format(new Date(tglFormat)).replace(/\./g, ':') + ' WIB';
+                } catch (e) {}
+              }
               
               customWaMessage = tpl
                 .replace(/{{nama_approver}}/g, approverName)
