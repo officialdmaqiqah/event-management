@@ -12,14 +12,15 @@ export async function GET(req: Request) {
     // 1. Get pengajuan that are pending/under review and updated > 24h ago
     // and reminder hasn't been sent in the last 24h.
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const twentyThreeHoursAgo = new Date(Date.now() - 23 * 60 * 60 * 1000).toISOString() // For cron jitter
 
     const { data: pendingPengajuan, error: fetchError } = await supabase
       .from('pengajuan_peminjaman')
       .select('id, nomor_pengajuan, status, jenis_event, current_approval_level, updated_at, last_reminder_sent_at, nama_event, tanggal_mulai, nama_pemohon')
       .in('status', ['submitted', 'under_review'])
       .lt('updated_at', twentyFourHoursAgo)
-      // also ensure last_reminder is null OR < 24 hours ago
-      .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyFourHoursAgo}`)
+      // ensure last_reminder is null OR < 23 hours ago (to allow 1h Vercel cron jitter)
+      .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyThreeHoursAgo}`)
 
     if (fetchError) {
       console.error('Error fetching pengajuan:', fetchError)

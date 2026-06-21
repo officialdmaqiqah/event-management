@@ -19,9 +19,10 @@ export async function GET(req: Request) {
 
     if (!isForce) {
       const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const twentyThreeHoursAgo = new Date(Date.now() - 23 * 60 * 60 * 1000).toISOString()
       query = query
         .lt('updated_at', twentyFourHoursAgo)
-        .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyFourHoursAgo}`)
+        .or(`last_reminder_sent_at.is.null,last_reminder_sent_at.lt.${twentyThreeHoursAgo}`)
     }
 
     const { data: pendingPengajuan, error: fetchError } = await query

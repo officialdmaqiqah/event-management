@@ -58,7 +58,7 @@ export default function SettingsPage() {
           wa_approval_result_template: data.wa_approval_result_template || "*Informasi Status Pengajuan*\n\nHalo *{{nama_pemohon}}*,\nPengajuan kegiatan *{{nama_event}}* Anda telah berstatus: *{{status_pengajuan}}*.\n\nCatatan: *{{catatan}}*\n\nSilakan cek detail lengkapnya di sini:\n{{link_status}}\n\nTerima kasih.",
           wa_reminder_template: data.wa_reminder_template || "*Pengingat Acara BESOK*\n\nHalo *{{nama}}*,\nKami mengingatkan bahwa acara *{{nama_event}}* akan berlangsung esok hari.\n\nMohon siapkan tiket Anda untuk absensi:\n{{link_tiket}}\n\nSampai jumpa di lokasi!",
           wa_minutes_template: data.wa_minutes_template || "*Publikasi Notulen Rapat*\n\nPemberitahuan: Notulen hasil rapat *{{nama_event}}* telah diterbitkan secara resmi.\n\nSilakan baca selengkapnya dan tindak lanjuti hasil keputusannya melalui tautan berikut:\n{{link_notulen}}\n\nTerima kasih.",
-          wa_approval_reminder_template: data.wa_approval_reminder_template || "*Pengingat Approval [Tertunda > 24 Jam]*\n\nHalo *{{nama_approver}}*,\nKami mengingatkan bahwa terdapat pengajuan kegiatan *{{nama_event}}* oleh *{{pemohon}}* yang **masih menunggu keputusan Anda lebih dari 24 jam**.\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
+          wa_approval_reminder_template: data.wa_approval_reminder_template || "*Pengingat Approval [Tertunda > 24 Jam]*\n\nBpk/Ibu. *{{nama_approver}}*,\nKami mengingatkan bahwa terdapat pengajuan kegiatan yang **masih menunggu keputusan Anda lebih dari 24 jam**\n\nDaftar kegiatan :\n{{event_list}}\n\nMohon segera periksa dan berikan keputusan melalui tautan berikut:\n{{link_approval}}\n\nTerima kasih."
         })
       }
     }
@@ -405,7 +405,7 @@ export default function SettingsPage() {
                     <Label htmlFor="wa_approval_reminder_template" className="font-bold text-base">Pengingat Approval (Tertunda > 24 Jam)</Label>
                   </div>
                   <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
-                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_approver}}"}</code>, <code>{"{{nama_event}}"}</code>, <code>{"{{pemohon}}"}</code>, <code>{"{{link_approval}}"}</code>
+                    <span className="font-semibold">Variabel:</span> <code>{"{{nama_approver}}"}</code>, <code>{"{{count}}"}</code>, <code>{"{{event_list}}"}</code>, <code>{"{{link_approval}}"}</code>
                   </CardDescription>
                   <textarea 
                     id="wa_approval_reminder_template" name="wa_approval_reminder_template" rows={6}
