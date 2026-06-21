@@ -15,7 +15,7 @@ import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X, FileImage,
-  CalendarPlus, Copy, Share2
+  CalendarPlus, Copy, Share2, Download
 } from "lucide-react"
 import Link from "next/link"
 
@@ -843,6 +843,31 @@ export default function CalendarClient() {
               className="absolute top-2 right-2 sm:-top-4 sm:-right-4 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all flex items-center justify-center"
             >
               <X className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  const res = await fetch(previewFlyer!);
+                  const blob = await res.blob();
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.style.display = 'none';
+                  a.href = url;
+                  a.download = `flyer-${selectedEvent?.nama_event || 'event'}.jpg`;
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                } catch (err) {
+                  window.open(previewFlyer!, '_blank');
+                }
+              }}
+              className="absolute top-2 right-14 sm:-top-4 sm:right-8 z-10 text-slate-400 hover:text-white hover:bg-white/20 bg-black/40 rounded-full h-10 w-10 transition-all flex items-center justify-center"
+              title="Download Flyer"
+            >
+              <Download className="h-5 w-5" />
             </Button>
             <img 
               src={previewFlyer} 
