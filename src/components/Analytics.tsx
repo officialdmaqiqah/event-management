@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { trackAnalyticsEvent } from '@/app/actions/analytics'
 
-export function Analytics() {
+function AnalyticsInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const trackedUrl = useRef<string | null>(null)
@@ -27,4 +27,12 @@ export function Analytics() {
 
   // Komponen ini tidak me-render apapun
   return null
+}
+
+export function Analytics() {
+  return (
+    <Suspense fallback={null}>
+      <AnalyticsInner />
+    </Suspense>
+  )
 }

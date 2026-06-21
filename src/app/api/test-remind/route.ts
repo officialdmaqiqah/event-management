@@ -2,11 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 // We need service_role to bypass RLS in cron jobs
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role for cron
-
 export async function GET(req: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role for cron
     const supabase = createClient(supabaseUrl, supabaseKey)
     const { searchParams } = new URL(req.url)
     const isForce = searchParams.get('force') === '1'
