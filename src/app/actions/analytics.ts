@@ -1,12 +1,12 @@
 "use server"
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { headers } from 'next/headers'
 import crypto from 'crypto'
 
 export async function trackAnalyticsEvent(eventType: string, path: string, metadata: any = {}) {
   try {
-    const supabase = createClient()
+    const supabase = createAdminClient()
     const headersList = headers()
     
     // Dapatkan IP pengunjung
@@ -42,7 +42,7 @@ export async function trackAnalyticsEvent(eventType: string, path: string, metad
 
 export async function getAnalyticsSummary() {
   try {
-    const supabase = createClient()
+    const supabase = createAdminClient()
     
     // Mengambil data analitik 30 hari terakhir
     const thirtyDaysAgo = new Date()

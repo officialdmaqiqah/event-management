@@ -903,6 +903,7 @@ export default function CalendarClient() {
                 try {
                   const res = await fetch(previewFlyer!);
                   const blob = await res.blob();
+                  trackAnalyticsEvent('download_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
                   const url = window.URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.style.display = 'none';
