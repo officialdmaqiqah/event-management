@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle } from "lucide-react"
+import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle, UploadCloud, Edit3 } from "lucide-react"
+import { submitRevisiAction } from "@/app/actions/pengajuan"
+import { uploadFileAction } from "@/app/actions/upload"
 
 type Pengajuan = {
   id: string
@@ -45,6 +47,19 @@ type TimelineItem = {
   created_at: string
 }
 
+type EditForm = {
+  nama_event: string;
+  jenis_event: string;
+  tanggal_mulai: string;
+  tanggal_selesai: string;
+  nama_ustadz?: string;
+  judul_kajian?: string;
+  url_proposal: string | null;
+  url_surat_peminjaman: string | null;
+  url_flyer: string | null;
+  catatan_revisi: string;
+}
+
 const STATUS_CONFIG = {
   draft: { label: "Draft", color: "bg-slate-100 text-slate-700 border-slate-200", icon: FileText },
   submitted: { label: "Submitted", color: "bg-blue-50 text-blue-700 border-blue-200", icon: Clock },
@@ -78,6 +93,14 @@ function CekStatusContent() {
   const [pengajuan, setPengajuan] = useState<Pengajuan | null>(null)
   const [timeline, setTimeline] = useState<TimelineItem[]>([])
   const [errorMsg, setErrorMsg] = useState("")
+  
+  const [isRevising, setIsRevising] = useState(false)
+  const [isSubmittingRevisi, setIsSubmittingRevisi] = useState(false)
+  const [uploadingField, setUploadingField] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<EditForm>({
+    nama_event: '', jenis_event: '', tanggal_mulai: '', tanggal_selesai: '',
+    nama_ustadz: '', judul_kajian: '', url_proposal: null, url_surat_peminjaman: null, url_flyer: null, catatan_revisi: ''
+  })
 
   useEffect(() => {
     if (initialNomor) {
@@ -108,6 +131,7 @@ function CekStatusContent() {
     setSearched(true)
     setPengajuan(null)
     setTimeline([])
+    setIsRevising(false)
 
     // Update query params in URL
     router.replace(`/cek-status?nomor=${cleanNum}`)
@@ -138,6 +162,20 @@ function CekStatusContent() {
       }
 
       setPengajuan(pData as Pengajuan)
+      
+      // Initialize edit form
+      setEditForm({
+        nama_event: pData.nama_event || '',
+        jenis_event: pData.jenis_event || '',
+        tanggal_mulai: pData.tanggal_mulai ? pData.tanggal_mulai.slice(0, 16) : '',
+        tanggal_selesai: pData.tanggal_selesai ? pData.tanggal_selesai.slice(0, 16) : '',
+        nama_ustadz: pData.nama_ustadz || '',
+        judul_kajian: pData.judul_kajian || '',
+        url_proposal: pData.url_proposal || null,
+        url_surat_peminjaman: pData.url_surat_peminjaman || null,
+        url_flyer: pData.url_flyer || null,
+        catatan_revisi: ''
+      })
 
       // Fetch Timeline
       const { data: tData, error: tError } = await supabase
@@ -163,6 +201,69 @@ function CekStatusContent() {
 
   const activeStatus = pengajuan ? STATUS_CONFIG[pengajuan.status] || { label: pengajuan.status, color: "bg-slate-100 text-slate-600 border-slate-200", icon: HelpCircle } : null
   const StatusIcon = activeStatus ? activeStatus.icon : HelpCircle
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: keyof EditForm) => {
+    if (!e.target.files || e.target.files.length === 0) return
+    const file = e.target.files[0]
+    setUploadingField(field)
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('prefix', `revisi_${field}_${pengajuan?.nomor_pengajuan}`)
+      
+      const result = await uploadFileAction(formData)
+      if (result.error) throw new Error(result.error)
+      
+      setEditForm(prev => ({ ...prev, [field]: result.url }))
+    } catch (err: any) {
+      alert("Gagal upload file: " + err.message)
+    } finally {
+      setUploadingField(null)
+    }
+  }
+
+  const submitRevisi = async () => {
+    if (!pengajuan) return
+    if (!editForm.tanggal_mulai || !editForm.tanggal_selesai) {
+      alert("Waktu pelaksanaan wajib diisi!")
+      return
+    }
+    
+    setIsSubmittingRevisi(true)
+    try {
+      // Parse dates to ISO string
+      const mulai = new Date(editForm.tanggal_mulai).toISOString()
+      const selesai = new Date(editForm.tanggal_selesai).toISOString()
+
+      const result = await submitRevisiAction({
+        nomor_pengajuan: pengajuan.nomor_pengajuan,
+        kontak: kontak,
+        catatan_revisi: editForm.catatan_revisi,
+        updates: {
+          nama_event: editForm.nama_event,
+          jenis_event: editForm.jenis_event,
+          tanggal_mulai: mulai,
+          tanggal_selesai: selesai,
+          nama_ustadz: editForm.nama_ustadz,
+          judul_kajian: editForm.judul_kajian,
+          url_proposal: editForm.url_proposal,
+          url_surat_peminjaman: editForm.url_surat_peminjaman,
+          url_flyer: editForm.url_flyer
+        }
+      })
+
+      if (result.error) throw new Error(result.error)
+      
+      alert("Revisi berhasil dikirim! Status pengajuan akan kembali menjadi Dalam Review.")
+      setIsRevising(false)
+      handleSearch(nomor, kontak) // Refresh data
+    } catch (err: any) {
+      alert("Gagal mengirim revisi: " + err.message)
+    } finally {
+      setIsSubmittingRevisi(true)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-10 px-4">
@@ -306,6 +407,101 @@ function CekStatusContent() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Revisi Alert & Form */}
+            {pengajuan.status === 'revision_requested' && (
+              <Card className="border-orange-200 shadow-lg bg-orange-50/50">
+                <CardHeader className="pb-3 border-b border-orange-100">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-bold text-orange-800 flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5" /> Pengajuan Butuh Revisi
+                    </CardTitle>
+                    {!isRevising && (
+                      <Button onClick={() => setIsRevising(true)} className="bg-orange-600 hover:bg-orange-700 text-white font-semibold">
+                        <Edit3 className="w-4 h-4 mr-2" /> Mulai Revisi
+                      </Button>
+                    )}
+                  </div>
+                  <CardDescription className="text-orange-700 font-medium">
+                    Silakan periksa catatan dari admin dan lengkapi atau perbaiki pengajuan Anda.
+                  </CardDescription>
+                </CardHeader>
+                
+                {isRevising && (
+                  <CardContent className="pt-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label>Nama Kegiatan</Label>
+                        <Input value={editForm.nama_event} onChange={e => setEditForm({...editForm, nama_event: e.target.value})} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label>Jenis Kegiatan</Label>
+                        <Input value={editForm.jenis_event} onChange={e => setEditForm({...editForm, jenis_event: e.target.value})} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label>Waktu Mulai</Label>
+                        <Input type="datetime-local" value={editForm.tanggal_mulai} onChange={e => setEditForm({...editForm, tanggal_mulai: e.target.value})} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label>Waktu Selesai</Label>
+                        <Input type="datetime-local" value={editForm.tanggal_selesai} onChange={e => setEditForm({...editForm, tanggal_selesai: e.target.value})} />
+                      </div>
+                      {(editForm.jenis_event?.toLowerCase().includes('kajian') || editForm.jenis_event?.toLowerCase().includes('tabligh')) && (
+                        <>
+                          <div className="space-y-3">
+                            <Label>Nama Pemateri / Ustadz</Label>
+                            <Input value={editForm.nama_ustadz || ''} onChange={e => setEditForm({...editForm, nama_ustadz: e.target.value})} />
+                          </div>
+                          <div className="space-y-3">
+                            <Label>Judul Kajian</Label>
+                            <Input value={editForm.judul_kajian || ''} onChange={e => setEditForm({...editForm, judul_kajian: e.target.value})} />
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="pt-4 border-t border-orange-200/50 space-y-6">
+                      <h4 className="font-bold text-orange-900">Upload Dokumen Revisi (Opsional jika tidak diganti)</h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label>Surat Peminjaman (PDF/Img)</Label>
+                          <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={e => handleFileUpload(e, 'url_surat_peminjaman')} disabled={uploadingField !== null} />
+                          {editForm.url_surat_peminjaman && <a href={editForm.url_surat_peminjaman} target="_blank" className="text-xs text-blue-600 underline">Lihat File Saat Ini</a>}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Proposal (PDF)</Label>
+                          <Input type="file" accept=".pdf" onChange={e => handleFileUpload(e, 'url_proposal')} disabled={uploadingField !== null} />
+                          {editForm.url_proposal && <a href={editForm.url_proposal} target="_blank" className="text-xs text-blue-600 underline">Lihat File Saat Ini</a>}
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Flyer / Brosur (Img)</Label>
+                          <Input type="file" accept=".png,.jpg,.jpeg" onChange={e => handleFileUpload(e, 'url_flyer')} disabled={uploadingField !== null} />
+                          {editForm.url_flyer && <a href={editForm.url_flyer} target="_blank" className="text-xs text-blue-600 underline">Lihat File Saat Ini</a>}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-orange-200/50">
+                      <Label>Catatan Tambahan untuk Reviewer</Label>
+                      <textarea 
+                        className="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm mt-2 min-h-[80px]"
+                        placeholder="Misal: Saya sudah mengunggah proposal baru sesuai permintaan..."
+                        value={editForm.catatan_revisi}
+                        onChange={e => setEditForm({...editForm, catatan_revisi: e.target.value})}
+                      />
+                    </div>
+
+                    <div className="flex gap-3 justify-end pt-4">
+                      <Button variant="outline" onClick={() => setIsRevising(false)} disabled={isSubmittingRevisi}>Batal</Button>
+                      <Button onClick={submitRevisi} disabled={isSubmittingRevisi || uploadingField !== null} className="bg-indigo-600 hover:bg-indigo-700">
+                        {isSubmittingRevisi ? 'Menyimpan...' : 'Kirim Ulang Revisi'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            )}
 
             {/* Timeline Progress */}
             <Card className="border-0 shadow-lg bg-white/95">
