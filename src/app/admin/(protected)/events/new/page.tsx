@@ -81,7 +81,6 @@ function NewEventForm() {
       let query = supabase.from('pengajuan_peminjaman')
         .select('id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, area_fasilitas, nama_pemohon, nama_lembaga, deskripsi_kegiatan')
         .eq('status', 'approved')
-        .gte('tanggal_selesai', new Date().toISOString())
         .order('tanggal_mulai', { ascending: false })
 
       const { data } = await query
@@ -95,6 +94,7 @@ function NewEventForm() {
     
     fetchPengajuan()
 
+    const fromPengajuanId = searchParams.get("from_pengajuan") || ""
     const titleParam = searchParams.get("title") || ""
     const typeParam = searchParams.get("type") || ""
     const orgName = searchParams.get("organizer_name") || ""
@@ -119,6 +119,27 @@ function NewEventForm() {
       }))
     }
   }, [searchParams])
+
+  useEffect(() => {
+    const fromPengajuanId = searchParams.get("from_pengajuan") || ""
+    if (fromPengajuanId && availablePengajuan.length > 0 && !formData.event_request_id) {
+      const selected = availablePengajuan.find(p => p.id === fromPengajuanId);
+      if (selected) {
+        setFormData(prev => ({
+          ...prev,
+          event_request_id: selected.id,
+          title: selected.nama_event,
+          type: selected.jenis_event,
+          organizer_name: selected.nama_lembaga || selected.nama_pemohon || prev.organizer_name,
+          location: selected.area_fasilitas?.join(", ") || prev.location,
+          start_datetime: toDatetimeLocal(selected.tanggal_mulai),
+          end_datetime: selected.tanggal_selesai ? toDatetimeLocal(selected.tanggal_selesai) : prev.end_datetime,
+          description: selected.deskripsi_kegiatan || prev.description,
+          registration_slug: selected.nama_event.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),
+        }));
+      }
+    }
+  }, [availablePengajuan, searchParams, formData.event_request_id])
 
   const [bannerFile, setBannerFile] = useState<File | null>(null)
   const [logoFile, setLogoFile] = useState<File | null>(null)

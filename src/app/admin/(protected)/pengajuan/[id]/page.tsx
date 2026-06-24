@@ -141,6 +141,23 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const [isEditingEvent, setIsEditingEvent] = useState(false)
   const [editEvent, setEditEvent] = useState<Partial<Pengajuan>>({})
 
+  // Edit states for Jadwal Pelaksanaan
+  const [isEditingJadwal, setIsEditingJadwal] = useState(false)
+  const [editJadwal, setEditJadwal] = useState<{tanggal_mulai: string, tanggal_selesai: string}>({tanggal_mulai: "", tanggal_selesai: ""})
+
+  // Format utility for datetime-local
+  const toDatetimeLocal = (isoString: string) => {
+    if (!isoString) return ""
+    try {
+      const date = new Date(isoString)
+      const tzOffset = date.getTimezoneOffset() * 60000;
+      const localISOTime = (new Date(date.getTime() - tzOffset)).toISOString().slice(0, 16);
+      return localISOTime;
+    } catch (e) {
+      return ""
+    }
+  }
+
 
   useEffect(() => {
     fetchUserAndData()
@@ -1142,21 +1159,89 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               )}
 
               {/* Jadwal Pelaksanaan */}
-              <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-bold text-blue-900 uppercase">Mulai Kegiatan</span>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
-                    <Clock className="h-3.5 w-3.5 text-blue-600" />
-                    {formatDate(pengajuan.tanggal_mulai)}
-                  </div>
+              <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 mt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-bold text-blue-900">Jadwal Pelaksanaan</span>
+                  {isSuperAdminUser && !isEditingJadwal && (
+                    <button 
+                      onClick={() => {
+                        setEditJadwal({
+                          tanggal_mulai: toDatetimeLocal(pengajuan.tanggal_mulai),
+                          tanggal_selesai: toDatetimeLocal(pengajuan.tanggal_selesai)
+                        })
+                        setIsEditingJadwal(true)
+                      }} 
+                      className="text-xs text-indigo-600 hover:underline flex items-center gap-1"
+                    >
+                      <Edit3 className="h-3 w-3" /> Edit Jadwal
+                    </button>
+                  )}
                 </div>
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-bold text-blue-900 uppercase">Selesai Kegiatan</span>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
-                    <Clock className="h-3.5 w-3.5 text-blue-600" />
-                    {formatDate(pengajuan.tanggal_selesai)}
+
+                {isEditingJadwal ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-xs font-semibold text-slate-600">Mulai Kegiatan</Label>
+                        <Input 
+                          type="datetime-local" 
+                          value={editJadwal.tanggal_mulai} 
+                          onChange={e => setEditJadwal({...editJadwal, tanggal_mulai: e.target.value})}
+                          className="h-9 bg-white"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs font-semibold text-slate-600">Selesai Kegiatan</Label>
+                        <Input 
+                          type="datetime-local" 
+                          value={editJadwal.tanggal_selesai} 
+                          onChange={e => setEditJadwal({...editJadwal, tanggal_selesai: e.target.value})}
+                          className="h-9 bg-white"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <Button variant="ghost" size="sm" onClick={() => setIsEditingJadwal(false)} disabled={updating}>Batal</Button>
+                      <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                        setUpdating(true)
+                        try {
+                          const isoMulai = new Date(editJadwal.tanggal_mulai).toISOString()
+                          const isoSelesai = new Date(editJadwal.tanggal_selesai).toISOString()
+                          const { error } = await supabase.from("pengajuan_peminjaman").update({
+                            tanggal_mulai: isoMulai,
+                            tanggal_selesai: isoSelesai
+                          }).eq("id", pengajuan.id)
+                          if (error) throw error
+                          setPengajuan({...pengajuan, tanggal_mulai: isoMulai, tanggal_selesai: isoSelesai} as Pengajuan)
+                          setIsEditingJadwal(false)
+                        } catch (err: any) {
+                          alert("Gagal menyimpan jadwal: " + err.message)
+                        } finally {
+                          setUpdating(false)
+                        }
+                      }}>
+                        {updating ? "Menyimpan..." : "Simpan Jadwal"}
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-bold text-blue-900 uppercase">Mulai Kegiatan</span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
+                        <Clock className="h-3.5 w-3.5 text-blue-600" />
+                        {formatDate(pengajuan.tanggal_mulai)}
+                      </div>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-bold text-blue-900 uppercase">Selesai Kegiatan</span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-blue-950">
+                        <Clock className="h-3.5 w-3.5 text-blue-600" />
+                        {formatDate(pengajuan.tanggal_selesai)}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1 group">
