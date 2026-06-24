@@ -279,7 +279,14 @@ Pengajuan peminjaman fasilitas MAKT Anda memerlukan sedikit *PERBAIKAN / REVISI*
 ▪️ *Catatan Revisi:* 
 _${catatan}_
 
-Silakan lengkapi kekurangan berkas/persyaratan Anda secepatnya melalui tautan di bawah ini:
+*Langkah-langkah Perbaikan:*
+1. Klik tautan status pengajuan di bawah ini.
+2. Temukan dan klik tombol *"Mulai Revisi"* pada kotak peringatan berwarna oranye.
+3. Perbaiki data jadwal/pemateri atau unggah ulang dokumen terbaru (Proposal, Surat, Flyer) sesuai Catatan Revisi.
+4. Jangan lupa tambahkan balasan catatan untuk Reviewer (jika perlu).
+5. Klik *"Kirim Ulang Revisi"* untuk menyelesaikan perbaikan Anda.
+
+Silakan lakukan perbaikan secepatnya melalui tautan di bawah ini:
 ${url}
 
 Terima kasih.
