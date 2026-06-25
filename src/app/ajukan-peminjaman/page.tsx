@@ -158,7 +158,8 @@ export default function AjukanPeminjamanPage() {
     catatan_tambahan: "",
     nama_ustadz: "",
     judul_kajian: "",
-    privacy_event: "detail_publik"
+    privacy_event: "detail_publik",
+    is_multi_day_daily: true
   })
 
   // Step 3: Lampiran
@@ -331,6 +332,7 @@ export default function AjukanPeminjamanPage() {
         nama_ustadz: event.nama_ustadz.trim() || null,
         judul_kajian: event.judul_kajian.trim() || null,
         privacy_event: event.privacy_event,
+        is_multi_day_daily: event.is_multi_day_daily,
         status: 'pending'
       }
 
@@ -645,6 +647,37 @@ export default function AjukanPeminjamanPage() {
                     {errors.jam_selesai && <p className="text-red-500 text-xs">{errors.jam_selesai}</p>}
                   </div>
                 </div>
+                {event.tanggal_mulai && event.tanggal_selesai && event.tanggal_mulai !== event.tanggal_selesai && (
+                  <div className="mt-4 pt-4 border-t border-blue-200/50 space-y-2">
+                    <Label className="text-slate-700 font-semibold text-sm">Tipe Peminjaman Multi-Hari <span className="text-red-500">*</span></Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEvent(p => ({...p, is_multi_day_daily: true}))}
+                        className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
+                          event.is_multi_day_daily
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-slate-200 bg-white hover:border-blue-300'
+                        }`}
+                      >
+                        <span className={`text-sm font-bold ${event.is_multi_day_daily ? 'text-blue-700' : 'text-slate-700'}`}>Harian (Sesuai Jam)</span>
+                        <span className="text-xs text-slate-500 font-medium">Hanya meminjam di jam yang dipilih setiap harinya</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEvent(p => ({...p, is_multi_day_daily: false}))}
+                        className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
+                          !event.is_multi_day_daily
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-slate-200 bg-white hover:border-blue-300'
+                        }`}
+                      >
+                        <span className={`text-sm font-bold flex items-center gap-1 ${!event.is_multi_day_daily ? 'text-blue-700' : 'text-slate-700'}`}>Blok Penuh (Menginap)</span>
+                        <span className="text-xs text-slate-500 font-medium">Meminjam terus-menerus selama rentang tanggal tersebut</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Area / Fasilitas */}

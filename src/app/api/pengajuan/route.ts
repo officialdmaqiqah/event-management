@@ -48,20 +48,69 @@ export async function POST(req: Request) {
     const mulai = new Date(body.tanggal_mulai)
     const selesai = new Date(body.tanggal_selesai)
     
-    const { data: overlaps, error: overlapError } = await supabase
+    const { data: potentialOverlaps, error: overlapError } = await supabase
       .from('pengajuan_peminjaman')
-      .select('nomor_pengajuan, nama_event, status')
+      .select('nomor_pengajuan, nama_event, status, tanggal_mulai, tanggal_selesai, is_multi_day_daily')
       .in('status', ['submitted', 'under_review', 'revision_requested', 'approved'])
       .lt('tanggal_mulai', selesai.toISOString())
       .gt('tanggal_selesai', mulai.toISOString())
       .overlaps('area_fasilitas', body.area_fasilitas)
-      .limit(1)
 
     if (overlapError) throw overlapError
 
-    if (overlaps && overlaps.length > 0) {
+    let actualOverlap = null;
+
+    if (potentialOverlaps && potentialOverlaps.length > 0) {
+      const getIntervals = (startStr: string | Date, endStr: string | Date, isDaily: boolean) => {
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+        if (!isDaily) {
+          return [{ s: start.getTime(), e: end.getTime() }];
+        }
+        
+        const intervals = [];
+        let current = new Date(start);
+        current.setHours(0,0,0,0);
+        const lastDay = new Date(end);
+        lastDay.setHours(0,0,0,0);
+        
+        while (current <= lastDay) {
+          const s = new Date(current);
+          s.setHours(start.getHours(), start.getMinutes(), 0, 0);
+          const e = new Date(current);
+          e.setHours(end.getHours(), end.getMinutes(), 0, 0);
+          intervals.push({ s: s.getTime(), e: e.getTime() });
+          current.setDate(current.getDate() + 1);
+        }
+        return intervals;
+      };
+
+      const newIntervals = getIntervals(mulai, selesai, body.is_multi_day_daily);
+
+      for (const po of potentialOverlaps) {
+        const poIntervals = getIntervals(po.tanggal_mulai, po.tanggal_selesai, po.is_multi_day_daily);
+        
+        let hasOverlap = false;
+        for (const a of newIntervals) {
+          for (const b of poIntervals) {
+            if (a.s < b.e && a.e > b.s) {
+              hasOverlap = true;
+              break;
+            }
+          }
+          if (hasOverlap) break;
+        }
+
+        if (hasOverlap) {
+          actualOverlap = po;
+          break;
+        }
+      }
+    }
+
+    if (actualOverlap) {
       return NextResponse.json({ 
-        error: `Mohon maaf, fasilitas pada waktu tersebut sudah lebih dulu dipesan untuk acara ${overlaps[0].nama_event}. Silakan sesuaikan kembali pilihan waktu atau ruangan Anda.` 
+        error: `Mohon maaf, fasilitas pada waktu tersebut sudah lebih dulu dipesan untuk acara ${actualOverlap.nama_event}. Silakan sesuaikan kembali pilihan waktu atau ruangan Anda.` 
       }, { status: 400 })
     }
     // --------------------------------------
