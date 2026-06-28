@@ -86,8 +86,16 @@ function NewEventForm() {
       const { data } = await query
       
       if (data) {
-        // Filter out those already linked
-        const unlinked = data.filter(d => !linkedIds.includes(d.id))
+        // Filter out those already linked and past events
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
+        const unlinked = data.filter(d => {
+          const isUnlinked = !linkedIds.includes(d.id)
+          const eventEndDate = d.tanggal_selesai ? new Date(d.tanggal_selesai) : new Date(d.tanggal_mulai)
+          const isFutureOrToday = eventEndDate >= today
+          return isUnlinked && isFutureOrToday
+        })
         setAvailablePengajuan(unlinked)
       }
     }
