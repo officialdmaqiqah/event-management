@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
@@ -384,12 +385,56 @@ function NewEventForm() {
               <h3 className="text-lg font-semibold text-gray-900">Waktu & Tempat Pelaksanaan</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="start_datetime" className="text-gray-700 font-semibold">Tanggal & Waktu Mulai <span className="text-red-500">*</span></Label>
-                  <Input id="start_datetime" name="start_datetime" type="datetime-local" required value={formData.start_datetime} onChange={handleChange} className="bg-gray-50" />
+                  <Label className="text-gray-700 font-semibold">Tanggal & Waktu Mulai <span className="text-red-500">*</span></Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="date" 
+                      required 
+                      value={formData.start_datetime ? formData.start_datetime.split('T')[0] : ''} 
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!val) { setFormData(p => ({...p, start_datetime: ''})); return; }
+                        const timePart = (formData.start_datetime && formData.start_datetime.includes('T')) ? formData.start_datetime.split('T')[1] : '08:00';
+                        setFormData(p => ({...p, start_datetime: `${val}T${timePart}`}));
+                      }} 
+                      className="bg-gray-50 flex-1" 
+                    />
+                    <TimeInput 
+                      required
+                      value={(formData.start_datetime && formData.start_datetime.includes('T')) ? formData.start_datetime.split('T')[1] : ''} 
+                      onChange={(e) => {
+                        const time = e.target.value;
+                        const datePart = formData.start_datetime ? formData.start_datetime.split('T')[0] : new Date().toISOString().split('T')[0];
+                        setFormData(p => ({...p, start_datetime: `${datePart}T${time}`}));
+                      }} 
+                      className="bg-gray-50 w-[120px]" 
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="end_datetime" className="text-gray-700 font-semibold">Tanggal & Waktu Selesai</Label>
-                  <Input id="end_datetime" name="end_datetime" type="datetime-local" value={formData.end_datetime} onChange={handleChange} className="bg-gray-50" />
+                  <Label className="text-gray-700 font-semibold">Tanggal & Waktu Selesai</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="date" 
+                      value={formData.end_datetime ? formData.end_datetime.split('T')[0] : ''} 
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!val) { setFormData(p => ({...p, end_datetime: ''})); return; }
+                        const timePart = (formData.end_datetime && formData.end_datetime.includes('T')) ? formData.end_datetime.split('T')[1] : '17:00';
+                        setFormData(p => ({...p, end_datetime: `${val}T${timePart}`}));
+                      }} 
+                      className="bg-gray-50 flex-1" 
+                    />
+                    <TimeInput 
+                      value={(formData.end_datetime && formData.end_datetime.includes('T')) ? formData.end_datetime.split('T')[1] : ''} 
+                      onChange={(e) => {
+                        const time = e.target.value;
+                        const datePart = formData.end_datetime ? formData.end_datetime.split('T')[0] : (formData.start_datetime ? formData.start_datetime.split('T')[0] : new Date().toISOString().split('T')[0]);
+                        setFormData(p => ({...p, end_datetime: `${datePart}T${time}`}));
+                      }} 
+                      className="bg-gray-50 w-[120px]" 
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -503,12 +548,54 @@ function NewEventForm() {
                 <Label className="block text-indigo-800 mt-6">Batas Waktu Absen (Check-in Window)</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="checkin_start_datetime" className="text-xs">Waktu Mulai Buka Absen</Label>
-                    <Input id="checkin_start_datetime" name="checkin_start_datetime" type="datetime-local" value={formData.checkin_start_datetime} onChange={handleChange} className="bg-white" />
+                    <Label className="text-xs">Waktu Mulai Buka Absen</Label>
+                    <div className="flex gap-2">
+                      <Input 
+                        type="date" 
+                        value={formData.checkin_start_datetime ? formData.checkin_start_datetime.split('T')[0] : ''} 
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) { setFormData(p => ({...p, checkin_start_datetime: ''})); return; }
+                          const timePart = (formData.checkin_start_datetime && formData.checkin_start_datetime.includes('T')) ? formData.checkin_start_datetime.split('T')[1] : '07:00';
+                          setFormData(p => ({...p, checkin_start_datetime: `${val}T${timePart}`}));
+                        }} 
+                        className="bg-white flex-1" 
+                      />
+                      <TimeInput 
+                        value={(formData.checkin_start_datetime && formData.checkin_start_datetime.includes('T')) ? formData.checkin_start_datetime.split('T')[1] : ''} 
+                        onChange={(e) => {
+                          const time = e.target.value;
+                          const datePart = formData.checkin_start_datetime ? formData.checkin_start_datetime.split('T')[0] : (formData.start_datetime ? formData.start_datetime.split('T')[0] : new Date().toISOString().split('T')[0]);
+                          setFormData(p => ({...p, checkin_start_datetime: `${datePart}T${time}`}));
+                        }} 
+                        className="bg-white w-[120px]" 
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="checkin_end_datetime" className="text-xs">Waktu Tutup Absen (Opsional)</Label>
-                    <Input id="checkin_end_datetime" name="checkin_end_datetime" type="datetime-local" value={formData.checkin_end_datetime} onChange={handleChange} className="bg-white" />
+                    <Label className="text-xs">Waktu Tutup Absen (Opsional)</Label>
+                    <div className="flex gap-2">
+                      <Input 
+                        type="date" 
+                        value={formData.checkin_end_datetime ? formData.checkin_end_datetime.split('T')[0] : ''} 
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) { setFormData(p => ({...p, checkin_end_datetime: ''})); return; }
+                          const timePart = (formData.checkin_end_datetime && formData.checkin_end_datetime.includes('T')) ? formData.checkin_end_datetime.split('T')[1] : '18:00';
+                          setFormData(p => ({...p, checkin_end_datetime: `${val}T${timePart}`}));
+                        }} 
+                        className="bg-white flex-1" 
+                      />
+                      <TimeInput 
+                        value={(formData.checkin_end_datetime && formData.checkin_end_datetime.includes('T')) ? formData.checkin_end_datetime.split('T')[1] : ''} 
+                        onChange={(e) => {
+                          const time = e.target.value;
+                          const datePart = formData.checkin_end_datetime ? formData.checkin_end_datetime.split('T')[0] : (formData.start_datetime ? formData.start_datetime.split('T')[0] : new Date().toISOString().split('T')[0]);
+                          setFormData(p => ({...p, checkin_end_datetime: `${datePart}T${time}`}));
+                        }} 
+                        className="bg-white w-[120px]" 
+                      />
+                    </div>
                   </div>
                 </div>
                 <p className="text-xs text-slate-500">Jika diisi, peserta tidak bisa melakukan self check-in di luar rentang waktu ini.</p>
