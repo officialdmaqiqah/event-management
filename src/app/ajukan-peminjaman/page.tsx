@@ -25,8 +25,16 @@ const AREA_OPTIONS = [
 const formatTitleCase = (text: string) => {
   if (!text) return text
   const commonAbbreviations = ['DKM', 'MAKT', 'MUI', 'DPR', 'MPR', 'KUA', 'PNS', 'BUMN', 'PT', 'CV', 'SD', 'SMP', 'SMA', 'SMK', 'TK']
+  const isAllUpperCase = text === text.toUpperCase()
+  
   return text.replace(/\w\S*/g, (txt) => {
     if (commonAbbreviations.includes(txt.toUpperCase())) return txt.toUpperCase()
+    
+    const isWordAllUpperCase = txt === txt.toUpperCase() && /[A-Z]/.test(txt)
+    if (!isAllUpperCase && isWordAllUpperCase) {
+      return txt
+    }
+
     return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase()
   })
 }
