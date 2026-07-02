@@ -1339,12 +1339,29 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   </div>
                 </div>
                 {pengajuan.url_surat_peminjaman ? (
-                  <a href={pengajuan.url_surat_peminjaman} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
-                      <FileDown className="h-3.5 w-3.5" /> Unduh
-                    </Button>
-                  </a>
-                ) : isSuperAdminUser ? (
+                  <div className="flex gap-2">
+                    <a href={pengajuan.url_surat_peminjaman} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
+                        <FileDown className="h-3.5 w-3.5" /> Unduh
+                      </Button>
+                    </a>
+                    {(isSuperAdminUser || currentUser?.id === pengajuan.user_id) && (
+                      <div className="relative">
+                        <input 
+                          type="file" 
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                          onChange={(e) => handleAdminUpload(e, 'url_surat_peminjaman', 'surat')}
+                          disabled={uploadingField === 'url_surat_peminjaman'}
+                          accept=".pdf,.png,.jpg,.jpeg"
+                        />
+                        <Button variant="outline" size="sm" disabled={uploadingField === 'url_surat_peminjaman'} className="h-8 text-xs gap-1 text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-200">
+                          {uploadingField === 'url_surat_peminjaman' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                          Ganti
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (isSuperAdminUser || currentUser?.id === pengajuan.user_id) ? (
                   <div className="relative">
                     <input 
                       type="file" 
@@ -1375,12 +1392,29 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   </div>
                 </div>
                 {pengajuan.url_proposal ? (
-                  <a href={pengajuan.url_proposal} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
-                      <FileDown className="h-3.5 w-3.5" /> Unduh
-                    </Button>
-                  </a>
-                ) : isSuperAdminUser ? (
+                  <div className="flex gap-2">
+                    <a href={pengajuan.url_proposal} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1">
+                        <FileDown className="h-3.5 w-3.5" /> Unduh
+                      </Button>
+                    </a>
+                    {(isSuperAdminUser || currentUser?.id === pengajuan.user_id) && (
+                      <div className="relative">
+                        <input 
+                          type="file" 
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                          onChange={(e) => handleAdminUpload(e, 'url_proposal', 'proposal')}
+                          disabled={uploadingField === 'url_proposal'}
+                          accept=".pdf,.png,.jpg,.jpeg"
+                        />
+                        <Button variant="outline" size="sm" disabled={uploadingField === 'url_proposal'} className="h-8 text-xs gap-1 text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-200">
+                          {uploadingField === 'url_proposal' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                          Ganti
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (isSuperAdminUser || currentUser?.id === pengajuan.user_id) ? (
                   <div className="relative">
                     <input 
                       type="file" 
@@ -1411,12 +1445,29 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   </div>
                 </div>
                 {pengajuan.url_flyer ? (
-                  <a href={pengajuan.url_flyer} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 text-emerald-700 hover:text-emerald-800 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
-                      <ExternalLink className="h-3.5 w-3.5" /> Lihat Flyer
-                    </Button>
-                  </a>
-                ) : isSuperAdminUser ? (
+                  <div className="flex gap-2">
+                    <a href={pengajuan.url_flyer} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 text-emerald-700 hover:text-emerald-800 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+                        <ExternalLink className="h-3.5 w-3.5" /> Lihat Flyer
+                      </Button>
+                    </a>
+                    {(isSuperAdminUser || currentUser?.id === pengajuan.user_id) && (
+                      <div className="relative">
+                        <input 
+                          type="file" 
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                          onChange={(e) => handleAdminUpload(e, 'url_flyer', 'flyer')}
+                          disabled={uploadingField === 'url_flyer'}
+                          accept=".png,.jpg,.jpeg,.pdf"
+                        />
+                        <Button variant="outline" size="sm" disabled={uploadingField === 'url_flyer'} className="h-8 text-xs gap-1 text-orange-600 hover:text-orange-700 hover:bg-orange-50 border-orange-200">
+                          {uploadingField === 'url_flyer' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UploadCloud className="h-3 w-3" />}
+                          Ganti
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (isSuperAdminUser || currentUser?.id === pengajuan.user_id) ? (
                   <div className="relative">
                     <input 
                       type="file" 
