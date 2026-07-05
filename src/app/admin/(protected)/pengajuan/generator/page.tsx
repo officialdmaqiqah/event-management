@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { TimeInput } from "@/components/ui/time-input"
 import { Label } from "@/components/ui/label"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
-import { ArrowLeft, CalendarDays, Copy, Plus, Trash2 } from "lucide-react"
+import { ArrowLeft, CalendarDays, Copy, Plus, Trash2, Save } from "lucide-react"
 
 type SessionConfig = {
   id: string
@@ -94,6 +94,30 @@ export default function GeneratorPage() {
   }>({
     isOpen: false, type: 'alert', title: '', message: ''
   })
+
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('generator_draft')
+    if (savedDraft) {
+      try {
+        const { startDate: sd, endDate: ed, configs: confs } = JSON.parse(savedDraft)
+        if (sd) setStartDate(sd)
+        if (ed) setEndDate(ed)
+        if (confs) setConfigs(confs)
+      } catch (err) {
+        console.error("Gagal load draft", err)
+      }
+    }
+  }, [])
+
+  const handleSaveDraft = () => {
+    localStorage.setItem('generator_draft', JSON.stringify({ startDate, endDate, configs }))
+    setDialogState({
+      isOpen: true,
+      type: 'alert',
+      title: 'Draft Disimpan',
+      message: 'Data isian jadwal berhasil disimpan sementara di browser Anda. Anda bisa kembali dan melanjutkannya nanti.',
+    })
+  }
 
   const toggleDay = (dayId: number, enabled: boolean) => {
     setConfigs(prev => ({
@@ -224,6 +248,8 @@ export default function GeneratorPage() {
       const { error } = await supabase.from('pengajuan_peminjaman').insert(generatedRows)
 
       if (error) throw error
+
+      localStorage.removeItem('generator_draft')
 
       setDialogState({ 
         isOpen: true, 
@@ -384,11 +410,19 @@ export default function GeneratorPage() {
             })}
           </div>
         </CardContent>
-        <CardFooter className="bg-slate-50 border-t border-slate-100 p-6">
+        <CardFooter className="bg-slate-50 border-t border-slate-100 p-6 flex flex-col sm:flex-row gap-4">
+          <Button 
+            onClick={handleSaveDraft} 
+            disabled={loading}
+            variant="outline"
+            className="w-full sm:w-1/3 h-12 text-slate-700 hover:bg-slate-100 bg-white border-slate-300 shadow-sm"
+          >
+            <Save className="w-5 h-5 mr-2 text-indigo-600" /> Simpan Draft Sementara
+          </Button>
           <Button 
             onClick={handleGenerate} 
             disabled={loading}
-            className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg"
+            className="w-full sm:w-2/3 h-12 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg"
           >
             {loading ? "Mengeksekusi Data..." : "⚡ Generate Seluruh Jadwal Sekarang"}
           </Button>
