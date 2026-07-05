@@ -315,6 +315,15 @@ export default function GeneratorPage() {
                           <div className="absolute -left-7 top-4 bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
                             Sesi {index + 1}
                           </div>
+                          
+                          {config.sessions.length > 1 && (
+                            <div className="absolute right-4 top-4">
+                              <Button variant="outline" size="icon" onClick={() => removeSession(day.id, session.id)} className="h-7 w-7 text-red-500 hover:bg-red-50 hover:text-red-600 border-red-100 shadow-sm rounded-md bg-white">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          )}
+
                           <div className="flex flex-col gap-4 mt-2">
                             {/* Row 1: Waktu & Judul */}
                             <div className="flex flex-col md:flex-row gap-4">
@@ -326,24 +335,19 @@ export default function GeneratorPage() {
                                   <TimeInput value={session.waktu_selesai} onChange={e => updateSession(day.id, session.id, 'waktu_selesai', e.target.value)} className="h-10 bg-white flex-1" />
                                 </div>
                               </div>
-                              <div className="space-y-1.5 flex-1">
+                              <div className="space-y-1.5 flex-1 md:pr-10">
                                 <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Judul / Tema Kajian</Label>
                                 <Input value={session.judul_kajian} onChange={e => updateSession(day.id, session.id, 'judul_kajian', e.target.value)} className="h-10 bg-white" placeholder="Contoh: Kajian Tafsir Jalalain" />
                               </div>
                             </div>
                             
                             {/* Row 2: Ustadz */}
-                            <div className="space-y-1.5">
-                              <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
-                              <div className="flex gap-2">
-                                <Input value={session.nama_ustadz} onChange={e => updateSession(day.id, session.id, 'nama_ustadz', e.target.value)} className="h-10 bg-white flex-1" placeholder="Contoh: Ustadz H. Abdul Somad" />
-                                {config.sessions.length > 1 && (
-                                  <Button variant="outline" size="icon" onClick={() => removeSession(day.id, session.id)} className="h-10 w-10 text-red-500 hover:bg-red-50 hover:text-red-600 border-red-200 shrink-0 shadow-sm">
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                )}
+                            {!(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
+                              <div className="space-y-1.5">
+                                <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
+                                <Input value={session.nama_ustadz} onChange={e => updateSession(day.id, session.id, 'nama_ustadz', e.target.value)} className="h-10 bg-white w-full" placeholder="Contoh: Ustadz H. Abdul Somad" />
                               </div>
-                            </div>
+                            )}
                             
                             {/* Petugas Sholat Jumat */}
                             {(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
