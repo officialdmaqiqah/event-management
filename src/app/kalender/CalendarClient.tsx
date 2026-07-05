@@ -96,6 +96,13 @@ const generateShareText = (event: any) => {
   const { date, time } = formatShareDate(event.tanggal_mulai, event.tanggal_selesai)
   const eventUrl = getEventUrl(event)
   
+  if (event.jenis_event === 'Sholat Jumat' || event.nama_event === "Sholat Jum'at" || event.judul_kajian === "Sholat Jum'at") {
+    const desc = event.deskripsi_kegiatan || ""
+    const officersText = desc.replace('Kajian Rutin Terjadwal Otomatis', '').trim()
+    
+    return `🕌 *PANGGILAN SHOLAT JUM'AT* 🕌\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* 11:30 WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
+  }
+
   if (event.nama_ustadz || event.judul_kajian) {
     return `🕌 *HADIRILAH & SYIARKANLAH KAJIAN ISLAM* 🕌\n*Masjid Agung Kubah Timah*\n\n📌 *TEMA KAJIAN:*\n👉 "${event.judul_kajian || event.nama_event}"\n\n👤 *Narasumber/Ustadz:*\nUst. ${event.nama_ustadz || 'Belum ditentukan'}\n\n📅 *WAKTU PELAKSANAAN:*\n• Hari/Tanggal: ${date}\n• Waktu: ${time} WIB\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Informasi & Pendaftaran:*\n${eventUrl}`
   } else {

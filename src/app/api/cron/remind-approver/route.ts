@@ -31,7 +31,9 @@ export async function GET(req: Request) {
     }
 
     const remindersSent = []
-    const baseUrl = new URL(req.url).origin
+    
+    // Gunakan NEXT_PUBLIC_APP_URL atau fallback ke domain asli
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://event.kubahtimah.com'
     
     // Group pengajuan by approver's whatsapp
     interface ApproverGroup {

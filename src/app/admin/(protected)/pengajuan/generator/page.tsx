@@ -20,6 +20,10 @@ type SessionConfig = {
   nama_ustadz: string
   area_fasilitas: string[]
   jenis_event: string
+  khotib_imam?: string
+  cadangan_khotib_imam?: string
+  muazin?: string
+  maasyirol?: string
 }
 
 type DayConfig = {
@@ -34,7 +38,11 @@ const createDefaultSession = (): SessionConfig => ({
   judul_kajian: "Kajian Subuh",
   nama_ustadz: "",
   area_fasilitas: ["Ruang Utama (Masjid)"],
-  jenis_event: "Kajian / Pengajian"
+  jenis_event: "Kajian / Pengajian",
+  khotib_imam: "",
+  cadangan_khotib_imam: "",
+  muazin: "",
+  maasyirol: ""
 })
 
 const DEFAULT_DAY_CONFIG: DayConfig = {
@@ -61,13 +69,21 @@ export default function GeneratorPage() {
   const [endDate, setEndDate] = useState("")
   
   const [configs, setConfigs] = useState<Record<number, DayConfig>>({
-    0: { enabled: false, sessions: [createDefaultSession()] },
-    1: { enabled: false, sessions: [createDefaultSession()] },
-    2: { enabled: false, sessions: [createDefaultSession()] },
-    3: { enabled: false, sessions: [createDefaultSession()] },
-    4: { enabled: false, sessions: [createDefaultSession()] },
-    5: { enabled: false, sessions: [createDefaultSession()] },
-    6: { enabled: false, sessions: [createDefaultSession()] },
+    1: { enabled: true, sessions: [{ id: 's-1-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz H. Firdaus, Lc,. M.Pd', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }] },
+    2: { enabled: true, sessions: [{ id: 's-2-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz Jauhar Ridloni Marzuq, Lc, MA', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }] },
+    3: { enabled: true, sessions: [{ id: 's-3-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: "Tadarus & Tahsin Qur'an", nama_ustadz: 'Ustadz Ainur Rasyid', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }] },
+    4: { enabled: true, sessions: [
+      { id: 's-4-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz Drs. Ahmad Luthfi HZ', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' },
+      { id: 's-4-2', waktu_mulai: '18:30', waktu_selesai: '19:00', judul_kajian: 'Baca Yasin Berjamaah', nama_ustadz: '', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' },
+      { id: 's-4-3', waktu_mulai: '20:00', waktu_selesai: '21:00', judul_kajian: 'Maulid Al Barzanji', nama_ustadz: 'Tim Barzanji & Marhaban Masjid Agung Kubah Timah Pangkalpinang', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' },
+    ] },
+    5: { enabled: true, sessions: [
+      { id: 's-5-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz Ibadurrahman Alimin', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' },
+      { id: 's-5-2', waktu_mulai: '12:00', waktu_selesai: '13:00', judul_kajian: "Sholat Jum'at", nama_ustadz: '', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Sholat Jumat', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' },
+      { id: 's-5-3', waktu_mulai: '18:30', waktu_selesai: '19:30', judul_kajian: "Kajian Diniyah & Al Qur'an", nama_ustadz: 'Ustadz Ibadurrahman Alimin', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }
+    ] },
+    6: { enabled: true, sessions: [{ id: 's-6-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz H. Johan, S.Ag, M.Pd', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }] },
+    0: { enabled: true, sessions: [{ id: 's-0-1', waktu_mulai: '05:00', waktu_selesai: '06:00', judul_kajian: 'Kajian Subuh', nama_ustadz: 'Ustadz H. Khusnul Anam, Lc', area_fasilitas: ['Ruang Utama (Masjid)'], jenis_event: 'Kajian / Pengajian', khotib_imam: '', cadangan_khotib_imam: '', muazin: '', maasyirol: '' }] },
   })
 
   const [dialogState, setDialogState] = useState<{
@@ -167,6 +183,11 @@ export default function GeneratorPage() {
           const tglStr = currentDate.toISOString().split('T')[0]
           
           config.sessions.forEach((session) => {
+            let deskripsi = 'Kajian Rutin Terjadwal Otomatis';
+            if (session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") {
+              deskripsi += `\nKhotib & Imam: ${session.khotib_imam || '-'}\nCadangan Khotib & Imam: ${session.cadangan_khotib_imam || '-'}\nMa'asyirol: ${session.maasyirol || '-'}\nMuazin: ${session.muazin || '-'}`;
+            }
+
             generatedRows.push({
               nomor_pengajuan: `RUTIN-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
               status: 'approved',
@@ -186,7 +207,7 @@ export default function GeneratorPage() {
               tanggal_selesai: `${tglStr}T${session.waktu_selesai}:00+07:00`,
               area_fasilitas: session.area_fasilitas,
               privacy_event: 'detail_publik',
-              deskripsi_kegiatan: 'Kajian Rutin Terjadwal Otomatis',
+              deskripsi_kegiatan: deskripsi,
             })
           })
         }
@@ -323,6 +344,28 @@ export default function GeneratorPage() {
                                 )}
                               </div>
                             </div>
+                            
+                            {/* Petugas Sholat Jumat */}
+                            {(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
+                                <div className="space-y-1.5">
+                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Khotib & Imam</Label>
+                                  <Input value={session.khotib_imam} onChange={e => updateSession(day.id, session.id, 'khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Khotib & Imam" />
+                                </div>
+                                <div className="space-y-1.5">
+                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Cadangan Khotib & Imam</Label>
+                                  <Input value={session.cadangan_khotib_imam} onChange={e => updateSession(day.id, session.id, 'cadangan_khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Cadangan" />
+                                </div>
+                                <div className="space-y-1.5">
+                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Ma'asyirol</Label>
+                                  <Input value={session.maasyirol} onChange={e => updateSession(day.id, session.id, 'maasyirol', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Ma'asyirol" />
+                                </div>
+                                <div className="space-y-1.5">
+                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Muazin</Label>
+                                  <Input value={session.muazin} onChange={e => updateSession(day.id, session.id, 'muazin', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Muazin" />
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
