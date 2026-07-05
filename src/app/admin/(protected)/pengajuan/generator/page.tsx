@@ -379,19 +379,19 @@ export default function GeneratorPage() {
                             {(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
                                 <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Khotib & Imam</Label>
+                                  <Label className="text-[10px] text-indigo-700 font-bold uppercase tracking-tight">Khotib & Imam</Label>
                                   <Input value={session.khotib_imam} onChange={e => updateSession(day.id, session.id, 'khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Khotib & Imam" />
                                 </div>
                                 <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider leading-tight">Cadangan Khotib & Imam</Label>
+                                  <Label className="text-[10px] text-indigo-700 font-bold uppercase tracking-tight leading-tight">Cadangan Khotib & Imam</Label>
                                   <Input value={session.cadangan_khotib_imam} onChange={e => updateSession(day.id, session.id, 'cadangan_khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Cadangan" />
                                 </div>
                                 <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Ma'asyirol</Label>
+                                  <Label className="text-[10px] text-indigo-700 font-bold uppercase tracking-tight">Ma'asyirol</Label>
                                   <Input value={session.maasyirol} onChange={e => updateSession(day.id, session.id, 'maasyirol', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Ma'asyirol" />
                                 </div>
                                 <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[11px] text-indigo-700 font-bold uppercase tracking-wider">Muazin</Label>
+                                  <Label className="text-[10px] text-indigo-700 font-bold uppercase tracking-tight">Muazin</Label>
                                   <Input value={session.muazin} onChange={e => updateSession(day.id, session.id, 'muazin', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Muazin" />
                                 </div>
                               </div>
