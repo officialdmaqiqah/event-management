@@ -37,14 +37,27 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     let WA_API_KEY = payload.custom_api_key || process.env.WA_API_KEY
     let WA_SENDER_ID = payload.custom_sender_id || process.env.WA_SENDER_ID || ""
 
-    // Fallback: Ambil dari database melalui secure RPC agar tidak terhalang RLS
+    // Fallback: Ambil dari database
     if (!WA_API_KEY) {
-      const { data: config, error: configError } = await supabase.rpc('get_wa_config')
-      
-      if (!configError && config && config.api_key) {
-        WA_API_KEY = config.api_key
-        if (config.sender) {
-          WA_SENDER_ID = config.sender
+      // Prioritaskan config dari akun super_admin (karena disetting via UI)
+      const { data: superAdmin } = await supabase
+        .from('user_profiles')
+        .select('wa_api_key, wa_sender_id')
+        .eq('system_role', 'super_admin')
+        .limit(1)
+        .maybeSingle()
+        
+      if (superAdmin && superAdmin.wa_api_key) {
+        WA_API_KEY = superAdmin.wa_api_key
+        WA_SENDER_ID = superAdmin.wa_sender_id || ""
+      } else {
+        const { data: config, error: configError } = await supabase.rpc('get_wa_config')
+        
+        if (!configError && config && config.api_key) {
+          WA_API_KEY = config.api_key
+          if (config.sender) {
+            WA_SENDER_ID = config.sender
+          }
         }
       }
     }
