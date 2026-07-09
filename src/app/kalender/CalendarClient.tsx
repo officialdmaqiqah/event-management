@@ -98,30 +98,13 @@ const generateShareText = (event: any) => {
   
   if (event.jenis_event === 'Sholat Jumat' || event.nama_event === "Sholat Jum'at" || event.judul_kajian === "Sholat Jum'at") {
     const desc = event.deskripsi_kegiatan || ""
-    let officersText = desc.replace(/Kajian Rutin Terjadwal Otomatis/gi, '').trim()
+    const officersText = desc.replace('Kajian Rutin Terjadwal Otomatis', '').trim()
     
-    officersText = officersText
-      .replace(/\s+(Cadangan Khotib & Imam:)/gi, '\n$1')
-      .replace(/\s+(Cadangan Khotib:)/gi, '\n$1')
-      .replace(/\s+(Cadangan Imam:)/gi, '\n$1')
-      .replace(/\s+(Khotib & Imam:)/gi, '\n$1')
-      .replace(/\s+(Khotib:)/gi, '\n$1')
-      .replace(/\s+(Imam:)/gi, '\n$1')
-      .replace(/\s+(Ma'asyirol:)/gi, '\n$1')
-      .replace(/\s+(Muazin:)/gi, '\n$1')
-      .replace(/\s+(Bilal:)/gi, '\n$1')
-      .trim()
-      
-    // Bold the names
-    officersText = officersText.replace(/:\s*([^\n]+)/g, (match, name) => {
-      return `: *${name.trim()}*`
-    })
-    
-    return `🕌 *PANGGILAN SHOLAT JUM'AT* 🕌\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* 11:30 WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
+    return `*PANGGILAN SHOLAT JUM'AT*\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* 11:30 WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
   }
 
   if (event.nama_ustadz || event.judul_kajian) {
-    return `🕌 *HADIRILAH & SYIARKANLAH KAJIAN ISLAM* 🕌\n*Masjid Agung Kubah Timah*\n\n📌 *TEMA KAJIAN:*\n👉 "${event.judul_kajian || event.nama_event}"\n\n👤 *Narasumber/Ustadz:*\nUst. ${event.nama_ustadz || 'Belum ditentukan'}\n\n📅 *WAKTU PELAKSANAAN:*\n• Hari/Tanggal: ${date}\n• Waktu: ${time} WIB\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Informasi & Pendaftaran:*\n${eventUrl}`
+    return `*HADIRILAH & SYIARKANLAH KAJIAN ISLAM*\n*Masjid Agung Kubah Timah*\n\n📌 *TEMA KAJIAN:*\n👉 "${event.judul_kajian || event.nama_event}"\n\n👤 *Narasumber/Ustadz:*\nUst. ${event.nama_ustadz || 'Belum ditentukan'}\n\n📅 *WAKTU PELAKSANAAN:*\n• Hari/Tanggal: ${date}\n• Waktu: ${time} WIB\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Informasi & Pendaftaran:*\n${eventUrl}`
   } else {
     return `📢 *INFORMASI KEGIATAN MAKT* 📢\n*Masjid Agung Kubah Timah*\n\n📅 *${event.nama_event}*\n_${event.jenis_event}_\n\n• Waktu: ${date} (${time} WIB)\n• Lokasi: ${(event.area_fasilitas as string[]).join(', ')}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
   }
