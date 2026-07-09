@@ -7,6 +7,8 @@ type NotificationPayload = {
   recipient_whatsapp: string
   message: string
   related_event_request_id?: string
+  custom_api_key?: string
+  custom_sender_id?: string
 }
 
 function formatWhatsAppNumber(phone: string) {
@@ -20,8 +22,10 @@ function formatWhatsAppNumber(phone: string) {
 }
 
 export async function sendWhatsAppNotification(payload: NotificationPayload) {
+  let logEntry: any = null;
+  let supabase: any;
+  
   try {
-    let supabase;
     try {
       supabase = createAdminClient()
     } catch (e) {
@@ -30,8 +34,8 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     }
 
     let WA_GATEWAY_URL = process.env.WA_GATEWAY_URL || "https://xsender.id/api/send-message"
-    let WA_API_KEY = process.env.WA_API_KEY
-    let WA_SENDER_ID = process.env.WA_SENDER_ID || ""
+    let WA_API_KEY = payload.custom_api_key || process.env.WA_API_KEY
+    let WA_SENDER_ID = payload.custom_sender_id || process.env.WA_SENDER_ID || ""
 
     // Fallback: Ambil dari database melalui secure RPC agar tidak terhalang RLS
     if (!WA_API_KEY) {
@@ -48,7 +52,6 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     const formattedNumber = formatWhatsAppNumber(payload.recipient_whatsapp)
 
     // 1. Insert into notification_logs as pending
-    let logEntry: any = null;
     try {
       const { data, error: logError } = await supabase
         .from("notification_logs")
@@ -143,11 +146,16 @@ export async function sendWhatsAppNotification(payload: NotificationPayload) {
     console.error("WhatsApp Notification Failed:", err)
     
     // Update log status to failed if possible
-    try {
-      const supabase = createClient()
-      // find the latest pending log for this request (approximate since we don't pass the ID through the catch easily unless we scope it)
-      // For a more robust approach, we could restructure the try/catch, but this is a simplified fallback.
-    } catch (e) {}
+    if (logEntry && supabase) {
+      try {
+        await supabase
+          .from("notification_logs")
+          .update({ status: "failed", error_message: err.message })
+          .eq("id", logEntry.id)
+      } catch (e) {
+        console.error("Gagal update status failed:", e)
+      }
+    }
 
     return { success: false, error: err.message }
   }

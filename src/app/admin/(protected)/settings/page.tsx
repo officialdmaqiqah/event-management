@@ -117,7 +117,9 @@ export default function SettingsPage() {
       const result = await sendWhatsAppNotification({
         recipient_name: "Test User",
         recipient_whatsapp: testNumber,
-        message: testMessage
+        message: testMessage,
+        custom_api_key: formData.wa_api_key,
+        custom_sender_id: formData.wa_sender_id
       })
       setTestResult(result)
     } catch (err: any) {
