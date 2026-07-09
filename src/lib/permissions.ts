@@ -107,6 +107,12 @@ export function isSuperAdmin(profile: UserPermissionProfile | null, email?: stri
   return false
 }
 
+/** Apakah user adalah Guest Admin (Viewer)? */
+export function isViewer(profile: UserPermissionProfile | null): boolean {
+  if (!profile) return false
+  return profile.system_role === 'viewer'
+}
+
 /** Apakah user memiliki role global tertentu? */
 export function hasSystemRole(
   profile: UserPermissionProfile | null,

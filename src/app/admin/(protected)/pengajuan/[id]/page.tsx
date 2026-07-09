@@ -21,6 +21,7 @@ import {
   tplPengajuanRevisi, 
   tplNotifikasiApprover 
 } from "@/app/actions/notification"
+import { isViewer } from "@/lib/permissions"
 
 type Pengajuan = {
   id: string
@@ -912,8 +913,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </div>
                   </div>
                   <div className="flex gap-2 justify-end pt-2">
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditingPemohon(false)} disabled={updating}>Batal</Button>
-                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                    <Button variant="ghost" size="sm" onClick={() => setIsEditingPemohon(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                       setUpdating(true)
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editPemohon).eq("id", pengajuan.id)
@@ -1027,8 +1028,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </div>
                   </div>
                   <div className="flex gap-2 justify-end pt-2">
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditingEvent(false)} disabled={updating}>Batal</Button>
-                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                    <Button variant="ghost" size="sm" onClick={() => setIsEditingEvent(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
+                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                       setUpdating(true)
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editEvent).eq("id", pengajuan.id)
@@ -1124,7 +1125,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         <Button 
                           variant="ghost" size="sm" 
                           onClick={() => setIsEditingKajian(false)}
-                          disabled={updating}
+                          disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                         >
                           Batal
                         </Button>
@@ -1136,7 +1137,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                             await updateField("judul_kajian", editJudulVal)
                             setIsEditingKajian(false)
                           }}
-                          disabled={updating}
+                          disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                           className="bg-indigo-600 hover:bg-indigo-700"
                         >
                           {updating ? "Menyimpan..." : "Simpan Perubahan"}
@@ -1201,8 +1202,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       </div>
                     </div>
                     <div className="flex gap-2 justify-end">
-                      <Button variant="ghost" size="sm" onClick={() => setIsEditingJadwal(false)} disabled={updating}>Batal</Button>
-                      <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating} onClick={async () => {
+                      <Button variant="ghost" size="sm" onClick={() => setIsEditingJadwal(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
+                      <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                         setUpdating(true)
                         try {
                           const isoMulai = new Date(editJadwal.tanggal_mulai).toISOString()
@@ -1254,7 +1255,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       onChange={(e) => setEditTujuanVal(e.target.value)} 
                     />
                     <div className="flex flex-col gap-1">
-                      <Button size="sm" onClick={handleSaveTujuan} disabled={updating} className="bg-indigo-600 hover:bg-indigo-700 text-white h-7 text-[10px]">Simpan</Button>
+                      <Button size="sm" onClick={handleSaveTujuan} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} className="bg-indigo-600 hover:bg-indigo-700 text-white h-7 text-[10px]">Simpan</Button>
                       <Button size="sm" variant="outline" onClick={() => setIsEditingTujuan(false)} className="h-7 text-[10px]">Batal</Button>
                     </div>
                   </div>
@@ -1524,14 +1525,14 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     
                     <Button 
                       onClick={() => triggerStatusChange('approved')} 
-                      disabled={updating}
+                      disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                       className="bg-green-600 hover:bg-green-700 h-10 font-bold text-xs"
                     >
                       Setujui (Approve) Level ini
                     </Button>
                     <Button 
                       onClick={() => triggerStatusChange('revision_requested', true)} 
-                      disabled={updating}
+                      disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                       variant="outline"
                       className="h-10 font-bold text-xs text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
                     >
@@ -1539,7 +1540,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </Button>
                     <Button 
                       onClick={() => triggerStatusChange('rejected', true)} 
-                      disabled={updating}
+                      disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                       variant="destructive"
                       className="h-10 font-semibold text-xs"
                     >

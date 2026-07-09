@@ -1,6 +1,17 @@
 'use server'
 
-import { createAdminClient } from '@/lib/supabase/server'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
+
+async function assertNotViewer() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+  
+  const { data: profile } = await supabase.from('user_profiles').select('system_role').eq('user_id', user.id).maybeSingle()
+  if (profile?.system_role === 'viewer') {
+    throw new Error("Akses ditolak: Mode Guest (Read-Only)")
+  }
+}
 
 // Helper to verify event ownership and return associated request ID
 async function verifyEventAndGetRequestId(eventId: string) {
@@ -54,6 +65,7 @@ export async function fetchMeetingMinutesAction(eventId: string) {
 // 2. Save meeting minutes (Insert/Update)
 export async function saveMeetingMinutesAction(eventId: string, form: any, isFinal: boolean) {
   try {
+    await assertNotViewer()
     const requestId = await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -113,6 +125,7 @@ export async function saveMeetingMinutesAction(eventId: string, form: any, isFin
 // 3. Update public publication toggle
 export async function togglePublishAction(eventId: string, minutesId: string, isPublished: boolean) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -139,6 +152,7 @@ export async function togglePublishAction(eventId: string, minutesId: string, is
 // 4. Save/Add action item
 export async function addActionItemAction(eventId: string, minutesId: string, newAi: any) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -166,6 +180,7 @@ export async function addActionItemAction(eventId: string, minutesId: string, ne
 // 5. Delete action item
 export async function deleteActionItemAction(eventId: string, itemId: string) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -227,6 +242,7 @@ export async function uploadMeetingPhotoAction(formData: FormData) {
     if (!meetingMinutesId) throw new Error('ID Notulen tidak ditemukan.')
     if (!pengajuanId) throw new Error('ID Pengajuan tidak ditemukan.')
 
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -272,6 +288,7 @@ export async function uploadMeetingPhotoAction(formData: FormData) {
 // 8. Update photo caption
 export async function updatePhotoCaptionAction(eventId: string, photoId: string, caption: string) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -291,6 +308,7 @@ export async function updatePhotoCaptionAction(eventId: string, photoId: string,
 // 9. Update photo visibility
 export async function updatePhotoVisibilityAction(eventId: string, photoId: string, visibility: string) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -310,6 +328,7 @@ export async function updatePhotoVisibilityAction(eventId: string, photoId: stri
 // 10. Delete photo from DB and Storage
 export async function deletePhotoAction(eventId: string, photoId: string) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -352,6 +371,7 @@ export async function deletePhotoAction(eventId: string, photoId: string) {
 // 11. Add manual participant from Guest Dashboard
 export async function guestAddParticipantAction(eventId: string, pData: any) {
   try {
+    await assertNotViewer()
     const requestId = await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 
@@ -385,6 +405,7 @@ export async function guestAddParticipantAction(eventId: string, pData: any) {
 // 12. Check in a registered participant manually
 export async function checkInParticipantAction(eventId: string, participantId: string) {
   try {
+    await assertNotViewer()
     await verifyEventAndGetRequestId(eventId)
     const supabaseAdmin = createAdminClient()
 

@@ -98,7 +98,24 @@ const generateShareText = (event: any) => {
   
   if (event.jenis_event === 'Sholat Jumat' || event.nama_event === "Sholat Jum'at" || event.judul_kajian === "Sholat Jum'at") {
     const desc = event.deskripsi_kegiatan || ""
-    const officersText = desc.replace('Kajian Rutin Terjadwal Otomatis', '').trim()
+    let officersText = desc.replace(/Kajian Rutin Terjadwal Otomatis/gi, '').trim()
+    
+    officersText = officersText
+      .replace(/\s+(Cadangan Khotib & Imam:)/gi, '\n$1')
+      .replace(/\s+(Cadangan Khotib:)/gi, '\n$1')
+      .replace(/\s+(Cadangan Imam:)/gi, '\n$1')
+      .replace(/\s+(Khotib & Imam:)/gi, '\n$1')
+      .replace(/\s+(Khotib:)/gi, '\n$1')
+      .replace(/\s+(Imam:)/gi, '\n$1')
+      .replace(/\s+(Ma'asyirol:)/gi, '\n$1')
+      .replace(/\s+(Muazin:)/gi, '\n$1')
+      .replace(/\s+(Bilal:)/gi, '\n$1')
+      .trim()
+      
+    // Bold the names
+    officersText = officersText.replace(/:\s*([^\n]+)/g, (match, name) => {
+      return `: *${name.trim()}*`
+    })
     
     return `🕌 *PANGGILAN SHOLAT JUM'AT* 🕌\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* 11:30 WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
   }
