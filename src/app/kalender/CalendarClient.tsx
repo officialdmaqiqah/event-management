@@ -99,8 +99,10 @@ const generateShareText = (event: any) => {
   if (event.jenis_event === 'Sholat Jumat' || event.nama_event === "Sholat Jum'at" || event.judul_kajian === "Sholat Jum'at") {
     const desc = event.deskripsi_kegiatan || ""
     const officersText = desc.replace('Kajian Rutin Terjadwal Otomatis', '').trim()
+    const startObj = new Date(event.tanggal_mulai)
+    const startTimeStr = `${startObj.getHours().toString().padStart(2, '0')}:${startObj.getMinutes().toString().padStart(2, '0')}`
     
-    return `*PANGGILAN SHOLAT JUM'AT*\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* 11:30 WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
+    return `*PANGGILAN SHOLAT JUM'AT*\n*Masjid Agung Kubah Timah*\n\nMari bersama-sama menunaikan ibadah Sholat Jum'at berjamaah pada:\n\n📅 *Hari/Tanggal:* ${date}\n⏰ *Waktu:* ${startTimeStr} WIB s.d Selesai\n📍 *Lokasi:* ${(event.area_fasilitas as string[] || []).join(', ')}\n\n*Petugas Jum'at:*\n${officersText}\n\n---\n🔗 *Detail Selengkapnya:*\n${eventUrl}`
   }
 
   if (event.nama_ustadz || event.judul_kajian) {
