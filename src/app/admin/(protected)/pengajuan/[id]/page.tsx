@@ -21,6 +21,7 @@ import {
   tplPengajuanRevisi, 
   tplNotifikasiApprover 
 } from "@/app/actions/notification"
+import { syncAdminEventToCalendar } from "@/app/actions/pengajuan"
 import { isViewer } from "@/lib/permissions"
 
 type Pengajuan = {
@@ -368,7 +369,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       else if (field === 'deskripsi_kegiatan') eventUpdatePayload = { description: value };
       
       if (eventUpdatePayload) {
-        await supabase.from("events").update(eventUpdatePayload).eq("event_request_id", pengajuan.id);
+        await syncAdminEventToCalendar(pengajuan.id, eventUpdatePayload);
       }
 
       setPengajuan(prev => prev ? { ...prev, [field]: value } : null);
@@ -1226,10 +1227,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                           if (error) throw error
                           
                           // Sinkronisasi jadwal ke tabel events (kalender)
-                          await supabase.from("events").update({
+                          await syncAdminEventToCalendar(pengajuan.id, {
                             start_datetime: isoMulai,
                             end_datetime: isoSelesai
-                          }).eq("event_request_id", pengajuan.id)
+                          });
 
                           setPengajuan({...pengajuan, tanggal_mulai: isoMulai, tanggal_selesai: isoSelesai} as Pengajuan)
                           setIsEditingJadwal(false)

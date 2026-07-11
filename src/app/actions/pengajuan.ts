@@ -182,3 +182,18 @@ export async function submitRevisiAction(data: {
     return { error: error.message || "Terjadi kesalahan saat menyimpan revisi" }
   }
 }
+
+export async function syncAdminEventToCalendar(pengajuanId: string, payload: any) {
+  try {
+    const supabaseAdmin = createAdminClient()
+    const { error } = await supabaseAdmin.from("events").update(payload).eq("event_request_id", pengajuanId)
+    if (error) {
+      console.error("Gagal syncAdminEventToCalendar:", error)
+      return { success: false, error: error.message }
+    }
+    return { success: true }
+  } catch (err: any) {
+    console.error("Exception in syncAdminEventToCalendar:", err)
+    return { success: false, error: err.message }
+  }
+}
