@@ -360,6 +360,17 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         .eq("id", pengajuan.id);
 
       if (error) throw error;
+      
+      // Sinkronisasi ke tabel events (kalender)
+      let eventUpdatePayload: any = null;
+      if (field === 'nama_event') eventUpdatePayload = { title: value };
+      else if (field === 'jenis_event') eventUpdatePayload = { type: value };
+      else if (field === 'deskripsi_kegiatan') eventUpdatePayload = { description: value };
+      
+      if (eventUpdatePayload) {
+        await supabase.from("events").update(eventUpdatePayload).eq("event_request_id", pengajuan.id);
+      }
+
       setPengajuan(prev => prev ? { ...prev, [field]: value } : null);
       
       setDialogState({
@@ -1213,6 +1224,13 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                             tanggal_selesai: isoSelesai
                           }).eq("id", pengajuan.id)
                           if (error) throw error
+                          
+                          // Sinkronisasi jadwal ke tabel events (kalender)
+                          await supabase.from("events").update({
+                            start_datetime: isoMulai,
+                            end_datetime: isoSelesai
+                          }).eq("event_request_id", pengajuan.id)
+
                           setPengajuan({...pengajuan, tanggal_mulai: isoMulai, tanggal_selesai: isoSelesai} as Pengajuan)
                           setIsEditingJadwal(false)
                         } catch (err: any) {
