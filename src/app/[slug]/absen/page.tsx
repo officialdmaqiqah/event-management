@@ -126,48 +126,7 @@ export default function DirectAbsenPage({ params }: { params: { slug: string } }
 
     setFormData(prev => ({ ...prev, full_name: formattedName, whatsapp: formattedWA }))
 
-    // Cek duplikasi nomor WhatsApp untuk event ini
-    const { data: existingParticipant, error: checkError } = await supabase
-      .from('participants')
-      .select('id, status')
-      .eq('event_id', event.id)
-      .eq('whatsapp', formattedWA)
-      .maybeSingle()
-      
-    if (checkError) {
-      setError("Nomor WA ini sudah terdaftar")
-      setSubmitting(false)
-      return
-    }
-
-    if (existingParticipant) {
-      if (existingParticipant.status === 'attended') {
-        setError("Anda sudah melakukan absen sebelumnya")
-        setSubmitting(false)
-        return
-      } else {
-        // Jika sudah daftar tapi belum absen, update statusnya jadi attended
-        const { error: updateError } = await supabase
-          .from('participants')
-          .update({ 
-            status: 'attended', 
-            checked_in_at: new Date().toISOString() 
-          })
-          .eq('id', existingParticipant.id)
-          
-        if (updateError) {
-          setError(updateError.message)
-          setSubmitting(false)
-          return
-        }
-        
-        setSuccessDirect(true)
-        setSubmitting(false)
-        return
-      }
-    }
-
-    // Validasi Waktu
+    // 1. Validasi Waktu
     const now = new Date()
     if (event.checkin_start_datetime && now < new Date(event.checkin_start_datetime)) {
       setError(`Absen belum dibuka. Absen akan dibuka pada ${format(new Date(event.checkin_start_datetime), "dd MMM yyyy, HH:mm")}`)
@@ -180,7 +139,49 @@ export default function DirectAbsenPage({ params }: { params: { slug: string } }
       return
     }
 
-    // Validasi Lokasi
+    // 2. Cek Partisipan Existing
+    const { data: existingParticipant, error: checkError } = await supabase
+      .from('participants')
+      .select('id, status')
+      .eq('event_id', event.id)
+      .eq('whatsapp', formattedWA)
+      .maybeSingle()
+      
+    if (checkError) {
+      setError("Terjadi kesalahan saat mengecek data pendaftaran.")
+      setSubmitting(false)
+      return
+    }
+
+    if (existingParticipant && existingParticipant.status === 'attended') {
+      setError("Anda sudah melakukan absen sebelumnya")
+      setSubmitting(false)
+      return
+    }
+
+    const processFinalCheckin = async (lat: number, lng: number) => {
+      if (existingParticipant) {
+        // Jika sudah daftar tapi belum absen, update statusnya jadi attended
+        const { error: updateError } = await supabase
+          .from('participants')
+          .update({ 
+            status: 'attended', 
+            checked_in_at: new Date().toISOString() 
+          })
+          .eq('id', existingParticipant.id)
+          
+        if (updateError) {
+          setError(updateError.message)
+        } else {
+          setSuccessDirect(true)
+        }
+        setSubmitting(false)
+      } else {
+        handleDirectCheckin(lat, lng, formattedName, formattedWA)
+      }
+    }
+
+    // 3. Validasi Lokasi (Berlaku untuk SEMUA orang)
     if (event.latitude && event.longitude) {
       if (!navigator.geolocation) {
         setError("Browser Anda tidak mendukung deteksi lokasi (GPS).")
@@ -198,7 +199,7 @@ export default function DirectAbsenPage({ params }: { params: { slug: string } }
             setError(`Anda berada di luar area absen! (Jarak Anda: ${distance}m, Maksimal: ${event.radius_meters}m)`)
             setSubmitting(false)
           } else {
-            handleDirectCheckin(userLat, userLng, formattedName, formattedWA)
+            processFinalCheckin(userLat, userLng)
           }
         },
         (err) => {
@@ -209,7 +210,7 @@ export default function DirectAbsenPage({ params }: { params: { slug: string } }
       )
       return
     } else {
-      handleDirectCheckin(0, 0, formattedName, formattedWA)
+      processFinalCheckin(0, 0)
       return
     }
   }
