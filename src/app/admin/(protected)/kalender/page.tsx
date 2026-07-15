@@ -620,7 +620,7 @@ export default function AdminCalendarPage() {
                   ) : (
                     <Link href={`/${selectedEvent.public_slug}`}>
                       <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
-                        Lihat Detail Pendaftaran (Frontend)
+                        Lihat Detail Pendaftaran
                       </Button>
                     </Link>
                   )}
