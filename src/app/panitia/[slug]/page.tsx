@@ -24,7 +24,7 @@ function maskWhatsapp(wa: string) {
   return wa.substring(0, 4) + "****" + wa.substring(wa.length - 3)
 }
 
-export default function GuestDashboardPage({ params }: { params: { id: string } }) {
+export default function GuestDashboardPage({ params }: { params: { slug: string } }) {
   const supabase = createClient()
   const [event, setEvent] = useState<any>(null)
   const [participants, setParticipants] = useState<any[]>([])
@@ -54,7 +54,8 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
   const [processingCheckIn, setProcessingCheckIn] = useState<string | null>(null)
   const handleCheckInManual = async (pId: string) => {
     setProcessingCheckIn(pId)
-    const res = await checkInParticipantAction(params.id, pId)
+    if (!event?.id) return;
+    const res = await checkInParticipantAction(event.id, pId)
     if (res.error) {
       alert("Gagal melakukan check-in: " + res.error)
     } else {
@@ -66,6 +67,10 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
 
   useEffect(() => {
     fetchData()
+  }, [params.slug])
+
+  useEffect(() => {
+    if (!event?.id) return;
     
     // Subscribe to real-time changes on participants table
     const subscription = supabase
@@ -74,7 +79,7 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
         event: '*', 
         schema: 'public', 
         table: 'participants',
-        filter: `event_id=eq.${params.id}` 
+        filter: `event_id=eq.${event.id}` 
       }, (payload) => {
         // Refresh data when there's an update (someone registered or checked in)
         fetchData()
@@ -84,13 +89,13 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
     return () => {
       supabase.removeChannel(subscription)
     }
-  }, [params.id])
+  }, [event?.id])
 
   const fetchData = async () => {
     const { data: eventData, error: eventError } = await supabase
       .from('events')
       .select('*')
-      .eq('id', params.id)
+      .eq('registration_slug', params.slug)
       .single()
 
     if (eventError || !eventData) {
@@ -103,7 +108,7 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
     const { data: participantsData } = await supabase
       .from('participants')
       .select('*')
-      .eq('event_id', params.id)
+      .eq('event_id', eventData.id)
       .order('created_at', { ascending: false })
 
     if (participantsData) {
@@ -119,8 +124,9 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
       alert("Nama dan No. WhatsApp wajib diisi.")
       return
     }
+    if (!event?.id) return;
     setAddingParticipant(true)
-    const res = await guestAddParticipantAction(params.id, newParticipant)
+    const res = await guestAddParticipantAction(event.id, newParticipant)
     if (res.error) {
       alert("Gagal menambahkan peserta: " + res.error)
     } else {
@@ -165,7 +171,7 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {event.location}</span>
               </div>
             </div>
-            <Link href={`/panitia/${params.id}/scanner`}>
+            <Link href={`/panitia/${params.slug}/scanner`}>
               <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-900/20 flex items-center gap-2 transition-all">
                 <Camera className="h-5 w-5" /> Buka Scanner Tiket
               </button>
@@ -378,7 +384,7 @@ export default function GuestDashboardPage({ params }: { params: { id: string } 
               </Card>
 
               <Card className="shadow-sm border border-indigo-150 rounded-2xl overflow-hidden bg-indigo-50/10 flex flex-col justify-center p-5">
-                <Link href={`/panitia/${params.id}/scanner`} className="w-full">
+                <Link href={`/panitia/${params.slug}/scanner`} className="w-full">
                   <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-md shadow-emerald-900/10 flex items-center justify-center gap-2 transition-all text-xs sm:text-sm">
                     <Camera className="h-4.5 w-4.5" /> Buka Scanner Tiket QR
                   </button>

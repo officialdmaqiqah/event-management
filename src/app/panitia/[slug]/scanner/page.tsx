@@ -15,7 +15,7 @@ function maskWhatsapp(wa: string) {
   return wa.substring(0, 4) + "****" + wa.substring(wa.length - 3)
 }
 
-export default function GuestScannerPage({ params }: { params: { id: string } }) {
+export default function GuestScannerPage({ params }: { params: { slug: string } }) {
   const supabase = createClient()
   const [event, setEvent] = useState<any>(null)
   const [searchQuery, setSearchQuery] = useState("")
@@ -32,7 +32,7 @@ export default function GuestScannerPage({ params }: { params: { id: string } })
     const { data: eventData, error: eventError } = await supabase
       .from('events')
       .select('*')
-      .eq('id', params.id)
+      .eq('registration_slug', params.slug)
       .single()
       
     if (eventData) setEvent(eventData)
@@ -41,7 +41,7 @@ export default function GuestScannerPage({ params }: { params: { id: string } })
       const { data: participantsData } = await supabase
         .from('participants')
         .select('*')
-        .eq('event_id', params.id)
+        .eq('event_id', eventData.id)
         .order('created_at', { ascending: false })
         
       if (participantsData) setParticipants(participantsData)
@@ -121,7 +121,7 @@ export default function GuestScannerPage({ params }: { params: { id: string } })
       {/* Header Panel */}
       <div className="bg-indigo-900 text-white pb-20 pt-6 px-4 border-b border-indigo-800">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href={`/panitia/${params.id}`}>
+          <Link href={`/panitia/${params.slug}`}>
             <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-indigo-800 -ml-2">
               <ArrowLeft className="h-5 w-5 mr-1" /> Dasbor
             </Button>

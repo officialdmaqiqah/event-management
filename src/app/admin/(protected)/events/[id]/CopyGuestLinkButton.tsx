@@ -4,11 +4,11 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Link as LinkIcon, CheckCircle2 } from "lucide-react"
 
-export default function CopyGuestLinkButton({ eventId }: { eventId: string }) {
+export default function CopyGuestLinkButton({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false)
 
   const copyLink = () => {
-    const url = `${window.location.origin}/panitia/${eventId}`
+    const url = `${window.location.origin}/panitia/${slug}`
     navigator.clipboard.writeText(url)
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)

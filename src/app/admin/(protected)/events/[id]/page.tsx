@@ -198,7 +198,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             <Button variant="outline" className="h-10 text-xs font-semibold border-indigo-200 text-indigo-700 hover:bg-indigo-50">Edit Event</Button>
           </Link>
           <ExportCsvButton participants={participants || []} eventTitle={event.title} eventCustomFields={event.custom_fields || []} />
-          <CopyGuestLinkButton eventId={event.id} />
+          <CopyGuestLinkButton slug={event.registration_slug} />
           <Link href={`/admin/events/${event.id}/checkin`}>
             <Button className="h-10 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white">Mulai Check-in</Button>
           </Link>
