@@ -5,7 +5,7 @@ import CalendarClient from "./CalendarClient"
 export async function generateMetadata({ 
   searchParams 
 }: { 
-  searchParams: { event?: string } 
+  searchParams: { event?: string; v?: string } 
 }): Promise<Metadata> {
   const eventId = searchParams.event
 
@@ -27,11 +27,12 @@ export async function generateMetadata({
   let titleText = "Kalender Kegiatan - Masjid Agung Kubah Timah"
   let descText = "Jadwal kegiatan dan pemakaian fasilitas Masjid Agung Kubah Timah."
   let imageUrl = ""
+  let updatedAt = ""
 
   // 1. Cek di tabel events (karena public event ID disimpan di events)
   const { data: pubEvent } = (await supabase
     .from('events')
-    .select('title, description, banner_url')
+    .select('title, description, banner_url, updated_at')
     .eq('id', eventId)
     .maybeSingle()) as any
 
@@ -39,11 +40,12 @@ export async function generateMetadata({
     titleText = `${pubEvent.title} - Masjid Agung Kubah Timah`
     descText = pubEvent.description || `Hadirilah kegiatan ${pubEvent.title} di Masjid Agung Kubah Timah.`
     imageUrl = pubEvent.banner_url || ""
+    updatedAt = pubEvent.updated_at || ""
   } else {
     // 2. Cek di tabel pengajuan_peminjaman
     const { data: pengajuan } = (await supabase
       .from('pengajuan_peminjaman')
-      .select('nama_event, deskripsi_kegiatan, url_flyer')
+      .select('nama_event, deskripsi_kegiatan, url_flyer, updated_at')
       .eq('id', eventId)
       .maybeSingle()) as any
 
@@ -51,7 +53,15 @@ export async function generateMetadata({
       titleText = `${pengajuan.nama_event} - Masjid Agung Kubah Timah`
       descText = pengajuan.deskripsi_kegiatan || `Hadirilah kegiatan ${pengajuan.nama_event} di Masjid Agung Kubah Timah.`
       imageUrl = pengajuan.url_flyer || ""
+      updatedAt = pengajuan.updated_at || ""
     }
+  }
+
+  const versionParam = searchParams.v || (updatedAt ? new Date(updatedAt).getTime() : Date.now())
+  const pageUrl = `https://event.kubahtimah.com/kalender?event=${eventId}&v=${versionParam}`
+
+  if (imageUrl) {
+    imageUrl = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}v=${versionParam}`
   }
 
   return {
@@ -60,7 +70,7 @@ export async function generateMetadata({
     openGraph: {
       title: titleText,
       description: descText,
-      url: `https://event.kubahtimah.com/kalender?event=${eventId}`,
+      url: pageUrl,
       siteName: 'Masjid Agung Kubah Timah',
       images: imageUrl ? [
         {

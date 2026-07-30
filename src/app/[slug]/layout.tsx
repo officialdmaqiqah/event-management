@@ -1,7 +1,13 @@
 import { createClient } from "@/lib/supabase/server"
 import { Metadata } from "next"
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ 
+  params,
+  searchParams
+}: { 
+  params: { slug: string }
+  searchParams?: { v?: string }
+}): Promise<Metadata> {
   const supabase = createClient()
   const { data: event } = await supabase
     .from('events')
@@ -20,17 +26,25 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const titleText = `${event.title} - Masjid Agung Kubah Timah`
   const descText = event.description || `Hadirilah kegiatan ${event.title} di Masjid Agung Kubah Timah`
 
+  const versionParam = searchParams?.v || (event.updated_at ? new Date(event.updated_at).getTime() : Date.now())
+  const pageUrl = `https://event.kubahtimah.com/${params.slug}?v=${versionParam}`
+
+  let bannerUrl = event.banner_url
+  if (bannerUrl) {
+    bannerUrl = `${bannerUrl}${bannerUrl.includes('?') ? '&' : '?'}v=${versionParam}`
+  }
+
   return {
     title: titleText,
     description: descText,
     openGraph: {
       title: event.title,
       description: descText,
-      url: `https://event.kubahtimah.com/${params.slug}`,
+      url: pageUrl,
       siteName: 'Masjid Agung Kubah Timah',
-      images: event.banner_url ? [
+      images: bannerUrl ? [
         {
-          url: event.banner_url,
+          url: bannerUrl,
           width: 800,
           height: 600,
           alt: event.title,
@@ -42,7 +56,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       card: 'summary_large_image',
       title: event.title,
       description: descText,
-      images: event.banner_url ? [event.banner_url] : [],
+      images: bannerUrl ? [bannerUrl] : [],
     }
   }
 }

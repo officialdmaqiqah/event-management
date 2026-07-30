@@ -37,6 +37,7 @@ type PengajuanEvent = {
   nama_ustadz?: string
   judul_kajian?: string
   status?: string
+  updated_at?: string
 }
 
 // SVG Icons for Social Media Share
@@ -68,7 +69,24 @@ const TwitterIcon = () => (
 const getEventUrl = (event: any) => {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://event.kubahtimah.com'
   const base = origin.includes('localhost') ? 'https://event.kubahtimah.com' : origin
-  return event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender?event=${event.id}`
+  const baseUrl = event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender?event=${event.id}`
+
+  let version = ''
+  if (event.updated_at) {
+    version = new Date(event.updated_at).getTime().toString()
+  } else {
+    const flyer = event.banner_url || event.url_flyer
+    if (flyer) {
+      const match = flyer.match(/_(\d+)\.(png|jpg|jpeg|webp)/i)
+      if (match) version = match[1]
+    }
+  }
+
+  if (version) {
+    const separator = baseUrl.includes('?') ? '&' : '?'
+    return `${baseUrl}${separator}v=${version}`
+  }
+  return baseUrl
 }
 
 const formatShareDate = (startStr: string, endStr: string) => {
@@ -130,7 +148,8 @@ const handleNativeShare = async (event: any) => {
 
       if (flyerUrl) {
         try {
-          const response = await fetch(flyerUrl)
+          const fetchUrl = `${flyerUrl}${flyerUrl.includes('?') ? '&' : '?'}t=${Date.now()}`
+          const response = await fetch(fetchUrl, { cache: 'reload' })
           const blob = await response.blob()
           const file = new File([blob], `flyer-${event.id || 'event'}.jpg`, { type: blob.type })
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -292,7 +311,7 @@ export default function CalendarClient() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, status, url_flyer
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, status, url_flyer, updated_at
         `)
         .in("status", ["approved", "submitted", "under_review", "revision_requested"])
         .neq("privacy_event", "rahasia")
@@ -303,7 +322,7 @@ export default function CalendarClient() {
         .from("events")
         .select(`
           id, title, type, start_datetime, end_datetime, location, 
-          organizer_name, description, registration_slug, event_request_id, banner_url
+          organizer_name, description, registration_slug, event_request_id, banner_url, updated_at
         `)
         .eq("status", "published")
 
@@ -337,7 +356,8 @@ export default function CalendarClient() {
             deskripsi_kegiatan: pe.description || correspondingPengajuan?.deskripsi_kegiatan || undefined,
             is_public_event: correspondingPengajuan?.privacy_event !== 'publik_terbatas', 
             public_slug: pe.registration_slug,
-            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
+            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined,
+            updated_at: pe.updated_at || correspondingPengajuan?.updated_at || undefined
           })
         })
       }
@@ -348,7 +368,8 @@ export default function CalendarClient() {
             mergedEvents.push({
               ...(p as PengajuanEvent),
               is_public_event: false,
-              banner_url: p.url_flyer || undefined
+              banner_url: p.url_flyer || undefined,
+              updated_at: p.updated_at || undefined
             })
           }
         })
@@ -904,7 +925,9 @@ export default function CalendarClient() {
                 try {
                   const res = await fetch(previewFlyer!);
                   const blob = await res.blob();
-                  trackAnalyticsEvent('download_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
+                  if (selectedEvent) {
+                    trackAnalyticsEvent('download_flyer', getEventUrl(selectedEvent), { event_id: selectedEvent.id }).catch(() => {})
+                  }
                   const url = window.URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.style.display = 'none';

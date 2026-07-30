@@ -75,10 +75,13 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
 
   const toLocalDatetimeString = (utcString: string | null) => {
     if (!utcString) return ""
-    const d = new Date(utcString)
-    if (isNaN(d.getTime())) return ""
-    const tzOffset = d.getTimezoneOffset() * 60000
-    return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16)
+    try {
+      const d = new Date(utcString)
+      const str = d.toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' })
+      return str.replace(' ', 'T').slice(0, 16)
+    } catch (e) {
+      return ""
+    }
   }
 
   const fetchEvent = async () => {
@@ -164,8 +167,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       description: formData.description,
       agenda: formData.agenda,
       location: formData.location,
-      start_datetime: new Date(formData.start_datetime).toISOString(),
-      end_datetime: formData.end_datetime ? new Date(formData.end_datetime).toISOString() : null,
+      start_datetime: new Date(`${formData.start_datetime}:00+07:00`).toISOString(),
+      end_datetime: formData.end_datetime ? new Date(`${formData.end_datetime}:00+07:00`).toISOString() : null,
       quota: formData.quota ? parseInt(formData.quota) : null,
       status: formData.status,
       registration_slug: formData.registration_slug.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
@@ -173,8 +176,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
       latitude: formData.latitude ? parseFloat(formData.latitude) : null,
       longitude: formData.longitude ? parseFloat(formData.longitude) : null,
       radius_meters: parseInt(formData.radius_meters) || 100,
-      checkin_start_datetime: formData.checkin_start_datetime ? new Date(formData.checkin_start_datetime).toISOString() : null,
-      checkin_end_datetime: formData.checkin_end_datetime ? new Date(formData.checkin_end_datetime).toISOString() : null,
+      checkin_start_datetime: formData.checkin_start_datetime ? new Date(`${formData.checkin_start_datetime}:00+07:00`).toISOString() : null,
+      checkin_end_datetime: formData.checkin_end_datetime ? new Date(`${formData.checkin_end_datetime}:00+07:00`).toISOString() : null,
       custom_fields: customFields,
     }
 

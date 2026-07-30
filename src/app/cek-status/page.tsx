@@ -11,6 +11,7 @@ import Link from "next/link"
 import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle, UploadCloud, Edit3 } from "lucide-react"
 import { submitRevisiAction } from "@/app/actions/pengajuan"
 import { uploadFileAction } from "@/app/actions/upload"
+import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 
 type Pengajuan = {
   id: string
@@ -102,13 +103,37 @@ function CekStatusContent() {
     nama_ustadz: '', judul_kajian: '', url_proposal: null, url_surat_peminjaman: null, url_flyer: null, catatan_revisi: ''
   })
 
+  // Custom Dialog State
+  const [dialogConfig, setDialogConfig] = useState<{
+    isOpen: boolean
+    title: string
+    message: React.ReactNode
+    type?: DialogType
+    onConfirm?: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'alert'
+  })
+
+  const showAlert = (title: string, message: React.ReactNode, type: DialogType = 'alert', onConfirm?: () => void) => {
+    setDialogConfig({
+      isOpen: true,
+      title,
+      message,
+      type,
+      onConfirm
+    })
+  }
+
   useEffect(() => {
     if (initialNomor) {
       handleSearch(initialNomor)
     }
   }, [initialNomor])
 
-  const handleSearch = async (searchNum: string, searchKontak: string) => {
+  const handleSearch = async (searchNum: string, searchKontak: string = "") => {
     // Bersihkan # dan spasi dari nomor pengajuan
     const cleanNum = searchNum.replace(/^#\s*/, '').trim().toUpperCase()
     
@@ -163,12 +188,23 @@ function CekStatusContent() {
 
       setPengajuan(pData as Pengajuan)
       
+      const toLocalDatetimeString = (utcString: string | null) => {
+        if (!utcString) return ""
+        try {
+          const d = new Date(utcString)
+          const str = d.toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' })
+          return str.replace(' ', 'T').slice(0, 16)
+        } catch (e) {
+          return ""
+        }
+      }
+
       // Initialize edit form
       setEditForm({
         nama_event: pData.nama_event || '',
         jenis_event: pData.jenis_event || '',
-        tanggal_mulai: pData.tanggal_mulai ? pData.tanggal_mulai.slice(0, 16) : '',
-        tanggal_selesai: pData.tanggal_selesai ? pData.tanggal_selesai.slice(0, 16) : '',
+        tanggal_mulai: toLocalDatetimeString(pData.tanggal_mulai),
+        tanggal_selesai: toLocalDatetimeString(pData.tanggal_selesai),
         nama_ustadz: pData.nama_ustadz || '',
         judul_kajian: pData.judul_kajian || '',
         url_proposal: pData.url_proposal || null,
@@ -217,7 +253,7 @@ function CekStatusContent() {
       
       setEditForm(prev => ({ ...prev, [field]: result.url }))
     } catch (err: any) {
-      alert("Gagal upload file: " + err.message)
+      showAlert("Gagal Upload File", "Gagal upload file: " + err.message, "error")
     } finally {
       setUploadingField(null)
     }
@@ -226,15 +262,15 @@ function CekStatusContent() {
   const submitRevisi = async () => {
     if (!pengajuan) return
     if (!editForm.tanggal_mulai || !editForm.tanggal_selesai) {
-      alert("Waktu pelaksanaan wajib diisi!")
+      showAlert("Perhatian", "Waktu pelaksanaan wajib diisi!", "error")
       return
     }
     
     setIsSubmittingRevisi(true)
     try {
-      // Parse dates to ISO string
-      const mulai = new Date(editForm.tanggal_mulai).toISOString()
-      const selesai = new Date(editForm.tanggal_selesai).toISOString()
+      // Parse dates to ISO string with WIB timezone
+      const mulai = new Date(`${editForm.tanggal_mulai}:00+07:00`).toISOString()
+      const selesai = new Date(`${editForm.tanggal_selesai}:00+07:00`).toISOString()
 
       const result = await submitRevisiAction({
         nomor_pengajuan: pengajuan.nomor_pengajuan,
@@ -255,13 +291,19 @@ function CekStatusContent() {
 
       if (result.error) throw new Error(result.error)
       
-      alert("Revisi berhasil dikirim! Status pengajuan akan kembali menjadi Dalam Review.")
-      setIsRevising(false)
-      handleSearch(nomor, kontak) // Refresh data
+      showAlert(
+        "Revisi Berhasil Dikirim!",
+        "Revisi berhasil dikirim! Status pengajuan akan kembali menjadi Dalam Review.",
+        "success",
+        () => {
+          setIsRevising(false)
+          handleSearch(nomor, kontak) // Refresh data
+        }
+      )
     } catch (err: any) {
-      alert("Gagal mengirim revisi: " + err.message)
+      showAlert("Gagal Mengirim Revisi", "Gagal mengirim revisi: " + err.message, "error")
     } finally {
-      setIsSubmittingRevisi(true)
+      setIsSubmittingRevisi(false)
     }
   }
 
@@ -570,6 +612,18 @@ function CekStatusContent() {
       <div className="mt-12 text-center text-xs text-slate-400">
         © 2026 Masjid Agung Kubah Timah. All Rights Reserved.
       </div>
+
+      <CustomDialog
+        isOpen={dialogConfig.isOpen}
+        title={dialogConfig.title}
+        message={dialogConfig.message}
+        type={dialogConfig.type}
+        onCancel={() => setDialogConfig(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={() => {
+          setDialogConfig(prev => ({ ...prev, isOpen: false }))
+          if (dialogConfig.onConfirm) dialogConfig.onConfirm()
+        }}
+      />
     </div>
   )
 }

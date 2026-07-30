@@ -151,10 +151,9 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   const toDatetimeLocal = (isoString: string) => {
     if (!isoString) return ""
     try {
-      const date = new Date(isoString)
-      const tzOffset = date.getTimezoneOffset() * 60000;
-      const localISOTime = (new Date(date.getTime() - tzOffset)).toISOString().slice(0, 16);
-      return localISOTime;
+      const d = new Date(isoString);
+      const str = d.toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      return str.replace(' ', 'T').slice(0, 16);
     } catch (e) {
       return ""
     }
@@ -1218,8 +1217,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                         setUpdating(true)
                         try {
-                          const isoMulai = new Date(editJadwal.tanggal_mulai).toISOString()
-                          const isoSelesai = new Date(editJadwal.tanggal_selesai).toISOString()
+                          const isoMulai = new Date(`${editJadwal.tanggal_mulai}:00+07:00`).toISOString()
+                          const isoSelesai = new Date(`${editJadwal.tanggal_selesai}:00+07:00`).toISOString()
                           const { error } = await supabase.from("pengajuan_peminjaman").update({
                             tanggal_mulai: isoMulai,
                             tanggal_selesai: isoSelesai

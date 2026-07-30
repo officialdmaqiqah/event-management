@@ -65,7 +65,24 @@ const TwitterIcon = () => (
 const getEventUrl = (event: any) => {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://event.kubahtimah.com'
   const base = origin.includes('localhost') ? 'https://event.kubahtimah.com' : origin
-  return event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender?event=${event.id}`
+  const baseUrl = event.public_slug ? `${base}/${event.public_slug}` : `${base}/kalender?event=${event.id}`
+
+  let version = ''
+  if (event.updated_at) {
+    version = new Date(event.updated_at).getTime().toString()
+  } else {
+    const flyer = event.banner_url || event.url_flyer
+    if (flyer) {
+      const match = flyer.match(/_(\d+)\.(png|jpg|jpeg|webp)/i)
+      if (match) version = match[1]
+    }
+  }
+
+  if (version) {
+    const separator = baseUrl.includes('?') ? '&' : '?'
+    return `${baseUrl}${separator}v=${version}`
+  }
+  return baseUrl
 }
 
 const formatShareDate = (startStr: string, endStr: string) => {
@@ -220,7 +237,7 @@ export default function AdminCalendarPage() {
         .from("pengajuan_peminjaman")
         .select(`
           id, nama_event, jenis_event, tanggal_mulai, tanggal_selesai, 
-          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, url_flyer
+          area_fasilitas, privacy_event, nama_pemohon, nama_lembaga, deskripsi_kegiatan, nama_ustadz, judul_kajian, url_flyer, updated_at
         `)
         .eq("status", "approved")
       
@@ -231,7 +248,7 @@ export default function AdminCalendarPage() {
         .from("events")
         .select(`
           id, title, type, start_datetime, end_datetime, location, 
-          organizer_name, description, registration_slug, event_request_id, banner_url
+          organizer_name, description, registration_slug, event_request_id, banner_url, updated_at
         `)
         .eq("status", "published")
 
@@ -260,7 +277,8 @@ export default function AdminCalendarPage() {
             deskripsi_kegiatan: pe.description || undefined,
             is_public_event: true,
             public_slug: pe.registration_slug,
-            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined
+            banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined,
+            updated_at: pe.updated_at || correspondingPengajuan?.updated_at || undefined
           })
         })
       }
@@ -271,7 +289,8 @@ export default function AdminCalendarPage() {
             mergedEvents.push({
               ...(p as PengajuanEvent),
               is_public_event: false,
-              banner_url: p.url_flyer || undefined
+              banner_url: p.url_flyer || undefined,
+              updated_at: p.updated_at || undefined
             })
           }
         })
