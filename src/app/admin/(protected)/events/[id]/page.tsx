@@ -25,8 +25,7 @@ import { guestAddParticipantAction, checkInParticipantAction } from "@/app/actio
 
 function maskWhatsapp(wa: string) {
   if (!wa) return "-"
-  if (wa.length <= 6) return wa
-  return wa.substring(0, 4) + "****" + wa.substring(wa.length - 3)
+  return wa
 }
 
 export default function EventDetailPage({ params }: { params: { id: string } }) {
