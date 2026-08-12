@@ -240,8 +240,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       }
       setAllWorkflowSteps(steps)
 
-      // Calculate if current user can approve
-      const isSuperAdmin = prof?.system_role === 'super_admin' || user?.email === 'officialsiyoyok@gmail.com' || user?.email === 'yahya@example.com'
+      // Calculate if current user can approve / edit / upload documents
+      const isSuperAdmin = prof?.system_role === 'super_admin' || prof?.system_role === 'admin_makt' || prof?.system_role === 'admin_event' || prof?.system_role === 'admin_organisasi' || prof?.system_role === 'approver' || prof?.system_role === 'sekretaris' || user?.email === 'officialsiyoyok@gmail.com' || user?.email === 'yahya@example.com'
       setIsSuperAdminUser(isSuperAdmin)
       let approverCheck = false
       let stepFound = null

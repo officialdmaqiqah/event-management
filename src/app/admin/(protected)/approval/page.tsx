@@ -80,7 +80,7 @@ export default function PejabatApprovalPage() {
       if (profError) throw profError
       setProfile(prof)
 
-      const isSuperAdmin = user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com'
+      const isSuperAdmin = prof?.system_role === 'super_admin' || prof?.system_role === 'admin_makt' || user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com'
 
       // 2. Fetch all pending loan applications (submitted, under_review, revision_requested)
       const { data: pList, error: pError } = await supabase

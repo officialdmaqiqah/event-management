@@ -102,7 +102,7 @@ const SUPER_ADMIN_EMAILS = ['officialsiyoyok@gmail.com', 'yahya@example.com']
 /** Apakah user adalah Super Admin? */
 export function isSuperAdmin(profile: UserPermissionProfile | null, email?: string | null): boolean {
   if (!profile) return false
-  if (profile.system_role === 'super_admin') return true
+  if (profile.system_role === 'super_admin' || profile.system_role === 'admin_makt') return true
   if (email && SUPER_ADMIN_EMAILS.includes(email)) return true
   return false
 }
