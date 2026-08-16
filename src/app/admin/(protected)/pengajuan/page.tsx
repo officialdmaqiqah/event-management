@@ -105,8 +105,25 @@ export default function AdminPengajuanPage() {
 
   const checkAdmin = async () => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (user && (user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com')) {
-      setIsAdmin(true)
+    if (user) {
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("system_role")
+        .eq("user_id", user.id)
+        .maybeSingle()
+
+      const isAllowedAdmin =
+        profile?.system_role === 'super_admin' ||
+        profile?.system_role === 'admin_makt' ||
+        profile?.system_role === 'admin_event' ||
+        profile?.system_role === 'admin_organisasi' ||
+        profile?.system_role === 'approver' ||
+        user.email === 'officialsiyoyok@gmail.com' ||
+        user.email === 'yahya@example.com'
+
+      if (isAllowedAdmin) {
+        setIsAdmin(true)
+      }
     }
   }
 

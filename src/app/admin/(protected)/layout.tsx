@@ -17,14 +17,14 @@ export default async function AdminLayout({
     redirect("/admin/login")
   }
 
-  // Fetch user profile to check approval status and jabatan
+  // Fetch user profile to check approval status, jabatan, and system_role
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('is_approved, jabatan')
+    .select('is_approved, jabatan, system_role')
     .eq('user_id', user.id)
     .single()
 
-  const isAdmin = user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com'
+  const isAdmin = profile?.system_role === 'super_admin' || profile?.system_role === 'admin_makt' || user.email === 'officialsiyoyok@gmail.com' || user.email === 'yahya@example.com'
 
   if (!isAdmin && profile && !profile.is_approved) {
     redirect("/admin/pending")
