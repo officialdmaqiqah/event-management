@@ -11,11 +11,11 @@ export default async function AdminDashboard() {
   // Ambil profil pengguna
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('is_approved, jabatan')
+    .select('is_approved, jabatan, system_role')
     .eq('user_id', user?.id)
     .single()
 
-  const isAdmin = user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
+  const isAdmin = profile?.system_role === 'super_admin' || profile?.system_role === 'admin_makt' || user?.email === 'officialsiyoyok@gmail.com' || user?.email?.startsWith('yahya')
 
   // Statistik Pengajuan (Peminjaman)
   let pendingQuery = supabase.from("pengajuan_peminjaman").select("id", { count: "exact" }).in("status", ["submitted", "under_review", "revision_requested"])
