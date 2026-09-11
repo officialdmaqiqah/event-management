@@ -425,49 +425,30 @@ export default function CalendarClient() {
       {/* 1. TOP UTILITY BAR (Live Waktu Sholat & Kalender) */}
       <div className="bg-surface/90 backdrop-blur-xl border-b border-slate-150 shadow-xs sticky top-0 z-30">
         <PrayerTopBar containerClassName="container lg:max-w-6xl" />
-
-        {/* Navbar */}
-        <header className="h-16 container mx-auto px-4 sm:px-6 lg:max-w-6xl flex items-center justify-between gap-3 sm:gap-4">
-          <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
-            <img 
-              alt="Logo Masjid Agung Kubah Timah" 
-              className="h-10 sm:h-11 w-auto object-contain shrink-0" 
-              src="/logo-makt-full.png?v=5"
-            />
-            <div className="flex flex-col min-w-0">
-              <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
-            </div>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span className="hidden min-[380px]:inline">Beranda</span>
-            </Link>
-            <Link href="/ajukan-peminjaman">
-              <Button size="sm" className="hidden sm:flex bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-full shadow-xs">
-                Ajukan Event
-              </Button>
-            </Link>
-            <Link href="/admin">
-              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold px-2 sm:px-3">
-                <span className="material-symbols-outlined text-[18px] sm:hidden">person</span>
-                <span className="hidden sm:inline">Login Admin</span>
-              </Button>
-            </Link>
-          </div>
-        </header>
       </div>
 
       <main className="flex-1 container mx-auto p-4 sm:p-6 lg:max-w-6xl">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold mb-1.5">
-              <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-              <span>Jadwal Terbuka & Terintegrasi</span>
+            <div className="flex flex-wrap items-center gap-2 mb-2.5">
+              <Link 
+                href="/" 
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-primary font-display text-xs font-bold transition-colors border border-slate-200"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                <span>Beranda</span>
+              </Link>
+              <Link 
+                href="/ajukan-peminjaman" 
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold transition-colors shadow-xs"
+              >
+                <span className="material-symbols-outlined text-[14px]">add_circle</span>
+                <span>Ajukan Event</span>
+              </Link>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold">
+                <span className="material-symbols-outlined text-[14px]">calendar_month</span>
+                <span>Jadwal Terbuka & Terintegrasi</span>
+              </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-primary font-display tracking-tight flex items-center gap-2">
               Kalender Kegiatan Publik
