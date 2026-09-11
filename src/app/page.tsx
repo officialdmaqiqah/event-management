@@ -465,53 +465,178 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* 10. CALL TO ACTION BANNER (Persis Stitch) */}
-        <section className="px-4 sm:px-6 mt-12">
-          <div className="bg-secondary-fixed/30 p-6 sm:p-8 rounded-3xl flex flex-col gap-4 text-center items-center border border-secondary-fixed/40">
-            <div className="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-inner">
-              <span className="material-symbols-outlined text-[30px]">workspace_premium</span>
+        {/* 10. CALL TO ACTION BANNER - MODERN ISLAMIC LUXURY */}
+        <section className="px-4 sm:px-6 mt-14">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0D4734] via-[#093526] to-[#052017] p-6 sm:p-10 text-center flex flex-col items-center gap-5 border border-emerald-600/30 shadow-xl shadow-emerald-950/20">
+            {/* Ambient Lighting & Glow */}
+            <div className="absolute top-0 inset-x-0 h-44 bg-[radial-gradient(ellipse_at_top,_rgba(245,183,0,0.22),_transparent_75%)] pointer-events-none" />
+            <div className="absolute -bottom-20 -right-20 w-56 h-56 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
+            <div className="absolute -top-20 -left-20 w-56 h-56 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
+
+            {/* Pill Badge */}
+            <div className="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-secondary-fixed text-xs font-bold tracking-wide shadow-sm">
+              <span className="material-symbols-outlined text-[17px] text-amber-300">workspace_premium</span>
+              <span>Layanan Fasilitas Umat & Syiar</span>
             </div>
-            <div className="flex flex-col gap-1 max-w-md">
-              <h3 className="font-display text-lg sm:text-xl font-bold text-on-surface">Miliki Ide Kegiatan Bermanfaat?</h3>
-              <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+
+            {/* Content & Typography */}
+            <div className="relative flex flex-col gap-2 max-w-xl">
+              <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                Miliki Ide Kegiatan Bermanfaat?
+              </h3>
+              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-md mx-auto">
                 Jadikan momen kegiatan Anda lebih bermakna dengan dukungan fasilitas eksklusif dan berkah di Masjid Agung Kubah Timah.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row w-full max-w-md gap-2.5 pt-1">
+
+            {/* Feature Highlights Chips */}
+            <div className="relative flex flex-wrap justify-center gap-2 pt-1">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/95 text-[11px] font-medium border border-white/10 backdrop-blur-xs shadow-xs">
+                <span className="material-symbols-outlined text-[15px] text-amber-300">ac_unit</span>
+                Ruang Nyaman & Ber-AC
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/95 text-[11px] font-medium border border-white/10 backdrop-blur-xs shadow-xs">
+                <span className="material-symbols-outlined text-[15px] text-amber-300">verified</span>
+                Izin Resmi & Transparan
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/95 text-[11px] font-medium border border-white/10 backdrop-blur-xs shadow-xs">
+                <span className="material-symbols-outlined text-[15px] text-amber-300">pin_drop</span>
+                Titik Nol KM Kota
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="relative flex flex-col sm:flex-row w-full max-w-md gap-3 pt-2">
               <Link 
                 href="/ajukan-peminjaman" 
-                className="w-full min-h-[48px] px-6 rounded-full bg-primary text-on-primary font-display text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all hover:bg-primary-container"
+                className="w-full min-h-[48px] px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-display text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 active:scale-98 transition-all"
               >
-                <span className="material-symbols-outlined text-[20px]">add_task</span>
+                <span className="material-symbols-outlined text-[20px] text-slate-950">add_task</span>
                 <span>Ajukan Izin Acara</span>
               </Link>
               <a 
                 href="https://wa.me/6282175426357?text=Assalamualaikum%2C%20Mau%20Tanya%20Tata%20Cara%20Menggunakan%20Fasilitas%20Masjid%20Agung%20Kubah%20Timah" 
                 target="_blank"
                 rel="noreferrer" 
-                className="w-full min-h-[44px] px-4 rounded-full bg-surface-container-lowest text-primary font-display text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors"
+                className="w-full min-h-[48px] px-5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-display text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 border border-white/20 backdrop-blur-md transition-all active:scale-98"
               >
-                <span className="material-symbols-outlined text-[18px] text-primary">chat</span>
+                <span className="material-symbols-outlined text-[18px] text-emerald-300">chat</span>
                 <span>Hubungi DKM</span>
               </a>
             </div>
           </div>
         </section>
 
-        {/* 11. FOOTER (Persis Stitch) */}
-        <footer className="w-full mt-12 px-4 sm:px-6 py-8 bg-surface-container-low rounded-t-3xl flex flex-col gap-4 text-on-surface-variant border-t border-slate-200">
-          <div className="flex flex-col gap-1">
-            <span className="font-display text-base font-bold text-primary">Masjid Agung Kubah Timah</span>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              Pusat dakwah, kajian ilmu, dan peradaban umat di Kota Beribu Senyuman Pangkalpinang.
-            </p>
-          </div>
-          <div className="flex flex-col gap-1 text-xs">
-            <span>Jl. Jenderal Sudirman No. 1, Pangkalpinang</span>
-            <span>Email: sekretariat@kubahtimah.id</span>
-          </div>
-          <div className="pt-2 text-center text-[11px] text-outline border-t border-slate-200">
-            <span>© {new Date().getFullYear()} Masjid Agung Kubah Timah. All rights reserved.</span>
+        {/* 11. FOOTER - MODERN ISLAMIC ELEGANCE */}
+        <footer className="mt-14 px-4 sm:px-6">
+          <div className="bg-gradient-to-b from-[#082C20] via-[#06241A] to-[#041710] text-slate-300 rounded-3xl p-6 sm:p-8 border border-emerald-800/50 shadow-2xl relative overflow-hidden">
+            {/* Top Accent Line */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-400/50 to-transparent pointer-events-none" />
+
+            {/* Main Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-emerald-800/40">
+              {/* Brand Col (6 cols) */}
+              <div className="md:col-span-6 flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-white p-1.5 shadow-md flex items-center justify-center shrink-0">
+                    <img 
+                      src="/logo-makt-full.png?v=5" 
+                      alt="Logo Masjid Agung Kubah Timah" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-display font-extrabold text-base sm:text-lg text-white leading-tight">
+                      Masjid Agung Kubah Timah
+                    </span>
+                    <span className="text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-secondary-fixed">
+                      Pusat Syiar & Ikon Peradaban Umat
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs text-emerald-100/80 leading-relaxed max-w-sm mt-1">
+                  Pusat dakwah, kajian ilmu, dan peradaban umat di Kota Beribu Senyuman Pangkalpinang. Menghadirkan pelayanan masjid modern, inklusif, dan transparan.
+                </p>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/60 border border-emerald-700/50 text-[11px] text-emerald-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Kubah & Ibadah Buka 24 Jam
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Links (3 cols) */}
+              <div className="md:col-span-3 flex flex-col gap-3">
+                <span className="font-display text-xs font-bold text-secondary-fixed uppercase tracking-wider">
+                  Layanan Jamaah
+                </span>
+                <ul className="flex flex-col gap-2.5 text-xs text-slate-300">
+                  <li>
+                    <Link href="/ajukan-peminjaman" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[15px] text-secondary-fixed">arrow_forward</span>
+                      Ajukan Izin Acara
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/cek-status" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[15px] text-secondary-fixed">arrow_forward</span>
+                      Cek Status Pengajuan
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/kalender" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[15px] text-secondary-fixed">arrow_forward</span>
+                      Jadwal Acara & Kajian
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/laporan-rapat" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[15px] text-secondary-fixed">arrow_forward</span>
+                      Notulen & Laporan
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Contact Info (3 cols) */}
+              <div className="md:col-span-3 flex flex-col gap-3">
+                <span className="font-display text-xs font-bold text-secondary-fixed uppercase tracking-wider">
+                  Sekretariat DKM
+                </span>
+                <div className="flex flex-col gap-2.5 text-xs text-slate-300">
+                  <div className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-[16px] text-secondary-fixed shrink-0 mt-0.5">location_on</span>
+                    <span className="leading-snug">Jl. Jenderal Sudirman No. 1, Pangkalpinang, Bangka Belitung</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px] text-secondary-fixed shrink-0">mail</span>
+                    <a href="mailto:sekretariat@kubahtimah.id" className="hover:text-amber-300 transition-colors">
+                      sekretariat@kubahtimah.id
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px] text-secondary-fixed shrink-0">chat</span>
+                    <a href="https://wa.me/6282175426357" target="_blank" rel="noreferrer" className="hover:text-amber-300 transition-colors">
+                      +62 821-7542-6357 (DKM)
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-emerald-200/60 text-center sm:text-left">
+              <span>© {new Date().getFullYear()} DKM Masjid Agung Kubah Timah. All rights reserved.</span>
+              <div className="flex items-center gap-4">
+                <Link 
+                  href="/admin/login" 
+                  className="hover:text-amber-300 text-emerald-200/75 transition-colors flex items-center gap-1 font-semibold"
+                >
+                  <span className="material-symbols-outlined text-[14px]">lock</span>
+                  Portal Pengurus & Admin
+                </Link>
+              </div>
+            </div>
           </div>
         </footer>
       </main>
