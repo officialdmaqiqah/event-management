@@ -327,17 +327,17 @@ function CekStatusContent() {
               <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
             </div>
           </Link>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors"
             >
               <Home className="h-4 w-4" />
               <span className="hidden min-[380px]:inline">Beranda</span>
             </Link>
             <Link 
               href="/ajukan-peminjaman" 
-              className="h-8 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1.5 hover:bg-secondary-container transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors"
             >
               <CalendarPlus className="h-4 w-4" />
               <span className="hidden min-[360px]:inline">Ajukan Acara</span>
