@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { ArrowLeft, Lock, Mail, User, AlertCircle, CheckCircle, UserPlus } from "lucide-react"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
@@ -24,12 +25,12 @@ export default function SignupPage() {
     e.preventDefault()
     
     if (password !== confirmPassword) {
-      setError("Password tidak cocok")
+      setError("Konfirmasi password tidak cocok.")
       return
     }
 
     if (password.length < 6) {
-      setError("Password minimal 6 karakter")
+      setError("Password minimal 6 karakter.")
       return
     }
 
@@ -65,82 +66,179 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-sm">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F8FAF8] px-4 py-12 relative overflow-hidden font-sans">
+      {/* Decorative Background Glows */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary-fixed/20 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Top Back Link */}
+      <div className="w-full max-w-md mb-4 flex justify-between items-center relative z-10">
+        <Link 
+          href="/admin/login" 
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors py-1.5 px-3 rounded-full hover:bg-slate-100"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Kembali ke Login</span>
+        </Link>
+      </div>
+
+      {/* Logo & Brand Identity */}
+      <div className="flex flex-col items-center text-center mb-6 relative z-10">
+        <Link href="/" className="inline-flex items-center gap-2.5 mb-3 group hover:opacity-95 transition-opacity" title="Beranda MAKT Event">
+          <img 
+            src="/logo-makt-full.png?v=5" 
+            alt="Logo Masjid Agung Kubah Timah" 
+            className="h-12 w-auto object-contain"
+          />
+          <div className="flex flex-col text-left">
+            <span className="font-black text-xl tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
+            <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
+          </div>
+        </Link>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold shadow-xs">
+          <span className="material-symbols-outlined text-[15px]">badge</span>
+          <span>Registrasi Akun Pengurus</span>
+        </div>
+      </div>
+
+      {/* Signup Card */}
+      <Card className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-emerald-950/5 border border-slate-200/80 overflow-hidden relative z-10">
+        {/* Top Accent Strip */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-primary via-secondary-fixed to-primary" />
+
         <form onSubmit={handleSignup}>
-          <CardHeader>
-            <CardTitle className="text-2xl">Daftar Akun Baru</CardTitle>
-            <CardDescription>
-              Buat akun untuk mulai mengelola event Anda sendiri.
+          <CardHeader className="pt-6 pb-4 text-center">
+            <CardTitle className="text-2xl font-black text-primary font-display tracking-tight">
+              Daftar Akun Pengurus
+            </CardTitle>
+            <CardDescription className="text-xs text-on-surface-variant mt-1 leading-relaxed">
+              Daftarkan akun untuk pengajuan akses ke portal administrasi event MAKT.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+
+          <CardContent className="space-y-3.5 px-6 sm:px-8">
             {error && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-500">
-                {error}
+              <div className="rounded-xl bg-red-50 border border-red-200/70 p-3.5 text-xs text-red-700 flex items-start gap-2.5">
+                <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                <span className="leading-snug">{error}</span>
               </div>
             )}
+
             {success && (
-              <div className="rounded-md bg-amber-50 p-3 text-sm text-amber-700 border border-amber-200">
-                Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan admin. Mengalihkan...
+              <div className="rounded-xl bg-emerald-50 border border-emerald-200/80 p-3.5 text-xs text-emerald-800 flex items-start gap-2.5">
+                <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span className="leading-snug">Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan pengurus inti. Mengalihkan...</span>
               </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Nama Lengkap</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Masukkan nama lengkap Anda"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+
+            <div className="space-y-1.5">
+              <Label htmlFor="fullName" className="text-xs font-bold text-slate-700">
+                Nama Lengkap
+              </Label>
+              <div className="relative">
+                <User className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="Nama lengkap Anda"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="pl-10 h-11 rounded-xl bg-slate-50/60 border-slate-200 focus:border-primary focus:ring-primary/20 text-sm"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="nama@email.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-xs font-bold text-slate-700">
+                Email
+              </Label>
+              <div className="relative">
+                <Mail className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="nama@email.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 h-11 rounded-xl bg-slate-50/60 border-slate-200 focus:border-primary focus:ring-primary/20 text-sm"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs font-bold text-slate-700">
+                Kata Sandi
+              </Label>
+              <div className="relative">
+                <Lock className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Minimal 6 karakter"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 h-11 rounded-xl bg-slate-50/60 border-slate-200 focus:border-primary focus:ring-primary/20 text-sm"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword" className="text-xs font-bold text-slate-700">
+                Konfirmasi Kata Sandi
+              </Label>
+              <div className="relative">
+                <Lock className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Ulangi kata sandi"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 h-11 rounded-xl bg-slate-50/60 border-slate-200 focus:border-primary focus:ring-primary/20 text-sm"
+                />
+              </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full" type="submit" disabled={loading || success}>
-              {loading ? "Memproses..." : "Daftar Sekarang"}
+
+          <CardFooter className="flex flex-col gap-4 px-6 sm:px-8 pt-2 pb-6">
+            <Button 
+              className="w-full h-11 rounded-xl bg-primary text-on-primary hover:bg-primary-container font-display text-sm font-bold shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2" 
+              type="submit" 
+              disabled={loading || success}
+            >
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Mendaftarkan...</span>
+                </>
+              ) : (
+                <>
+                  <UserPlus className="h-4 w-4" />
+                  <span>Daftar Sekarang</span>
+                </>
+              )}
             </Button>
-            <p className="text-sm text-center text-gray-500">
-              Sudah punya akun?{" "}
-              <Link href="/admin/login" className="text-blue-600 hover:underline">
-                Masuk di sini
-              </Link>
-            </p>
+
+            <div className="pt-2 border-t border-slate-100 w-full text-center">
+              <p className="text-xs text-slate-600">
+                Sudah punya akun pengurus?{" "}
+                <Link href="/admin/login" className="text-primary font-bold hover:underline">
+                  Masuk di sini
+                </Link>
+              </p>
+            </div>
           </CardFooter>
         </form>
       </Card>
+
+      {/* Copyright Note */}
+      <div className="mt-8 text-center text-xs text-slate-400 relative z-10">
+        <span>© {new Date().getFullYear()} Masjid Agung Kubah Timah Pangkalpinang</span>
+      </div>
     </div>
   )
 }
