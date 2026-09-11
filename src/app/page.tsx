@@ -459,7 +459,7 @@ export default async function Home() {
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-[10px] font-bold shadow-sm">
-                Buka 24 Jam
+                Titik Nol KM
               </span>
             </div>
           </div>
@@ -547,14 +547,8 @@ export default async function Home() {
                 </div>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed max-w-sm mt-1">
-                Pusat dakwah, kajian ilmu, dan peradaban umat di Kota Beribu Senyuman Pangkalpinang. Menghadirkan pelayanan masjid modern, inklusif, dan transparan.
+                Pusat dakwah, syiar, dan kegiatan keumatan di Kota Beribu Senyuman Pangkalpinang. Menghadirkan pelayanan fasilitas masjid yang tertib, modern, dan transparan.
               </p>
-              <div className="flex items-center gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full border border-emerald-200/70">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                  Kubah & Ibadah Buka 24 Jam
-                </span>
-              </div>
             </div>
 
             {/* Kolom Layanan (3 cols) */}
