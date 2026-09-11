@@ -38,18 +38,18 @@ export default async function AdminLayout({
         <div className="container mx-auto px-4 sm:px-6 py-2.5 min-h-[4rem] flex flex-col md:flex-row md:items-center justify-between gap-3">
           
           {/* Logo & Brand */}
-          <div className="flex items-center justify-between">
-            <Link href="/admin" className="flex items-center gap-2.5 group" title="Dashboard Utama Admin">
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/admin" className="flex items-center gap-2.5 min-w-0 group" title="Dashboard Utama Admin">
               <img 
                 src="/logo-makt-full.png?v=5" 
                 alt="Logo Masjid Agung Kubah Timah" 
                 className="h-10 w-auto object-contain shrink-0" 
               />
-              <div className="flex flex-col text-left">
+              <div className="flex flex-col min-w-0 text-left">
                 <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">
                   MAKT Event
                 </span>
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 truncate">
                   Portal Pengurus & Admin
                 </span>
               </div>
@@ -59,7 +59,7 @@ export default async function AdminLayout({
             <Link 
               href="/" 
               target="_blank" 
-              className="inline-flex md:hidden items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-primary px-2.5 py-1 rounded-full bg-slate-100"
+              className="inline-flex md:hidden items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-primary px-2.5 py-1 rounded-full bg-slate-100 shrink-0 ml-1"
             >
               <ExternalLink className="h-3 w-3" />
               <span>Web</span>
@@ -67,9 +67,9 @@ export default async function AdminLayout({
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center gap-1 sm:gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 flex-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto overflow-x-auto pb-1.5 md:pb-0 flex-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <Link href="/admin">
-              <Button variant="ghost" size="sm" className="text-slate-700 hover:text-primary hover:bg-emerald-50 px-2 sm:px-3 text-xs font-bold rounded-lg">
+              <Button variant="ghost" size="sm" className="text-slate-700 hover:text-primary hover:bg-emerald-50 px-2.5 sm:px-3 text-xs font-bold rounded-lg shrink-0">
                 Dashboard
               </Button>
             </Link>

@@ -85,8 +85,8 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Card 1: Menunggu Approval */}
         <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
-          <div className="h-1 w-full bg-amber-500 absolute top-0 inset-x-0" />
-          <CardContent className="p-5 sm:p-6">
+          <div className="h-1.5 w-full bg-amber-500 absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6 pt-6 sm:pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Menunggu Approval</p>
@@ -95,7 +95,7 @@ export default async function AdminDashboard() {
                   Butuh verifikasi pengurus
                 </span>
               </div>
-              <div className="p-3.5 bg-amber-50 text-amber-600 rounded-2xl border border-amber-100/80">
+              <div className="p-3.5 bg-amber-50 text-amber-600 rounded-2xl border border-amber-100/80 shrink-0">
                 <AlertCircle className="w-6 h-6" />
               </div>
             </div>
@@ -104,8 +104,8 @@ export default async function AdminDashboard() {
 
         {/* Card 2: Peminjaman Disetujui */}
         <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
-          <div className="h-1 w-full bg-primary absolute top-0 inset-x-0" />
-          <CardContent className="p-5 sm:p-6">
+          <div className="h-1.5 w-full bg-primary absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6 pt-6 sm:pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Peminjaman Disetujui</p>
@@ -114,7 +114,7 @@ export default async function AdminDashboard() {
                   Izin terbit & terjadwal
                 </span>
               </div>
-              <div className="p-3.5 bg-emerald-50 text-primary rounded-2xl border border-emerald-100/80">
+              <div className="p-3.5 bg-emerald-50 text-primary rounded-2xl border border-emerald-100/80 shrink-0">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
             </div>
@@ -123,8 +123,8 @@ export default async function AdminDashboard() {
 
         {/* Card 3: Event Publik Aktif */}
         <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
-          <div className="h-1 w-full bg-secondary-fixed absolute top-0 inset-x-0" />
-          <CardContent className="p-5 sm:p-6">
+          <div className="h-1.5 w-full bg-secondary-fixed absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6 pt-6 sm:pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Event Publik Terbit</p>
@@ -133,7 +133,7 @@ export default async function AdminDashboard() {
                   Kajian & syiar umum aktif
                 </span>
               </div>
-              <div className="p-3.5 bg-secondary-fixed/30 text-on-secondary-fixed rounded-2xl border border-secondary-fixed/50">
+              <div className="p-3.5 bg-secondary-fixed/30 text-on-secondary-fixed rounded-2xl border border-secondary-fixed/50 shrink-0">
                 <Users className="w-6 h-6 text-emerald-900" />
               </div>
             </div>

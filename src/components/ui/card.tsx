@@ -45,9 +45,17 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
 CardDescription.displayName = "CardDescription"
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={`p-6 pt-0 ${className || ""}`} {...props} />
-  )
+  ({ className = "", ...props }, ref) => {
+    const hasCustomPadding = Boolean(className && /\b(p\w*-\d+|p-\d+)/.test(className))
+    const basePadding = hasCustomPadding ? "" : "p-6 pt-0"
+    return (
+      <div
+        ref={ref}
+        className={`${basePadding} ${className}`.trim()}
+        {...props}
+      />
+    )
+  }
 )
 CardContent.displayName = "CardContent"
 
