@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { Analytics } from "@/components/Analytics";
 
-const outfit = Outfit({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "MAKT Event Management",
-  description: "Sistem manajemen event internal untuk organisasi/lembaga.",
+  title: "MAKT Event - Masjid Agung Kubah Timah",
+  description: "Pusat Layanan Kegiatan, Agenda Dakwah & Peminjaman Fasilitas Masjid Agung Kubah Timah Pangkalpinang.",
+  icons: {
+    icon: "/logo-makt-full.png?v=5",
+  },
 };
 
 export default function RootLayout({
@@ -17,11 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="id" className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href="/logo-makt-full.png?v=3" type="image/png" />
+        <link rel="icon" href="/logo-makt-full.png?v=5" type="image/png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${outfit.className} bg-slate-50 text-slate-900`}>
+      <body className="font-sans bg-[#F8FAF8] text-[#111C2D] antialiased selection:bg-[#FED65B] selection:text-[#241A00]">
         {children}
         <Analytics />
         <FloatingWhatsApp />

@@ -113,7 +113,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
   // Internal notes and privacy states
   const [catatanAdmin, setCatatanAdmin] = useState("")
-  const [privacyEvent, setPrivacyEvent] = useState<'detail_publik' | 'umum_saja' | 'rahasia'>("umum_saja")
+  const [privacyEvent, setPrivacyEvent] = useState<'detail_publik' | 'umum_saja' | 'rahasia' | 'publik_terbatas'>("detail_publik")
 
   // Modal / Dialog states
   const [dialogState, setDialogState] = useState<{
@@ -201,7 +201,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       if (pError) throw pError
       setPengajuan(pData as Pengajuan)
       setCatatanAdmin(pData.catatan_admin || "")
-      setPrivacyEvent(pData.privacy_event || "umum_saja")
+      setPrivacyEvent(pData.privacy_event || "detail_publik")
 
       // Get Timeline List
       const { data: tData, error: tError } = await supabase

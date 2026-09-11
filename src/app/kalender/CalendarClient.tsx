@@ -16,9 +16,10 @@ import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X, FileImage,
-  CalendarPlus, Copy, Share2, Download
+  CalendarPlus, Copy, Share2, Download, ArrowLeft, Globe
 } from "lucide-react"
 import Link from "next/link"
+import { PrayerTopBar } from "@/components/PrayerTopBar"
 
 type PengajuanEvent = {
   id: string
@@ -420,40 +421,66 @@ export default function CalendarClient() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans pb-12">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="font-bold text-lg text-indigo-700 flex items-center gap-2">
-            <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" /> Kubah Timah
+    <div className="min-h-screen bg-surface text-on-surface flex flex-col font-sans pb-16">
+      {/* 1. TOP UTILITY BAR (Live Waktu Sholat & Kalender) */}
+      <div className="bg-surface/90 backdrop-blur-xl border-b border-slate-150 shadow-xs sticky top-0 z-30">
+        <PrayerTopBar containerClassName="container lg:max-w-6xl" />
+
+        {/* Navbar */}
+        <header className="h-16 container mx-auto px-4 sm:px-6 lg:max-w-6xl flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
+            <img 
+              alt="Logo Masjid Agung Kubah Timah" 
+              className="h-10 sm:h-11 w-auto object-contain shrink-0" 
+              src="/logo-makt-full.png?v=5"
+            />
+            <div className="flex flex-col">
+              <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
+              <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+            </div>
           </Link>
-          <div className="flex gap-3">
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Beranda
+            </Link>
             <Link href="/ajukan-peminjaman">
-              <Button variant="outline" size="sm" className="hidden sm:flex border-indigo-200 text-indigo-700 hover:bg-indigo-50">Ajukan Event</Button>
+              <Button size="sm" className="hidden sm:flex bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-full shadow-xs">
+                Ajukan Event
+              </Button>
             </Link>
             <Link href="/admin">
-              <Button variant="ghost" size="sm" className="text-slate-500">Login Admin</Button>
+              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold">
+                Login Admin
+              </Button>
             </Link>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
 
       <main className="flex-1 container mx-auto p-4 sm:p-6 lg:max-w-6xl">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold mb-1.5">
+              <span className="material-symbols-outlined text-[14px]">calendar_month</span>
+              <span>Jadwal Terbuka & Terintegrasi</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-primary font-display tracking-tight flex items-center gap-2">
               Kalender Kegiatan Publik
             </h1>
-            <p className="text-slate-500 mt-1 text-sm max-w-2xl">
+            <p className="text-on-surface-variant mt-1 text-xs sm:text-sm max-w-2xl leading-relaxed">
               Jadwal kegiatan dan pemakaian fasilitas Masjid Agung Kubah Timah. 
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm self-start lg:self-auto">
+          <div className="flex items-center gap-2 bg-surface-container-lowest p-1 rounded-xl border border-slate-200 shadow-xs self-start lg:self-auto">
             <Button 
               variant={viewMode === 'month' ? 'default' : 'ghost'} 
               size="sm" 
               onClick={() => { setViewMode('month'); trackAnalyticsEvent('view_mode', 'month').catch(() => {}) }}
-              className={viewMode === 'month' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
+              className={viewMode === 'month' ? 'bg-primary text-on-primary hover:bg-primary-container font-display font-bold text-xs rounded-lg' : 'text-on-surface-variant font-display font-semibold text-xs'}
             >
               <Grid className="h-4 w-4 mr-1.5" /> Bulan
             </Button>
@@ -461,23 +488,23 @@ export default function CalendarClient() {
               variant={viewMode === 'week' ? 'default' : 'ghost'} 
               size="sm" 
               onClick={() => { setViewMode('week'); trackAnalyticsEvent('view_mode', 'week').catch(() => {}) }}
-              className={viewMode === 'week' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
+              className={viewMode === 'week' ? 'bg-primary text-on-primary hover:bg-primary-container font-display font-bold text-xs rounded-lg' : 'text-on-surface-variant font-display font-semibold text-xs'}
             >
               <List className="h-4 w-4 mr-1.5" /> Minggu
             </Button>
           </div>
         </div>
 
-        <Card className="mb-6 border border-slate-200 shadow-sm bg-white">
+        <Card className="mb-6 border border-slate-100 shadow-sm bg-surface-container-lowest rounded-2xl overflow-hidden">
           <div 
-            className="p-3 sm:p-4 flex flex-row items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+            className="p-3 sm:p-4 flex flex-row items-center justify-between cursor-pointer hover:bg-surface-container-low transition-colors"
             onClick={() => setShowFilters(!showFilters)}
           >
             <div className="flex flex-row items-center gap-2">
-              <Filter className="h-4 w-4 text-indigo-600" />
-              <div className="font-bold text-slate-800 text-sm">Filter Pencarian</div>
+              <span className="material-symbols-outlined text-[18px] text-primary">filter_list</span>
+              <div className="font-display font-bold text-primary text-sm">Filter Pencarian Agenda</div>
             </div>
-            <Button variant="ghost" size="sm" className="h-6 text-xs text-indigo-600 px-2">
+            <Button variant="ghost" size="sm" className="h-6 text-xs text-secondary font-bold px-2">
               {showFilters ? "Sembunyikan" : "Tampilkan"}
             </Button>
           </div>
@@ -489,19 +516,19 @@ export default function CalendarClient() {
                   <Input 
                     placeholder="Cari nama kegiatan..." 
                     value={search} onChange={e => setSearch(e.target.value)}
-                    className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-indigo-500"
+                    className="pl-9 bg-surface border-slate-200 focus-visible:ring-primary rounded-xl"
                   />
                 </div>
                 <select 
                   value={filterJenis} onChange={e => setFilterJenis(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"
+                  className="flex h-10 w-full rounded-xl border border-slate-200 bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-slate-700 font-medium"
                 >
                   <option value="">Semua Jenis Kegiatan</option>
                   {jenisOptions.map(j => <option key={j} value={j}>{j}</option>)}
                 </select>
                 <select 
                   value={filterArea} onChange={e => setFilterArea(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"
+                  className="flex h-10 w-full rounded-xl border border-slate-200 bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-slate-700 font-medium"
                 >
                   <option value="">Semua Fasilitas/Area</option>
                   {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
@@ -511,33 +538,33 @@ export default function CalendarClient() {
           )}
         </Card>
 
-        <div className="flex items-center justify-between mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-          <Button variant="outline" size="sm" onClick={prevTime} className="h-9">
+        <div className="flex items-center justify-between mb-4 bg-surface-container-lowest p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <Button variant="outline" size="sm" onClick={prevTime} className="h-9 rounded-xl font-display font-semibold border-slate-200 hover:bg-surface-container-low">
             <ChevronLeft className="h-4 w-4 mr-1" /> Prev
           </Button>
-          <div className="text-lg font-bold text-slate-800 capitalize flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-indigo-500 hidden sm:block" />
+          <div className="text-base sm:text-lg font-bold text-primary font-display capitalize flex items-center gap-2">
+            <span className="material-symbols-outlined text-[20px] text-secondary hidden sm:inline">event</span>
             {format(currentDate, viewMode === 'month' ? "MMMM yyyy" : "'Minggu' do MMMM yyyy", { locale: localeID })}
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={goToday} className="hidden sm:flex text-slate-500">Hari Ini</Button>
-            <Button variant="outline" size="sm" onClick={nextTime} className="h-9">
+            <Button variant="ghost" size="sm" onClick={goToday} className="hidden sm:flex text-on-surface-variant font-display font-semibold hover:text-primary">Hari Ini</Button>
+            <Button variant="outline" size="sm" onClick={nextTime} className="h-9 rounded-xl font-display font-semibold border-slate-200 hover:bg-surface-container-low">
               Next <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
+        <div className="bg-surface-container-lowest rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+          <div className="grid grid-cols-7 border-b border-slate-200 bg-surface-container-low">
             {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map(day => (
-              <div key={day} className="py-2.5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <div key={day} className="py-2.5 text-center text-xs font-bold text-primary font-display uppercase tracking-wider">
                 {day}
               </div>
             ))}
           </div>
 
           {loading ? (
-            <div className="p-20 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" /></div>
+            <div className="p-20 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" /></div>
           ) : (
             <div className={`grid grid-cols-7 ${viewMode === 'month' ? 'auto-rows-[120px] sm:auto-rows-[140px]' : 'auto-rows-[minmax(200px,auto)]'}`}>
               {days.map((day, i) => {
@@ -549,13 +576,13 @@ export default function CalendarClient() {
                   <div 
                     key={day.toString()} 
                     className={`border-r border-b border-slate-100 p-1 sm:p-2 flex flex-col transition-colors
-                      ${!isCurrentMonth && viewMode === 'month' ? 'bg-slate-50/50' : 'bg-white hover:bg-slate-50/30'}
+                      ${!isCurrentMonth && viewMode === 'month' ? 'bg-surface-container-low/30' : 'bg-surface-container-lowest hover:bg-surface-container-low/20'}
                       ${(i + 1) % 7 === 0 ? 'border-r-0' : ''}
                     `}
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <span className={`text-xs sm:text-sm font-semibold flex items-center justify-center h-6 w-6 rounded-full 
-                        ${isToday ? 'bg-indigo-600 text-white shadow-md' : 
+                      <span className={`text-xs sm:text-sm font-bold font-display flex items-center justify-center h-6 w-6 rounded-full 
+                        ${isToday ? 'bg-primary text-on-primary shadow-md' : 
                           !isCurrentMonth ? 'text-slate-300' : 'text-slate-700'}`
                       }>
                         {format(day, dateFormat)}
@@ -578,30 +605,36 @@ export default function CalendarClient() {
                         const isRutin = !isMasked && Boolean(ev.deskripsi_kegiatan?.toLowerCase().includes('rutin') || ev.nama_event.toLowerCase().includes('rutin') || ev.nama_pemohon?.toLowerCase().includes('rutin') || ev.jenis_event?.toLowerCase().includes('rutin'))
                         const isSpecial = !isMasked && !isRutin && Boolean(ev.nama_ustadz || ev.nama_event.toLowerCase().includes('spesial') || ev.nama_event.toLowerCase().includes('tamu'))
                         
-                        let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
+                        let bgColor = 'bg-primary/10 border-primary/20 text-primary'
                         if (isPending) bgColor = 'bg-white border-slate-400 border-dashed text-slate-500 opacity-80'
                         else if (isMasked) bgColor = 'bg-slate-100 border-slate-200 text-slate-600'
-                        else if (isTerbatas) bgColor = 'bg-rose-50 border-rose-200 text-rose-700 shadow-sm'
-                        else if (isSpecial) bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
-                        else if (isRutin) bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
+                        else if (isTerbatas) bgColor = 'bg-rose-50 border-rose-200 text-rose-700 shadow-xs'
+                        else if (isSpecial) bgColor = 'bg-secondary-fixed/40 border-secondary/30 text-on-secondary-fixed font-bold shadow-xs'
+                        else if (isRutin) bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-xs'
                         
                         return (
                           <div 
                             key={ev.id}
                             onClick={() => openEventDetails(ev)}
-                            className={`text-[10px] sm:text-xs p-1.5 rounded-md border font-semibold truncate cursor-pointer transition-all hover:shadow-sm relative overflow-hidden ${bgColor}`}
+                            className={`text-[10px] sm:text-xs p-1.5 rounded-lg border font-semibold truncate cursor-pointer transition-all hover:shadow-sm relative overflow-hidden ${bgColor}`}
                             title={displayTitle}
                           >
-                            {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-bl-sm" />}
+                            {ev.is_public_event && <div className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-bl-sm" />}
                             <div className="flex items-center gap-1 truncate capitalize">
-                              {isTerbatas ? <Lock className="h-2.5 w-2.5 flex-shrink-0 text-rose-600" /> : isSpecial ? <Sparkles className="h-2.5 w-2.5 flex-shrink-0" /> : <Clock className="h-2.5 w-2.5 flex-shrink-0 opacity-70" />}
-                              <span className="truncate">{displayTitle}</span>
+                              {isTerbatas ? <Lock className="h-2.5 w-2.5 flex-shrink-0 text-rose-600" /> : isSpecial ? <Sparkles className="h-2.5 w-2.5 flex-shrink-0 text-secondary" /> : <Clock className="h-2.5 w-2.5 flex-shrink-0 opacity-70" />}
+                              <span className="truncate font-display">{displayTitle}</span>
                             </div>
                             <div className="flex justify-between items-center mt-0.5">
-                              <span className="opacity-80">
+                              <span className="opacity-80 font-medium">
                                 {format(new Date(ev.tanggal_mulai), 'HH:mm')}
                               </span>
-                              {isTerbatas && <span className="text-[8px] font-bold px-1 bg-rose-200 text-rose-800 rounded">INTERNAL</span>}
+                              {isTerbatas ? (
+                                <span className="text-[8px] font-bold px-1 bg-rose-200 text-rose-800 rounded">INTERNAL</span>
+                              ) : isMasked ? (
+                                <span className="text-[8px] font-bold px-1 bg-slate-200 text-slate-700 rounded">TERTUTUP</span>
+                              ) : (
+                                <span className="text-[8px] font-bold px-1 bg-emerald-100 text-emerald-800 rounded">UMUM</span>
+                              )}
                             </div>
                           </div>
                         )
@@ -614,30 +647,30 @@ export default function CalendarClient() {
           )}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 justify-center sm:justify-start">
+        <div className="mt-6 flex flex-wrap items-center gap-4 text-xs font-semibold text-on-surface-variant justify-center sm:justify-start font-display">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-indigo-500"></div> Event Publik
+            <div className="w-3 h-3 rounded-full bg-primary"></div> Event Terbuka
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-slate-300"></div> Internal Umum
+            <div className="w-3 h-3 rounded-full bg-secondary-fixed border border-secondary"></div> Kajian Spesial / Tabligh
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-emerald-500 border border-emerald-600"></div> Kajian Rutin
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-rose-200 border border-rose-300"></div> Khusus Internal
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-white border border-slate-400 border-dashed"></div> Menunggu ACC (Proses)
+            <div className="w-3 h-3 rounded-full bg-white border border-slate-400 border-dashed"></div> Menunggu Persetujuan
           </div>
         </div>
       </main>
 
       {selectedEvent && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className={`h-1.5 ${selectedEvent.privacy_event === 'umum_saja' ? 'bg-slate-400' : selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-indigo-500'}`} />
-            <CardHeader className="pb-2 border-b border-slate-100 bg-slate-50/50">
+          <Card className="max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 rounded-2xl bg-surface-container-lowest">
+            <div className={`h-1.5 ${selectedEvent.privacy_event === 'umum_saja' ? 'bg-slate-400' : selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-gradient-to-r from-primary via-secondary to-secondary-fixed'}`} />
+            <CardHeader className="pb-3 border-b border-slate-100 bg-surface-container-low/40">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap gap-2">
@@ -646,16 +679,21 @@ export default function CalendarClient() {
                         <Lock className="h-3 w-3" /> KHUSUS INTERNAL / UNDANGAN
                       </span>
                     )}
+                    {selectedEvent.privacy_event === 'detail_publik' && (
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md w-fit">
+                        <Globe className="h-3 w-3" /> TERBUKA UNTUK UMUM
+                      </span>
+                    )}
                     {selectedEvent.status && ['submitted', 'under_review', 'revision_requested'].includes(selectedEvent.status) && (
                       <span className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 border border-slate-300 border-dashed text-xs font-bold px-2.5 py-1 rounded-md w-fit">
                         <Clock className="h-3 w-3" /> MENUNGGU PERSETUJUAN
                       </span>
                     )}
                   </div>
-                  <CardTitle className="text-lg font-bold text-slate-900 pr-4 leading-tight capitalize">
+                  <CardTitle className="text-lg font-bold text-primary font-display pr-4 leading-tight capitalize">
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Ada Kegiatan di MAKT' : selectedEvent.nama_event}
                   </CardTitle>
-                  <CardDescription className="mt-1">
+                  <CardDescription className="mt-1 font-medium text-xs text-secondary">
                     {selectedEvent.privacy_event === 'umum_saja' ? 'Acara Internal / Umum' : selectedEvent.jenis_event}
                   </CardDescription>
                 </div>
@@ -693,8 +731,17 @@ export default function CalendarClient() {
                     )}
                   </div>
                 </div>
-
-
+                {selectedEvent.privacy_event === 'detail_publik' && (
+                  <div className="bg-emerald-50 text-emerald-950 p-3 rounded-xl border border-emerald-200/80 text-xs flex items-start gap-2.5">
+                    <Sparkles className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      <span className="font-bold block text-emerald-900">Kegiatan Terbuka untuk Jamaah</span>
+                      <p className="text-emerald-800/90 text-[11px] leading-relaxed">
+                        Acara ini dapat dihadiri oleh seluruh jamaah dan kaum muslimin secara luas. Silakan hadir di Masjid Agung Kubah Timah.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {(selectedEvent.privacy_event === 'detail_publik' || selectedEvent.privacy_event === 'publik_terbatas') && (
                   <>

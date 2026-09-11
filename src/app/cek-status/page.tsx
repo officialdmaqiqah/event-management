@@ -12,6 +12,7 @@ import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, Chec
 import { submitRevisiAction } from "@/app/actions/pengajuan"
 import { uploadFileAction } from "@/app/actions/upload"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
+import { PrayerTopBar } from "@/components/PrayerTopBar"
 
 type Pengajuan = {
   id: string
@@ -308,36 +309,72 @@ function CekStatusContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-10 px-4">
-      {/* Header */}
-      <div className="max-w-3xl mx-auto mb-8">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 transition-colors mb-4">
-          <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
-        </Link>
-        <div className="text-center sm:text-left">
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex flex-col sm:flex-row items-center gap-2">
-            <Search className="h-7 w-7 text-indigo-600 hidden sm:inline-block" />
-            Cek Status Pengajuan Peminjaman
-          </h1>
-          <p className="text-slate-500 mt-2">Masukkan nomor pengajuan Anda untuk memantau status secara langsung.</p>
-        </div>
+    <div className="min-h-screen bg-surface text-on-surface flex flex-col font-sans pb-16">
+      {/* 1. TOP UTILITY BAR (Live Waktu Sholat & Kalender) */}
+      <div className="bg-surface/90 backdrop-blur-xl border-b border-slate-150 shadow-xs">
+        <PrayerTopBar />
+        
+        {/* Navbar Ringkas */}
+        <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
+            <img 
+              alt="Logo Masjid Agung Kubah Timah" 
+              className="h-10 sm:h-11 w-auto object-contain shrink-0" 
+              src="/logo-makt-full.png?v=5"
+            />
+            <div className="flex flex-col">
+              <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
+              <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+            </div>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Beranda
+            </Link>
+            <Link 
+              href="/ajukan-peminjaman" 
+              className="h-8 px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-xs"
+            >
+              <span>Ajukan Acara</span>
+            </Link>
+          </div>
+        </header>
       </div>
 
-      <div className="max-w-3xl mx-auto space-y-6">
+      {/* Main Content */}
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-8 space-y-6">
+        {/* Header Title */}
+        <div className="text-center sm:text-left space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold">
+            <span className="material-symbols-outlined text-[14px]">verified</span>
+            <span>Pelacakan Status Online</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-primary font-display tracking-tight flex items-center gap-2">
+            Cek Status Pengajuan Peminjaman
+          </h1>
+          <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            Pantau proses verifikasi, persetujuan, atau catatan revisi peminjaman tempat secara langsung dan transparan.
+          </p>
+        </div>
+
         {/* Search Box */}
-        <Card className="shadow-lg border-0 bg-white/95 backdrop-blur-sm">
+        <Card className="shadow-md border border-slate-100 bg-surface-container-lowest rounded-2xl overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-primary via-secondary to-secondary-fixed" />
           <CardContent className="pt-6">
             <form onSubmit={onSubmit} className="flex flex-col sm:flex-row gap-3">
               <div className="flex-[2] space-y-2">
                 <Label htmlFor="nomor" className="sr-only">Nomor Pengajuan</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono font-bold text-sm">#</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono font-bold text-sm">#</span>
                   <Input 
                     id="nomor"
                     value={nomor} 
                     onChange={e => setNomor(e.target.value)} 
                     placeholder="PJM-YYYYMMDD-XXXX" 
-                    className="pl-8 h-12 text-base font-mono font-bold uppercase tracking-wider placeholder:font-sans placeholder:tracking-normal placeholder:font-normal"
+                    className="pl-8 h-12 text-sm sm:text-base font-mono font-bold uppercase tracking-wider rounded-xl border-slate-200 focus-visible:ring-primary placeholder:font-sans placeholder:tracking-normal placeholder:font-normal"
                     disabled={loading}
                   />
                 </div>
@@ -349,15 +386,19 @@ function CekStatusContent() {
                   value={kontak} 
                   onChange={e => setKontak(e.target.value)} 
                   placeholder="Nomor WA atau Email pemohon" 
-                  className="h-12 text-base"
+                  className="h-12 text-sm sm:text-base rounded-xl border-slate-200 focus-visible:ring-primary"
                   disabled={loading}
                 />
               </div>
-              <Button type="submit" disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 h-12 px-6 rounded-xl font-semibold shadow-md shadow-indigo-100 flex items-center justify-center gap-2 flex-1">
+              <Button 
+                type="submit" 
+                disabled={loading} 
+                className="bg-primary hover:bg-primary-container text-on-primary h-12 px-6 rounded-xl font-display font-bold shadow-md flex items-center justify-center gap-2 flex-1 transition-all"
+              >
                 {loading ? (
                   <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
                 ) : (
-                  <><Search className="h-4 w-4" /> Cari Pengajuan</>
+                  <><Search className="h-4 w-4" /> Lacak Pengajuan</>
                 )}
               </Button>
             </form>
@@ -367,7 +408,7 @@ function CekStatusContent() {
         {/* Loading Spinner */}
         {loading && (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
           </div>
         )}
 
@@ -388,13 +429,13 @@ function CekStatusContent() {
         {searched && !loading && pengajuan && activeStatus && (
           <div className="space-y-6 animate-fadeIn">
             {/* Status overview card */}
-            <Card className="border-0 shadow-xl overflow-hidden bg-white/95">
-              <div className="h-1.5 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500" />
+            <Card className="border border-slate-100 shadow-lg overflow-hidden bg-surface-container-lowest rounded-2xl">
+              <div className="h-1.5 bg-gradient-to-r from-primary via-secondary to-secondary-fixed" />
               <CardContent className="p-6 sm:p-8 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                   <div>
-                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block">Nomor Pengajuan</span>
-                    <span className="text-2xl font-mono font-extrabold text-slate-900 tracking-tight">{pengajuan.nomor_pengajuan}</span>
+                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest block font-display">Nomor Pengajuan</span>
+                    <span className="text-2xl font-mono font-extrabold text-primary tracking-tight">{pengajuan.nomor_pengajuan}</span>
                   </div>
                   <div className="flex items-center gap-2 self-start sm:self-center">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold ${activeStatus.color}`}>
@@ -408,9 +449,9 @@ function CekStatusContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Kegiatan</h4>
-                      <p className="font-bold text-slate-800 text-lg mt-0.5 capitalize">{pengajuan.nama_event}</p>
-                      <p className="text-xs text-indigo-600 font-semibold">{pengajuan.jenis_event}</p>
+                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider font-display">Nama Kegiatan</h4>
+                      <p className="font-bold text-slate-800 text-lg mt-0.5 capitalize font-display">{pengajuan.nama_event}</p>
+                      <p className="text-xs text-primary font-bold">{pengajuan.jenis_event}</p>
                     </div>
 
                     <div className="flex items-start gap-2">
@@ -546,16 +587,19 @@ function CekStatusContent() {
             )}
 
             {/* Timeline Progress */}
-            <Card className="border-0 shadow-lg bg-white/95">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-bold text-slate-800">📋 Riwayat Proses Pengajuan</CardTitle>
-                <CardDescription>Perkembangan status pengajuan peminjaman Anda</CardDescription>
+            <Card className="border border-slate-100 shadow-md bg-surface-container-lowest rounded-2xl overflow-hidden">
+              <CardHeader className="pb-2 border-b border-slate-100 bg-surface-container-low/40">
+                <CardTitle className="text-base sm:text-lg font-bold text-primary font-display flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[20px] text-secondary">history_edu</span>
+                  Riwayat Proses Pengajuan
+                </CardTitle>
+                <CardDescription className="text-xs text-on-surface-variant">Perkembangan status pengajuan peminjaman Anda</CardDescription>
               </CardHeader>
-              <CardContent className="pt-4 pb-8">
+              <CardContent className="pt-6 pb-8">
                 {timeline.length === 0 ? (
-                  <p className="text-slate-400 text-center text-sm py-4">Belum ada riwayat update status.</p>
+                  <p className="text-on-surface-variant text-center text-sm py-4">Belum ada riwayat update status.</p>
                 ) : (
-                  <div className="relative pl-6 border-l-2 border-slate-150 space-y-6 ml-2">
+                  <div className="relative pl-6 border-l-2 border-slate-200 space-y-6 ml-2">
                     {timeline.map((item, idx) => {
                       const cfg = STATUS_CONFIG[item.status_baru as keyof typeof STATUS_CONFIG] || { label: item.status_baru, color: "bg-slate-100 text-slate-700", icon: HelpCircle }
                       const Icon = cfg.icon
@@ -565,12 +609,12 @@ function CekStatusContent() {
                         <div key={item.id} className="relative">
                           {/* Timeline dot */}
                           <span className={`absolute -left-[31px] top-1.5 h-4.5 w-4.5 rounded-full flex items-center justify-center border-2 ${
-                            isFirst ? 'bg-indigo-600 border-indigo-200 ring-4 ring-indigo-50' : 'bg-white border-slate-300'
+                            isFirst ? 'bg-primary border-secondary-fixed ring-4 ring-primary/10' : 'bg-white border-slate-300'
                           }`}>
                             <span className={`h-1.5 w-1.5 rounded-full ${isFirst ? 'bg-white' : 'bg-slate-400'}`} />
                           </span>
 
-                          <div className="bg-slate-50/50 hover:bg-slate-50 border border-slate-100 rounded-xl p-4 transition-colors">
+                          <div className="bg-surface-container-low/50 hover:bg-surface-container-low border border-slate-100 rounded-xl p-4 transition-colors">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                               <div className="flex items-center gap-2">
                                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${cfg.color}`}>
@@ -605,13 +649,13 @@ function CekStatusContent() {
                 )}
               </CardContent>
             </Card>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
+      </main>
 
-      <div className="mt-12 text-center text-xs text-slate-400">
-        © 2026 Masjid Agung Kubah Timah. All Rights Reserved.
-      </div>
+      <footer className="mt-12 text-center text-xs text-on-surface-variant/70 font-medium">
+        © {new Date().getFullYear()} Masjid Agung Kubah Timah. All Rights Reserved.
+      </footer>
 
       <CustomDialog
         isOpen={dialogConfig.isOpen}

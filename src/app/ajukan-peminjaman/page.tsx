@@ -125,7 +125,7 @@ export default function AjukanPeminjamanPage() {
           .order("name", { ascending: true })
 
         if (!error && data && data.length > 0) {
-          setJenisEventOptions(data.map(d => d.name))
+          setJenisEventOptions(data.map((d: any) => d.name))
         }
       } catch (err) {
         console.error("Gagal load jenis event:", err)
@@ -382,17 +382,38 @@ export default function AjukanPeminjamanPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-10 px-4">
+    <div className="min-h-screen bg-[#F8FAF8] py-10 px-4">
       {/* Header */}
-      <div className="max-w-3xl mx-auto mb-8 text-center">
-        <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-4 hover:text-indigo-800 transition-colors">
-          <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
-          Kubah Timah Events
+      <div className="max-w-3xl mx-auto mb-6 text-center">
+        <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group hover:opacity-95 transition-opacity">
+          <img src="/logo-makt-full.png?v=5" alt="Logo Masjid Agung Kubah Timah" className="h-11 w-auto object-contain" />
+          <div className="flex flex-col text-left">
+            <span className="font-black text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
+            <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+          </div>
         </Link>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="font-display text-3xl md:text-4xl font-extrabold text-[#0D4734] tracking-tight">
           Ajukan Peminjaman Fasilitas
         </h1>
-        <p className="text-slate-500 mt-2 text-lg">Masjid Agung Kubah Timah — Pengajuan akan diproses dalam 1–3 hari kerja.</p>
+        <p className="text-slate-500 mt-2 text-base">Masjid Agung Kubah Timah — Pengajuan akan diproses dalam 1–3 hari kerja.</p>
+      </div>
+
+      {/* Stitch Info Banner: Syiar Terbuka & Bebas Infaq */}
+      <div className="max-w-3xl mx-auto mb-8">
+        <div className="relative overflow-hidden rounded-2xl bg-[#0D4734] text-white p-5 shadow-md">
+          <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-[#FED65B]/15 pointer-events-none blur-xl"></div>
+          <div className="relative z-10 flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-full bg-[#FED65B] flex items-center justify-center shrink-0 text-[#241A00] shadow-sm">
+              <Info className="h-5 w-5 text-[#735C00]" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-display text-base font-bold text-[#FED65B]">Syiar Terbuka & Bebas Infaq</span>
+              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed mt-0.5">
+                Peminjaman fasilitas untuk kegiatan dakwah, kajian, dan kemaslahatan umat tidak dipungut biaya operasional. Verifikasi DKM selesai dalam 1–2 hari kerja.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Step Indicator */}
@@ -406,18 +427,18 @@ export default function AjukanPeminjamanPage() {
               <div key={s.num} className="flex items-center">
                 <div className={`flex flex-col items-center gap-1.5 transition-all`}>
                   <div className={`h-10 w-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-all duration-300 ${
-                    isDone ? 'bg-green-500 text-white' :
-                    isActive ? 'bg-indigo-600 text-white ring-4 ring-indigo-100' :
+                    isDone ? 'bg-[#FED65B] text-[#241A00]' :
+                    isActive ? 'bg-[#0D4734] text-white ring-4 ring-[#0D4734]/20' :
                     'bg-white text-slate-400 border-2 border-slate-200'
                   }`}>
                     {isDone ? <CheckCircle2 className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
                   </div>
-                  <span className={`text-xs font-semibold hidden sm:block ${isActive ? 'text-indigo-700' : isDone ? 'text-green-600' : 'text-slate-400'}`}>
+                  <span className={`text-xs font-semibold hidden sm:block ${isActive ? 'text-[#0D4734]' : isDone ? 'text-[#735C00]' : 'text-slate-400'}`}>
                     {s.label}
                   </span>
                 </div>
                 {i < steps.length - 1 && (
-                  <div className={`w-16 sm:w-24 h-0.5 mx-2 mb-6 transition-all duration-300 ${step > s.num ? 'bg-green-400' : 'bg-slate-200'}`} />
+                  <div className={`w-16 sm:w-24 h-0.5 mx-2 mb-6 transition-all duration-300 ${step > s.num ? 'bg-[#0D4734]' : 'bg-slate-200'}`} />
                 )}
               </div>
             )
@@ -428,10 +449,12 @@ export default function AjukanPeminjamanPage() {
       <div className="max-w-3xl mx-auto">
         {/* ==================== STEP 1: DATA PEMOHON ==================== */}
         {step === 1 && (
-          <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-            <div className="h-1.5 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-t-xl" />
+          <Card className="shadow-lg border border-[#0D4734]/10 bg-white rounded-2xl overflow-hidden">
+            <div className="h-1.5 bg-gradient-to-r from-[#0D4734] via-[#FED65B] to-[#0D4734]" />
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl flex items-center gap-2"><User className="h-5 w-5 text-indigo-600" /> Data Pemohon</CardTitle>
+              <CardTitle className="text-xl font-display font-bold text-[#0D4734] flex items-center gap-2">
+                <User className="h-5 w-5 text-[#0D4734]" /> Data Pemohon
+              </CardTitle>
               <CardDescription>Isi informasi penanggungjawab pengajuan ini</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -446,8 +469,8 @@ export default function AjukanPeminjamanPage() {
                       onClick={() => { setPemohon(p => ({...p, tipe_pemohon: t})); setErrors(e => {const n={...e}; delete n.tipe_pemohon; return n}) }}
                       className={`py-2.5 px-3 rounded-xl border-2 text-sm font-semibold capitalize transition-all ${
                         pemohon.tipe_pemohon === t
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                          : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+                          ? 'border-[#0D4734] bg-[#F0F5F2] text-[#0D4734]'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-[#0D4734]/40'
                       }`}
                     >
                       {t}
@@ -510,7 +533,7 @@ export default function AjukanPeminjamanPage() {
               </div>
 
               <div className="pt-4 flex justify-end">
-                <Button onClick={nextStep} className="bg-indigo-600 hover:bg-indigo-700 h-12 px-8 rounded-xl font-semibold">
+                <Button onClick={nextStep} className="bg-[#0D4734] hover:bg-[#002F20] text-white h-12 px-8 rounded-xl font-display font-semibold shadow-md transition-all">
                   Lanjut: Data Event <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -520,10 +543,12 @@ export default function AjukanPeminjamanPage() {
 
         {/* ==================== STEP 2: DATA EVENT ==================== */}
         {step === 2 && (
-          <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-            <div className="h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-xl" />
+          <Card className="shadow-lg border border-[#0D4734]/10 bg-white rounded-2xl overflow-hidden">
+            <div className="h-1.5 bg-gradient-to-r from-[#0D4734] via-[#FED65B] to-[#0D4734]" />
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Data Event & Fasilitas</CardTitle>
+              <CardTitle className="text-xl font-display font-bold text-[#0D4734] flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-[#0D4734]" /> Data Event & Fasilitas
+              </CardTitle>
               <CardDescription>Detail kegiatan yang akan diselenggarakan</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -531,7 +556,7 @@ export default function AjukanPeminjamanPage() {
                 {/* Nama Event */}
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="nama_event" className="text-slate-700 font-semibold">Nama Event / Kegiatan <span className="text-red-500">*</span></Label>
-                  <Input id="nama_event" name="nama_event" value={event.nama_event} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Seminar Nasional Teknologi 2026" className="h-11" />
+                  <Input id="nama_event" name="nama_event" value={event.nama_event} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Seminar Nasional Teknologi 2026" className="h-11 focus-visible:ring-[#0D4734]" />
                   {errors.nama_event && <p className="text-red-500 text-xs">{errors.nama_event}</p>}
                 </div>
 
@@ -539,13 +564,13 @@ export default function AjukanPeminjamanPage() {
                 <div className="space-y-2">
                   <Label htmlFor="jenis_event" className="text-slate-700 font-semibold">Jenis Event <span className="text-red-500">*</span></Label>
                   <select id="jenis_event" name="jenis_event" value={event.jenis_event} onChange={handleEventChange}
-                    className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                    className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D4734]">
                     <option value="">-- Pilih Jenis Event --</option>
                     {jenisEventOptions.map(j => <option key={j} value={j}>{j}</option>)}
                   </select>
                   {event.jenis_event && (
-                    <p className="text-xs text-indigo-600 bg-indigo-50 p-2 rounded border border-indigo-100 flex items-start gap-1.5 mt-1">
-                      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                    <p className="text-xs text-[#0D4734] bg-[#F0F5F2] p-2 rounded-lg border border-[#0D4734]/15 flex items-start gap-1.5 mt-1">
+                      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[#0D4734]" />
                       <span>{getJenisEventDescription(event.jenis_event)}</span>
                     </p>
                   )}
@@ -557,7 +582,7 @@ export default function AjukanPeminjamanPage() {
                   <Label htmlFor="estimasi_peserta" className="text-slate-700 font-semibold">Estimasi Peserta <span className="text-red-500">*</span></Label>
                   <div className="relative">
                     <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input id="estimasi_peserta" name="estimasi_peserta" type="number" min="1" value={event.estimasi_peserta} onChange={handleEventChange} placeholder="Jumlah peserta" className="pl-9 h-11" />
+                    <Input id="estimasi_peserta" name="estimasi_peserta" type="number" min="1" value={event.estimasi_peserta} onChange={handleEventChange} placeholder="Jumlah peserta" className="pl-9 h-11 focus-visible:ring-[#0D4734]" />
                   </div>
                   {errors.estimasi_peserta && <p className="text-red-500 text-xs">{errors.estimasi_peserta}</p>}
                 </div>
@@ -565,15 +590,15 @@ export default function AjukanPeminjamanPage() {
 
               {/* Conditional Fields for Kajian Umum and Tabligh Akbar */}
               {['Kajian Umum', 'Tabligh Akbar'].includes(event.jenis_event) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-4 bg-[#F0F5F2] rounded-xl border border-[#0D4734]/15">
                   <div className="space-y-2">
                     <Label htmlFor="nama_ustadz" className="text-slate-700 font-semibold">Nama Ustadz / Pemateri <span className="text-red-500">*</span></Label>
-                    <Input id="nama_ustadz" name="nama_ustadz" value={event.nama_ustadz} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Ustadz Fulan" className="h-11 bg-white" />
+                    <Input id="nama_ustadz" name="nama_ustadz" value={event.nama_ustadz} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Ustadz Fulan" className="h-11 bg-white focus-visible:ring-[#0D4734]" />
                     {errors.nama_ustadz && <p className="text-red-500 text-xs">{errors.nama_ustadz}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="judul_kajian" className="text-slate-700 font-semibold">Judul Kajian / Tema <span className="text-red-500">*</span></Label>
-                    <Input id="judul_kajian" name="judul_kajian" value={event.judul_kajian} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Fiqih Ibadah" className="h-11 bg-white" />
+                    <Input id="judul_kajian" name="judul_kajian" value={event.judul_kajian} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Contoh: Fiqih Ibadah" className="h-11 bg-white focus-visible:ring-[#0D4734]" />
                     {errors.judul_kajian && <p className="text-red-500 text-xs">{errors.judul_kajian}</p>}
                   </div>
                 </div>
@@ -582,7 +607,7 @@ export default function AjukanPeminjamanPage() {
               {/* Tujuan Peminjaman */}
               <div className="space-y-2">
                 <Label htmlFor="tujuan_peminjaman" className="text-slate-700 font-semibold">Tujuan Peminjaman <span className="text-red-500">*</span></Label>
-                <Input id="tujuan_peminjaman" name="tujuan_peminjaman" value={event.tujuan_peminjaman} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Tujuan utama kegiatan ini" className="h-11" />
+                <Input id="tujuan_peminjaman" name="tujuan_peminjaman" value={event.tujuan_peminjaman} onChange={handleEventChange} onBlur={handleEventBlur} placeholder="Tujuan utama kegiatan ini" className="h-11 focus-visible:ring-[#0D4734]" />
                 {errors.tujuan_peminjaman && <p className="text-red-500 text-xs">{errors.tujuan_peminjaman}</p>}
               </div>
 
@@ -595,11 +620,11 @@ export default function AjukanPeminjamanPage() {
                     onClick={() => setEvent(p => ({...p, privacy_event: 'detail_publik'}))}
                     className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
                       event.privacy_event === 'detail_publik'
-                        ? 'border-indigo-500 bg-indigo-50/50'
-                        : 'border-slate-200 bg-white hover:border-indigo-300'
+                        ? 'border-[#0D4734] bg-[#F0F5F2]'
+                        : 'border-slate-200 bg-white hover:border-[#0D4734]/40'
                     }`}
                   >
-                    <span className={`text-sm font-bold ${event.privacy_event === 'detail_publik' ? 'text-indigo-700' : 'text-slate-700'}`}>Terbuka Umum</span>
+                    <span className={`text-sm font-bold ${event.privacy_event === 'detail_publik' ? 'text-[#0D4734]' : 'text-slate-700'}`}>Terbuka Umum</span>
                     <span className="text-xs text-slate-500 font-medium">Bisa dihadiri oleh jamaah secara luas</span>
                   </button>
                   <button
@@ -624,18 +649,18 @@ export default function AjukanPeminjamanPage() {
                 <textarea
                   id="deskripsi_kegiatan" name="deskripsi_kegiatan" value={event.deskripsi_kegiatan} onChange={handleEventChange} onBlur={handleEventBlur}
                   placeholder="Jelaskan secara singkat gambaran kasar tentang apa saja yang akan dilakukan..."
-                  className="flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
+                  className="flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D4734] transition-all"
                 />
                 {errors.deskripsi_kegiatan && <p className="text-red-500 text-xs">{errors.deskripsi_kegiatan}</p>}
               </div>
 
               {/* Waktu */}
-              <div className="p-4 bg-blue-50/60 rounded-xl border border-blue-100 space-y-4">
-                <h4 className="font-semibold text-blue-900 flex items-center gap-2"><Calendar className="h-4 w-4" /> Jadwal Pelaksanaan</h4>
+              <div className="p-4 bg-[#F0F5F2] rounded-xl border border-[#0D4734]/15 space-y-4">
+                <h4 className="font-display font-bold text-[#0D4734] flex items-center gap-2"><Calendar className="h-4 w-4 text-[#0D4734]" /> Jadwal Pelaksanaan</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="tanggal_mulai" className="text-slate-700 font-semibold text-sm">Tanggal Mulai <span className="text-red-500">*</span></Label>
-                    <Input id="tanggal_mulai" name="tanggal_mulai" type="date" value={event.tanggal_mulai} onChange={handleEventChange} className="h-10 bg-white" />
+                    <Input id="tanggal_mulai" name="tanggal_mulai" type="date" value={event.tanggal_mulai} onChange={handleEventChange} className="h-10 bg-white focus-visible:ring-[#0D4734]" />
                     {errors.tanggal_mulai && <p className="text-red-500 text-xs">{errors.tanggal_mulai}</p>}
                   </div>
                   <div className="space-y-2">
@@ -645,7 +670,7 @@ export default function AjukanPeminjamanPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="tanggal_selesai" className="text-slate-700 font-semibold text-sm">Tanggal Selesai <span className="text-red-500">*</span></Label>
-                    <Input id="tanggal_selesai" name="tanggal_selesai" type="date" value={event.tanggal_selesai} onChange={handleEventChange} className="h-10 bg-white" />
+                    <Input id="tanggal_selesai" name="tanggal_selesai" type="date" value={event.tanggal_selesai} onChange={handleEventChange} className="h-10 bg-white focus-visible:ring-[#0D4734]" />
                     {errors.tanggal_selesai && <p className="text-red-500 text-xs">{errors.tanggal_selesai}</p>}
                   </div>
                   <div className="space-y-2">
@@ -655,7 +680,7 @@ export default function AjukanPeminjamanPage() {
                   </div>
                 </div>
                 {event.tanggal_mulai && event.tanggal_selesai && event.tanggal_mulai !== event.tanggal_selesai && (
-                  <div className="mt-4 pt-4 border-t border-blue-200/50 space-y-2">
+                  <div className="mt-4 pt-4 border-t border-[#0D4734]/15 space-y-2">
                     <Label className="text-slate-700 font-semibold text-sm">Tipe Peminjaman Multi-Hari <span className="text-red-500">*</span></Label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button
@@ -663,11 +688,11 @@ export default function AjukanPeminjamanPage() {
                         onClick={() => setEvent(p => ({...p, is_multi_day_daily: true}))}
                         className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
                           event.is_multi_day_daily
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-slate-200 bg-white hover:border-blue-300'
+                            ? 'border-[#0D4734] bg-white text-[#0D4734]'
+                            : 'border-slate-200 bg-white hover:border-[#0D4734]/40'
                         }`}
                       >
-                        <span className={`text-sm font-bold ${event.is_multi_day_daily ? 'text-blue-700' : 'text-slate-700'}`}>Harian (Sesuai Jam)</span>
+                        <span className={`text-sm font-bold ${event.is_multi_day_daily ? 'text-[#0D4734]' : 'text-slate-700'}`}>Harian (Sesuai Jam)</span>
                         <span className="text-xs text-slate-500 font-medium">Hanya meminjam di jam yang dipilih setiap harinya</span>
                       </button>
                       <button
@@ -675,11 +700,11 @@ export default function AjukanPeminjamanPage() {
                         onClick={() => setEvent(p => ({...p, is_multi_day_daily: false}))}
                         className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${
                           !event.is_multi_day_daily
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-slate-200 bg-white hover:border-blue-300'
+                            ? 'border-[#0D4734] bg-white text-[#0D4734]'
+                            : 'border-slate-200 bg-white hover:border-[#0D4734]/40'
                         }`}
                       >
-                        <span className={`text-sm font-bold flex items-center gap-1 ${!event.is_multi_day_daily ? 'text-blue-700' : 'text-slate-700'}`}>Blok Penuh (Menginap)</span>
+                        <span className={`text-sm font-bold flex items-center gap-1 ${!event.is_multi_day_daily ? 'text-[#0D4734]' : 'text-slate-700'}`}>Blok Penuh (Menginap)</span>
                         <span className="text-xs text-slate-500 font-medium">Meminjam terus-menerus selama rentang tanggal tersebut</span>
                       </button>
                     </div>
@@ -690,21 +715,21 @@ export default function AjukanPeminjamanPage() {
               {/* Area / Fasilitas */}
               <div className="space-y-3">
                 <Label className="text-slate-700 font-semibold flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-slate-500" /> Area / Fasilitas yang Dipinjam <span className="text-red-500">*</span>
+                  <MapPin className="h-4 w-4 text-[#0D4734]" /> Area / Fasilitas yang Dipinjam <span className="text-red-500">*</span>
                 </Label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   {AREA_OPTIONS.map(area => (
                     <button
                       key={area}
                       type="button"
                       onClick={() => { toggleArea(area); setErrors(e => {const n={...e}; delete n.area_fasilitas; return n}) }}
-                      className={`py-2 px-3 rounded-xl border-2 text-xs font-semibold text-left transition-all ${
+                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold text-left transition-all ${
                         event.area_fasilitas.includes(area)
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                          : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+                          ? 'border-[#0D4734] bg-[#F0F5F2] text-[#0D4734]'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-[#0D4734]/40'
                       }`}
                     >
-                      {event.area_fasilitas.includes(area) && <span className="mr-1">✓</span>}
+                      {event.area_fasilitas.includes(area) && <span className="mr-1 text-[#0D4734] font-bold">✓</span>}
                       {area}
                     </button>
                   ))}
@@ -712,7 +737,7 @@ export default function AjukanPeminjamanPage() {
                 <div className="space-y-1.5">
                   <Label htmlFor="area_lainnya" className="text-xs text-slate-500">Area lainnya (opsional)</Label>
                   <Input id="area_lainnya" name="area_lainnya" value={event.area_lainnya} onChange={handleEventChange} onBlur={handleEventBlur}
-                    placeholder="Tuliskan area lain yang dibutuhkan..." className="h-9 text-sm" />
+                    placeholder="Tuliskan area lain yang dibutuhkan..." className="h-10 text-sm focus-visible:ring-[#0D4734]" />
                 </div>
                 {errors.area_fasilitas && <p className="text-red-500 text-xs">{errors.area_fasilitas}</p>}
               </div>
@@ -723,15 +748,15 @@ export default function AjukanPeminjamanPage() {
                 <textarea
                   id="kebutuhan_tambahan" name="kebutuhan_tambahan" value={event.kebutuhan_tambahan} onChange={handleEventChange} onBlur={handleEventBlur}
                   placeholder="Contoh: Proyektor, Sound System, Meja Registrasi, dll (opsional)"
-                  className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
+                  className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D4734] transition-all"
                 />
               </div>
 
               <div className="pt-4 flex justify-between">
-                <Button onClick={prevStep} variant="outline" className="h-12 px-6 rounded-xl">
+                <Button onClick={prevStep} variant="outline" className="h-12 px-6 rounded-xl font-medium">
                   <ChevronLeft className="mr-2 h-4 w-4" /> Kembali
                 </Button>
-                <Button onClick={nextStep} className="bg-blue-600 hover:bg-blue-700 h-12 px-8 rounded-xl font-semibold">
+                <Button onClick={nextStep} className="bg-[#0D4734] hover:bg-[#002F20] text-white h-12 px-8 rounded-xl font-display font-semibold shadow-md transition-all">
                   Lanjut: Lampiran <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -742,43 +767,45 @@ export default function AjukanPeminjamanPage() {
         {/* ==================== STEP 3: LAMPIRAN & KIRIM ==================== */}
         {step === 3 && (
           <div className="space-y-6">
-            <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-              <div className="h-1.5 bg-gradient-to-r from-cyan-500 to-green-500 rounded-t-xl" />
+            <Card className="shadow-lg border border-[#0D4734]/10 bg-white rounded-2xl overflow-hidden">
+              <div className="h-1.5 bg-gradient-to-r from-[#0D4734] via-[#FED65B] to-[#0D4734]" />
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl flex items-center gap-2"><FileText className="h-5 w-5 text-cyan-600" /> Lampiran & Catatan</CardTitle>
+                <CardTitle className="text-xl font-display font-bold text-[#0D4734] flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#0D4734]" /> Lampiran & Catatan
+                </CardTitle>
                 <CardDescription>Upload dokumen pendukung (opsional, maks 10MB per file)</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <Label htmlFor="surat" className="text-slate-700 font-semibold">Surat Peminjaman</Label>
-                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-indigo-300 transition-colors">
+                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-[#0D4734]/40 transition-colors">
                       <FileText className="h-8 w-8 text-slate-300 mx-auto mb-2" />
                       <p className="text-xs text-slate-500 mb-2">PDF, JPG, PNG, DOC, DOCX</p>
                       <input id="surat" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={e => handleFileChange(e, 'surat')}
-                        className="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
-                      {suratFile && <p className="text-xs text-green-600 mt-2 font-medium">✓ {suratFile.name}</p>}
+                        className="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#F0F5F2] file:text-[#0D4734] hover:file:bg-[#0D4734]/10 cursor-pointer" />
+                      {suratFile && <p className="text-xs text-emerald-700 mt-2 font-medium">✓ {suratFile.name}</p>}
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="proposal" className="text-slate-700 font-semibold">Proposal Kegiatan (Opsional)</Label>
-                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-indigo-300 transition-colors">
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-[#0D4734]/40 transition-colors">
                         <ClipboardList className="h-6 w-6 text-slate-300 mx-auto mb-1" />
                         <p className="text-[10px] text-slate-500 mb-2">PDF, JPG, PNG, DOC, DOCX</p>
                         <input id="proposal" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={e => handleFileChange(e, 'proposal')}
-                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
-                        {proposalFile && <p className="text-[10px] text-green-600 mt-1 font-medium">✓ {proposalFile.name}</p>}
+                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#F0F5F2] file:text-[#0D4734] hover:file:bg-[#0D4734]/10 cursor-pointer" />
+                        {proposalFile && <p className="text-[10px] text-emerald-700 mt-1 font-medium">✓ {proposalFile.name}</p>}
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="flyer" className="text-slate-700 font-semibold">Flyer / Poster (Opsional)</Label>
-                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-indigo-300 transition-colors">
+                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center hover:border-[#0D4734]/40 transition-colors">
                         <FileText className="h-6 w-6 text-slate-300 mx-auto mb-1" />
                         <p className="text-[10px] text-slate-500 mb-2">JPG, PNG (Maks 2MB)</p>
                         <input id="flyer" type="file" accept=".jpg,.jpeg,.png" onChange={e => handleFileChange(e, 'flyer')}
-                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" />
-                        {flyerFile && <p className="text-[10px] text-green-600 mt-1 font-medium">✓ {flyerFile.name}</p>}
+                          className="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#F0F5F2] file:text-[#0D4734] hover:file:bg-[#0D4734]/10 cursor-pointer" />
+                        {flyerFile && <p className="text-[10px] text-emerald-700 mt-1 font-medium">✓ {flyerFile.name}</p>}
                       </div>
                     </div>
                   </div>
@@ -789,18 +816,18 @@ export default function AjukanPeminjamanPage() {
                   <textarea
                     id="catatan_tambahan" name="catatan_tambahan" value={event.catatan_tambahan} onChange={handleEventChange}
                     placeholder="Informasi lain yang ingin Anda sampaikan kepada pengelola (opsional)..."
-                    className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-all"
+                    className="flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D4734] transition-all"
                   />
                 </div>
               </CardContent>
             </Card>
 
             {/* Ringkasan */}
-            <Card className="shadow-lg border-0 bg-indigo-50/60 backdrop-blur-sm">
+            <Card className="shadow-md border border-[#0D4734]/15 bg-[#F0F5F2]">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base text-indigo-900">📋 Ringkasan Pengajuan</CardTitle>
+                <CardTitle className="text-base font-display font-bold text-[#0D4734]">📋 Ringkasan Pengajuan</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm space-y-1 text-slate-700">
+              <CardContent className="text-sm space-y-1.5 text-slate-700">
                 <p><span className="font-semibold">Pemohon:</span> {pemohon.nama_pemohon} {pemohon.nama_lembaga ? `(${pemohon.nama_lembaga})` : ''}</p>
                 <p><span className="font-semibold">Event:</span> {event.nama_event} — {event.jenis_event}</p>
                 <p><span className="font-semibold">Waktu:</span> {event.tanggal_mulai} {event.jam_mulai} s/d {event.tanggal_selesai} {event.jam_selesai}</p>
@@ -810,18 +837,18 @@ export default function AjukanPeminjamanPage() {
             </Card>
 
             <div className="flex justify-between">
-              <Button onClick={prevStep} variant="outline" className="h-12 px-6 rounded-xl">
+              <Button onClick={prevStep} variant="outline" className="h-12 px-6 rounded-xl font-medium">
                 <ChevronLeft className="mr-2 h-4 w-4" /> Kembali
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="h-12 px-10 rounded-xl font-bold text-base bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-xl shadow-green-200 transition-all"
+                className="h-12 px-10 rounded-xl font-display font-bold text-base bg-[#0D4734] hover:bg-[#002F20] text-white shadow-xl shadow-[#0D4734]/25 transition-all"
               >
                 {loading ? (
                   <span className="flex items-center gap-2"><span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />Mengirim...</span>
                 ) : (
-                  <span className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5" /> Kirim Pengajuan</span>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-[#FED65B]" /> Kirim Pengajuan</span>
                 )}
               </Button>
             </div>
@@ -831,7 +858,7 @@ export default function AjukanPeminjamanPage() {
 
       <div className="mt-8 text-center text-sm text-slate-500">
         Sudah punya nomor pengajuan?{" "}
-        <Link href="/cek-status" className="text-indigo-600 hover:underline font-semibold">Cek Status Pengajuan</Link>
+        <Link href="/cek-status" className="text-[#0D4734] hover:underline font-semibold">Cek Status Pengajuan</Link>
       </div>
 
       <CustomDialog isOpen={dialogState.isOpen} type={dialogState.type} title={dialogState.title} message={dialogState.message} onCancel={closeDialog} onConfirm={closeDialog} />

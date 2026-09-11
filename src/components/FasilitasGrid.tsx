@@ -41,11 +41,11 @@ export function FasilitasGrid({ fasilitasMakt }: FasilitasGridProps) {
         {fasilitasMakt.map((fasilitas, i) => (
           <div
             key={i}
-            className="group rounded-3xl overflow-hidden bg-slate-50 shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-500 flex flex-col h-full"
+            className="group rounded-2xl overflow-hidden bg-white shadow-sm border border-[#0D4734]/10 hover:border-[#0D4734]/25 hover:shadow-xl transition-all duration-300 flex flex-col h-full"
           >
             {/* Image Section */}
             <div
-              className={`relative h-64 bg-slate-100 flex items-center justify-center overflow-hidden select-none ${
+              className={`relative h-60 bg-emerald-950/5 flex items-center justify-center overflow-hidden select-none ${
                 fasilitas.image ? "cursor-zoom-in" : ""
               }`}
               onClick={() => {
@@ -59,22 +59,21 @@ export function FasilitasGrid({ fasilitasMakt }: FasilitasGridProps) {
                   <img
                     src={fasilitas.image}
                     alt={fasilitas.nama}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
-                  {/* Subtle hover overlay badge */}
-                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      <ImageIcon className="h-3.5 w-3.5" /> Klik untuk Zoom
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#06281E]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <span className="bg-[#FED65B] text-[#241A00] text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+                      <ImageIcon className="h-3.5 w-3.5" /> Lihat Detail Foto
                     </span>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="absolute inset-0 bg-slate-200/50 group-hover:scale-105 transition-transform duration-700 ease-in-out"></div>
+                  <div className="absolute inset-0 bg-slate-100 group-hover:scale-105 transition-transform duration-500"></div>
                   <div className="relative z-10 flex flex-col items-center text-slate-400">
-                    <ImageIcon className="h-10 w-10 mb-2 opacity-50" />
-                    <span className="text-xs font-semibold uppercase tracking-wider text-center px-4">
-                      Tempat Foto {fasilitas.nama}
+                    <ImageIcon className="h-10 w-10 mb-2 opacity-40 text-[#0D4734]" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-center px-4 text-slate-500">
+                      Foto Fasilitas {fasilitas.nama}
                     </span>
                   </div>
                 </>
@@ -82,11 +81,11 @@ export function FasilitasGrid({ fasilitasMakt }: FasilitasGridProps) {
             </div>
 
             {/* Content */}
-            <div className="p-8 flex flex-col flex-grow">
-              <h4 className="text-xl font-extrabold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors">
+            <div className="p-6 flex flex-col flex-grow">
+              <h4 className="font-display text-lg font-bold text-[#0D4734] mb-2 group-hover:text-[#19503C] transition-colors">
                 {fasilitas.nama}
               </h4>
-              <p className="text-slate-500 leading-relaxed text-sm font-medium flex-grow">
+              <p className="text-slate-600 leading-relaxed text-sm font-normal flex-grow">
                 {fasilitas.deskripsi}
               </p>
             </div>
