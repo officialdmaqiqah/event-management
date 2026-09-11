@@ -230,14 +230,16 @@ export default function AdminPengajuanPage() {
         <div className="flex gap-2">
           {isAdmin && (
             <Link href="/admin/pengajuan/generator">
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md">
-                <Zap className="h-4 w-4 mr-2" />
+              <Button className="bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-xl shadow-xs">
+                <Zap className="h-4 w-4 mr-1.5" />
                 Generator Jadwal Rutin
               </Button>
             </Link>
           )}
           <Link href="/ajukan-peminjaman" target="_blank">
-            <Button className="bg-indigo-600 hover:bg-indigo-700">+ Buat Peminjaman ↗</Button>
+            <Button className="bg-primary hover:bg-primary-container text-on-primary font-display text-xs font-bold rounded-xl shadow-xs">
+              + Buat Peminjaman ↗
+            </Button>
           </Link>
         </div>
       </div>
@@ -249,13 +251,13 @@ export default function AdminPengajuanPage() {
           onClick={() => setShowFilters(!showFilters)}
         >
           <div className="flex flex-row items-center gap-2">
-            <Filter className="h-4 w-4 text-indigo-600" />
+            <Filter className="h-4 w-4 text-primary" />
             <div>
-              <CardTitle className="text-base font-bold">Filter Pencarian</CardTitle>
+              <CardTitle className="text-base font-bold text-primary font-display">Filter Pencarian</CardTitle>
               <CardDescription className="text-xs">Saring pengajuan berdasarkan kriteria tertentu</CardDescription>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="h-8 text-xs text-indigo-600">
+          <Button variant="ghost" size="sm" className="h-8 text-xs font-bold text-primary hover:bg-emerald-50">
             {showFilters ? "Sembunyikan" : "Tampilkan"}
           </Button>
         </CardHeader>
@@ -284,7 +286,7 @@ export default function AdminPengajuanPage() {
                   id="status-select" 
                   value={statusFilter} 
                   onChange={e => setStatusFilter(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value="">Semua Status</option>
                   {Object.entries(STATUS_CONFIG).map(([k, v]) => (
@@ -300,7 +302,7 @@ export default function AdminPengajuanPage() {
                   id="jenis-select" 
                   value={jenisFilter} 
                   onChange={e => setJenisFilter(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value="">Semua Jenis</option>
                   {jenisEventOptions.map(o => (
@@ -339,7 +341,7 @@ export default function AdminPengajuanPage() {
                   id="privacy-select" 
                   value={privacyFilter} 
                   onChange={e => setPrivacyFilter(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value="">Semua Privasi</option>
                   <option value="detail_publik">Publik</option>
@@ -356,7 +358,7 @@ export default function AdminPengajuanPage() {
                   id="sort-select" 
                   value={sortBy} 
                   onChange={e => setSortBy(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value="created_desc">Tanggal Dibuat (Terbaru)</option>
                   <option value="created_asc">Tanggal Dibuat (Terlama)</option>
@@ -368,7 +370,7 @@ export default function AdminPengajuanPage() {
 
             <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
               <Button variant="outline" size="sm" onClick={resetFilters} className="text-xs h-8">Reset Filter</Button>
-              <Button variant="indigo" size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100">Refresh Data</Button>
+              <Button size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-emerald-50 text-primary border border-emerald-200 hover:bg-emerald-100 font-bold">Refresh Data</Button>
             </div>
           </CardContent>
         )}
@@ -389,7 +391,7 @@ export default function AdminPengajuanPage() {
         <CardContent className="p-0">
           {loading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+              <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
             </div>
           ) : filteredData.length === 0 ? (
             <div className="text-center py-20 text-slate-500">
@@ -430,7 +432,7 @@ export default function AdminPengajuanPage() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <div className="font-bold text-indigo-950 capitalize">{item.nama_event}</div>
+                          <div className="font-bold text-slate-900 capitalize">{item.nama_event}</div>
                           <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-0.5">
                             <MapPin className="h-3 w-3" />
                             <span className="truncate max-w-[180px]">{item.area_fasilitas.join(", ")}</span>
@@ -455,7 +457,7 @@ export default function AdminPengajuanPage() {
                         </TableCell>
                         <TableCell className="text-right pr-6">
                           <Link href={`/admin/pengajuan/${item.id}`}>
-                            <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 hover:text-indigo-600 hover:border-indigo-200">
+                            <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 hover:text-primary hover:border-emerald-200 hover:bg-emerald-50/50">
                               <Eye className="h-3.5 w-3.5" /> Detail
                             </Button>
                           </Link>

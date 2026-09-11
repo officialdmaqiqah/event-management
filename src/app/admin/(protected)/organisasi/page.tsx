@@ -271,8 +271,8 @@ export default function OrganisasiPage() {
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-gray-500">Memuat data organisasi...</p>
+        <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-slate-500 font-display">Memuat data organisasi...</p>
       </div>
     </div>
   )
@@ -282,27 +282,27 @@ export default function OrganisasiPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Struktur Organisasi</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola organisasi, unit, jabatan, dan pengurus MAKT</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">Struktur Organisasi</h1>
+          <p className="text-sm text-slate-500 mt-1">Kelola organisasi, unit, jabatan, dan pengurus MAKT</p>
         </div>
         <div className="flex gap-2">
           {activeTab === "organisasi" && (
-            <Button onClick={() => { setModal({ type: "org", mode: "add" }); setFormError(null) }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+            <Button onClick={() => { setModal({ type: "org", mode: "add" }); setFormError(null) }} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display shadow-xs text-xs gap-2">
               <Plus className="w-4 h-4" /> Tambah Organisasi
             </Button>
           )}
           {activeTab === "unit" && (
-            <Button onClick={() => { setModal({ type: "unit", mode: "add" }); setFormError(null) }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+            <Button onClick={() => { setModal({ type: "unit", mode: "add" }); setFormError(null) }} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display shadow-xs text-xs gap-2">
               <Plus className="w-4 h-4" /> Tambah Unit
             </Button>
           )}
           {activeTab === "jabatan" && (
-            <Button onClick={() => { setModal({ type: "position", mode: "add" }); setFormError(null) }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+            <Button onClick={() => { setModal({ type: "position", mode: "add" }); setFormError(null) }} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display shadow-xs text-xs gap-2">
               <Plus className="w-4 h-4" /> Tambah Jabatan
             </Button>
           )}
           {activeTab === "pengurus" && (
-            <Button onClick={() => { setModal({ type: "member", mode: "add" }); setFormError(null) }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+            <Button onClick={() => { setModal({ type: "member", mode: "add" }); setFormError(null) }} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display shadow-xs text-xs gap-2">
               <Plus className="w-4 h-4" /> Tambah Pengurus
             </Button>
           )}
@@ -312,19 +312,19 @@ export default function OrganisasiPage() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Organisasi", value: orgs.filter(o => o.is_active).length, icon: Building2, color: "text-emerald-600 bg-emerald-50" },
+          { label: "Organisasi", value: orgs.filter(o => o.is_active).length, icon: Building2, color: "text-emerald-700 bg-emerald-50" },
           { label: "Unit/Bidang", value: units.filter(u => u.is_active).length, icon: GitBranch, color: "text-blue-600 bg-blue-50" },
           { label: "Jabatan", value: positions.filter(p => p.is_active).length, icon: Briefcase, color: "text-violet-600 bg-violet-50" },
           { label: "Pengurus", value: members.filter(m => m.is_active).length, icon: Users, color: "text-amber-600 bg-amber-50" },
         ].map(s => (
-          <Card key={s.label} className="border-0 shadow-sm">
+          <Card key={s.label} className="border border-slate-200/80 shadow-xs rounded-2xl bg-white">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${s.color}`}>
+              <div className={`p-2 rounded-xl ${s.color}`}>
                 <s.icon className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-                <p className="text-xs text-gray-500">{s.label}</p>
+                <p className="text-2xl font-bold text-slate-900 font-display">{s.value}</p>
+                <p className="text-xs text-slate-500">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -332,16 +332,16 @@ export default function OrganisasiPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-slate-200">
         <nav className="-mb-px flex gap-1 overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => { setActiveTab(tab.id); setSearchQuery(""); setFilterOrgId("") }}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-colors font-display ${
                 activeTab === tab.id
-                  ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -353,25 +353,27 @@ export default function OrganisasiPage() {
 
       {/* Filter bar (for tabs that need it) */}
       {(activeTab === "unit" || activeTab === "jabatan" || activeTab === "pengurus" || activeTab === "roles") && (
-        <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Cari..."
+              placeholder={`Cari ${tabs.find(t => t.id === activeTab)?.label.toLowerCase()}...`}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white"
             />
           </div>
-          <select
-            value={filterOrgId}
-            onChange={e => setFilterOrgId(e.target.value)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
-          >
-            <option value="">Semua Organisasi</option>
-            {orgs.map(o => <option key={o.id} value={o.id}>{o.short_name || o.name}</option>)}
-          </select>
+          {orgs.length > 1 && (
+            <select
+              value={filterOrgId}
+              onChange={e => setFilterOrgId(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white"
+            >
+              <option value="">Semua Organisasi</option>
+              {orgs.map(o => <option key={o.id} value={o.id}>{o.short_name || o.name}</option>)}
+            </select>
+          )}
         </div>
       )}
 
@@ -464,7 +466,7 @@ export default function OrganisasiPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-indigo-600 hover:bg-indigo-50"
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-primary hover:bg-emerald-50 rounded-lg"
                               onClick={() => { setModal({ type: "unit", mode: "edit", data: unit }); setFormError(null) }}>
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
@@ -531,7 +533,7 @@ export default function OrganisasiPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-indigo-600 hover:bg-indigo-50"
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-primary hover:bg-emerald-50 rounded-lg"
                               onClick={() => { setModal({ type: "position", mode: "edit", data: pos }); setFormError(null) }}>
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
@@ -594,7 +596,7 @@ export default function OrganisasiPage() {
                         </td>
                         <td className="px-4 py-3 text-center">
                           {m.user_id
-                            ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100"><Check className="w-3.5 h-3.5 text-indigo-600" /></span>
+                            ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100"><Check className="w-3.5 h-3.5 text-primary" /></span>
                             : <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100"><X className="w-3.5 h-3.5 text-gray-400" /></span>}
                         </td>
                         <td className="px-4 py-3">
@@ -602,7 +604,7 @@ export default function OrganisasiPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-indigo-600 hover:bg-indigo-50"
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-primary hover:bg-emerald-50 rounded-lg"
                               onClick={() => { setModal({ type: "member", mode: "edit", data: m }); setFormError(null) }}>
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
@@ -627,10 +629,10 @@ export default function OrganisasiPage() {
       {/* ============================================================ */}
       {activeTab === "workflow" && (
         <div className="space-y-4">
-          <Card className="border-l-4 border-l-indigo-500 shadow-sm">
+          <Card className="border-l-4 border-l-primary shadow-sm rounded-2xl">
             <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Shield className="w-5 h-5 text-indigo-500" /> Workflow Approval per Organisasi
+              <CardTitle className="text-base flex items-center gap-2 font-display">
+                <Shield className="w-5 h-5 text-primary" /> Workflow Approval per Organisasi
               </CardTitle>
               <CardDescription>
                 Workflow approval diatur berdasarkan jenis event dan organisasi. Setiap organisasi bisa memiliki rantai approval yang berbeda.
@@ -649,7 +651,7 @@ export default function OrganisasiPage() {
                     </div>
                     <a
                       href="/admin/settings/event-types"
-                      className="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-emerald-800 font-semibold"
                     >
                       <Eye className="w-3.5 h-3.5" /> Atur Workflow
                     </a>
@@ -680,13 +682,15 @@ export default function OrganisasiPage() {
                 {[
                   { scope: "public", label: "Public", desc: "Dapat dilihat semua orang termasuk publik", color: "bg-green-100 text-green-800" },
                   { scope: "organization_internal", label: "Internal Organisasi", desc: "Hanya anggota organisasi terkait", color: "bg-blue-100 text-blue-800" },
-                  { scope: "makt_internal", label: "Internal MAKT", desc: "Semua pengurus MAKT (DKM, Pemuda, Irmas)", color: "bg-indigo-100 text-indigo-800" },
+                  { scope: "makt_internal", label: "Internal MAKT", desc: "Semua pengurus MAKT (DKM, Pemuda, Irmas)", color: "bg-emerald-100 text-emerald-800" },
                   { scope: "restricted", label: "Terbatas", desc: "Hanya role/jabatan/user yang diberi akses khusus", color: "bg-amber-100 text-amber-800" },
                   { scope: "confidential", label: "Rahasia", desc: "Hanya Super Admin atau user yang ditunjuk", color: "bg-red-100 text-red-800" },
                 ].map(item => (
                   <div key={item.scope} className="flex items-center gap-3 p-3 rounded-lg border bg-gray-50">
                     <Badge label={item.label} color={item.color} />
-                    <p className="text-xs text-gray-600">{item.desc}</p>
+                    <div>
+                      <p className="text-xs text-gray-600">{item.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -696,18 +700,17 @@ export default function OrganisasiPage() {
       )}
 
       {/* ============================================================ */}
-      {/* TAB: ROLE & AKSES                                             */}
+      {/* TAB: ROLE PENGGUNA                                            */}
       {/* ============================================================ */}
-      {activeTab === "roles" && (
+      {activeTab === "role_user" && (
         <div className="space-y-4">
-          {/* Legend */}
-          <Card className="border-l-4 border-l-violet-500 shadow-sm">
+          <Card className="shadow-sm rounded-2xl">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Lock className="w-5 h-5 text-violet-500" /> Role & Hak Akses per Organisasi
+              <CardTitle className="text-base flex items-center gap-2 font-display">
+                <Users className="w-5 h-5 text-primary" /> Role Pengguna per Organisasi
               </CardTitle>
               <CardDescription>
-                Kelola siapa yang memiliki role di tiap organisasi. Untuk assign role ke user, buka <a href="/admin/users" className="text-indigo-600 underline">Kelola Pengguna</a>.
+                Kelola siapa yang memiliki role di tiap organisasi. Untuk assign role ke user, buka <a href="/admin/users" className="text-primary font-medium underline">Kelola Pengguna</a>.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -732,7 +735,7 @@ export default function OrganisasiPage() {
               (!searchQuery || (users.find(u => u.user_id === r.user_id)?.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()))
             )
             return (
-              <Card key={org.id} className="shadow-sm">
+              <Card key={org.id} className="shadow-sm rounded-2xl">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -740,7 +743,7 @@ export default function OrganisasiPage() {
                         org.type === "dkm" ? "bg-emerald-500" :
                         org.type === "pemuda" ? "bg-blue-500" : "bg-purple-500"
                       }`} />
-                      <CardTitle className="text-sm">{org.name}</CardTitle>
+                      <CardTitle className="text-sm font-display">{org.name}</CardTitle>
                       <Badge label={`${thisOrgRoles.length} user`} color="bg-gray-100 text-gray-600" />
                     </div>
                   </div>
@@ -750,7 +753,7 @@ export default function OrganisasiPage() {
                     <div className="px-4 py-6 text-center text-xs text-gray-400">
                       Belum ada user dengan role di organisasi ini.
                       <br />
-                      <a href="/admin/users" className="text-indigo-500 underline">Assign role di halaman Kelola Pengguna</a>
+                      <a href="/admin/users" className="text-primary font-medium underline">Assign role di halaman Kelola Pengguna</a>
                     </div>
                   ) : (
                     <div className="overflow-x-auto">
@@ -942,7 +945,7 @@ function OrgForm({ initial, onSave, onCancel, saving, error }: any) {
       <div className="space-y-2">
         <Label htmlFor="org-type">Tipe *</Label>
         <select id="org-type" required value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="dkm">DKM / Badan Pengelola</option>
           <option value="pemuda">Pemuda</option>
           <option value="irmas">Irmas</option>
@@ -952,7 +955,7 @@ function OrgForm({ initial, onSave, onCancel, saving, error }: any) {
       <div className="space-y-2">
         <Label htmlFor="org-desc">Deskripsi</Label>
         <textarea id="org-desc" rows={3} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300"
           placeholder="Deskripsi singkat organisasi" />
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -968,14 +971,14 @@ function OrgForm({ initial, onSave, onCancel, saving, error }: any) {
       <div className="space-y-2">
         <Label>Status</Label>
         <select value={form.is_active} onChange={e => setForm(p => ({ ...p, is_active: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="true">Aktif</option>
           <option value="false">Nonaktif</option>
         </select>
       </div>
       <div className="flex gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Batal</Button>
-        <Button type="submit" disabled={saving} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+        <Button type="submit" disabled={saving} className="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">
           {saving ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>
@@ -1005,7 +1008,7 @@ function UnitForm({ initial, orgs, units, onSave, onCancel, saving, error }: any
       <div className="space-y-2">
         <Label>Organisasi *</Label>
         <select required value={form.organization_id} onChange={e => setForm(p => ({ ...p, organization_id: e.target.value, parent_unit_id: "" }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="">-- Pilih Organisasi --</option>
           {orgs.map((o: Organization) => <option key={o.id} value={o.id}>{o.name}</option>)}
         </select>
@@ -1017,7 +1020,7 @@ function UnitForm({ initial, orgs, units, onSave, onCancel, saving, error }: any
       <div className="space-y-2">
         <Label>Tipe *</Label>
         <select required value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="dewan">Dewan</option>
           <option value="badan_pelaksana">Badan Pelaksana</option>
           <option value="bidang">Bidang</option>
@@ -1031,7 +1034,7 @@ function UnitForm({ initial, orgs, units, onSave, onCancel, saving, error }: any
         <div className="space-y-2">
           <Label>Unit Induk (opsional)</Label>
           <select value={form.parent_unit_id} onChange={e => setForm(p => ({ ...p, parent_unit_id: e.target.value }))}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
             <option value="">-- Tidak ada (unit utama) --</option>
             {sameOrgUnits.map((u: OrganizationUnit) => <option key={u.id} value={u.id}>{u.name}</option>)}
           </select>
@@ -1040,20 +1043,20 @@ function UnitForm({ initial, orgs, units, onSave, onCancel, saving, error }: any
       <div className="space-y-2">
         <Label>Deskripsi</Label>
         <textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300"
           placeholder="Deskripsi unit/bidang" />
       </div>
       <div className="space-y-2">
         <Label>Status</Label>
         <select value={form.is_active} onChange={e => setForm(p => ({ ...p, is_active: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="true">Aktif</option>
           <option value="false">Nonaktif</option>
         </select>
       </div>
       <div className="flex gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Batal</Button>
-        <Button type="submit" disabled={saving} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+        <Button type="submit" disabled={saving} className="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">
           {saving ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>
@@ -1083,7 +1086,7 @@ function PositionForm({ initial, orgs, units, onSave, onCancel, saving, error }:
       <div className="space-y-2">
         <Label>Organisasi *</Label>
         <select required value={form.organization_id} onChange={e => setForm(p => ({ ...p, organization_id: e.target.value, organization_unit_id: "" }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="">-- Pilih Organisasi --</option>
           {orgs.map((o: Organization) => <option key={o.id} value={o.id}>{o.name}</option>)}
         </select>
@@ -1091,7 +1094,7 @@ function PositionForm({ initial, orgs, units, onSave, onCancel, saving, error }:
       <div className="space-y-2">
         <Label>Unit/Bidang (opsional)</Label>
         <select value={form.organization_unit_id} onChange={e => setForm(p => ({ ...p, organization_unit_id: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="">-- Semua unit (jabatan umum) --</option>
           {filteredUnits.map((u: OrganizationUnit) => <option key={u.id} value={u.id}>{u.name}</option>)}
         </select>
@@ -1109,7 +1112,7 @@ function PositionForm({ initial, orgs, units, onSave, onCancel, saving, error }:
         <div className="space-y-2">
           <Label>Bisa Approve?</Label>
           <select value={form.is_approver} onChange={e => setForm(p => ({ ...p, is_approver: e.target.value }))}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
             <option value="true">Ya</option>
             <option value="false">Tidak</option>
           </select>
@@ -1118,14 +1121,14 @@ function PositionForm({ initial, orgs, units, onSave, onCancel, saving, error }:
       <div className="space-y-2">
         <Label>Status</Label>
         <select value={form.is_active} onChange={e => setForm(p => ({ ...p, is_active: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="true">Aktif</option>
           <option value="false">Nonaktif</option>
         </select>
       </div>
       <div className="flex gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Batal</Button>
-        <Button type="submit" disabled={saving} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+        <Button type="submit" disabled={saving} className="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">
           {saving ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>
@@ -1160,7 +1163,7 @@ function MemberForm({ initial, orgs, units, positions, users, onSave, onCancel, 
       <div className="space-y-2">
         <Label>Organisasi *</Label>
         <select required value={form.organization_id} onChange={e => setForm(p => ({ ...p, organization_id: e.target.value, organization_unit_id: "", position_id: "" }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="">-- Pilih Organisasi --</option>
           {orgs.map((o: Organization) => <option key={o.id} value={o.id}>{o.name}</option>)}
         </select>
@@ -1169,7 +1172,7 @@ function MemberForm({ initial, orgs, units, positions, users, onSave, onCancel, 
         <div className="space-y-2">
           <Label>Unit/Bidang</Label>
           <select value={form.organization_unit_id} onChange={e => setForm(p => ({ ...p, organization_unit_id: e.target.value }))}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
             <option value="">-- Pilih Unit --</option>
             {filteredUnits.map((u: OrganizationUnit) => <option key={u.id} value={u.id}>{u.name}</option>)}
           </select>
@@ -1177,7 +1180,7 @@ function MemberForm({ initial, orgs, units, positions, users, onSave, onCancel, 
         <div className="space-y-2">
           <Label>Jabatan</Label>
           <select value={form.position_id} onChange={e => setForm(p => ({ ...p, position_id: e.target.value }))}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
             <option value="">-- Pilih Jabatan --</option>
             {filteredPositions.map((pos: Position) => <option key={pos.id} value={pos.id}>{pos.name}</option>)}
           </select>
@@ -1200,7 +1203,7 @@ function MemberForm({ initial, orgs, units, positions, users, onSave, onCancel, 
       <div className="space-y-2">
         <Label>Akun Login (opsional)</Label>
         <select value={form.user_id} onChange={e => setForm(p => ({ ...p, user_id: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="">-- Tidak terhubung ke akun --</option>
           {users.map((u: any) => <option key={u.user_id} value={u.user_id}>{u.full_name || u.email}</option>)}
         </select>
@@ -1219,14 +1222,14 @@ function MemberForm({ initial, orgs, units, positions, users, onSave, onCancel, 
       <div className="space-y-2">
         <Label>Status</Label>
         <select value={form.is_active} onChange={e => setForm(p => ({ ...p, is_active: e.target.value }))}
-          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white">
           <option value="true">Aktif</option>
           <option value="false">Nonaktif</option>
         </select>
       </div>
       <div className="flex gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Batal</Button>
-        <Button type="submit" disabled={saving} className="flex-1 bg-indigo-600 hover:bg-indigo-700">
+        <Button type="submit" disabled={saving} className="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">
           {saving ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>

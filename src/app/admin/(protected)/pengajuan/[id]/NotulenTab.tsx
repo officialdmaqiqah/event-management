@@ -283,17 +283,17 @@ export default function NotulenTab({
 
   return (
     <div className="space-y-6">
-      <Card className="border border-slate-200 shadow-sm">
+      <Card className="border border-slate-200 shadow-sm rounded-2xl">
         <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-                <FileText className="h-4.5 w-4.5 text-indigo-600" /> Informasi & Hasil Rapat
+              <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2 font-display">
+                <FileText className="h-4.5 w-4.5 text-primary" /> Informasi & Hasil Rapat
               </CardTitle>
               <CardDescription className="text-xs">Catat hasil diskusi dan keputusan rapat secara lengkap.</CardDescription>
             </div>
             {isFinalized && (
-              <span className="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+              <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" /> Finalized
               </span>
             )}
@@ -303,7 +303,7 @@ export default function NotulenTab({
           {/* Privacy & Publish Section */}
           <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="space-y-1.5 flex-1 w-full">
-              <Label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <Label className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-display">
                 Privasi Hasil Rapat
               </Label>
               <select 
@@ -325,7 +325,7 @@ export default function NotulenTab({
                   onClick={handlePublishToggle}
                   disabled={saving}
                   variant={form.is_published ? "destructive" : "default"} 
-                  className={`h-9 text-xs font-bold ${form.is_published ? '' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                  className={`h-9 text-xs font-bold rounded-xl ${form.is_published ? '' : 'bg-primary hover:bg-primary-container text-on-primary'}`}
                 >
                   <Globe className="h-3.5 w-3.5 mr-1.5" /> 
                   {form.is_published ? "Tarik dari Publik (Unpublish)" : "Publish ke Publik"}
@@ -379,28 +379,28 @@ export default function NotulenTab({
           <div className="space-y-4 pt-2 border-t border-slate-100">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Agenda Rapat</Label>
-              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.agenda || ""} onChange={e => setForm({...form, agenda: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:bg-slate-50" value={form.agenda || ""} onChange={e => setForm({...form, agenda: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Ringkasan Pembahasan</Label>
-              <textarea disabled={isFinalized} className="flex min-h-[120px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.discussion_summary || ""} onChange={e => setForm({...form, discussion_summary: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[120px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:bg-slate-50" value={form.discussion_summary || ""} onChange={e => setForm({...form, discussion_summary: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Keputusan Rapat</Label>
-              <textarea disabled={isFinalized} className="flex min-h-[100px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.decisions || ""} onChange={e => setForm({...form, decisions: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[100px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:bg-slate-50" value={form.decisions || ""} onChange={e => setForm({...form, decisions: e.target.value})} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-600">Catatan Penting (Opsional)</Label>
-              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:bg-slate-50" value={form.important_notes || ""} onChange={e => setForm({...form, important_notes: e.target.value})} />
+              <textarea disabled={isFinalized} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:bg-slate-50" value={form.important_notes || ""} onChange={e => setForm({...form, important_notes: e.target.value})} />
             </div>
           </div>
 
           {!isFinalized && (
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <Button onClick={() => handleSave(false)} disabled={saving} variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-bold h-10">
+              <Button onClick={() => handleSave(false)} disabled={saving} variant="outline" className="border-emerald-300 text-primary hover:bg-emerald-50 font-bold h-10 rounded-xl">
                 <Save className="h-4 w-4 mr-2" /> Simpan Draft
               </Button>
-              <Button onClick={() => { if(confirm("Yakin finalisasi? Setelah ini notulen tidak dapat diedit.")) handleSave(true) }} disabled={saving} className="bg-green-600 hover:bg-green-700 text-white font-bold h-10">
+              <Button onClick={() => { if(confirm("Yakin finalisasi? Setelah ini notulen tidak dapat diedit.")) handleSave(true) }} disabled={saving} className="bg-primary hover:bg-primary-container text-on-primary font-bold h-10 rounded-xl font-display">
                 <CheckCircle className="h-4 w-4 mr-2" /> Finalisasi Laporan
               </Button>
             </div>

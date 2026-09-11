@@ -129,22 +129,22 @@ export default function SettingsPage() {
     }
   }
 
-  if (loading) return <div className="p-10 flex items-center justify-center"><div className="animate-pulse text-indigo-500 font-semibold">Memuat Pengaturan...</div></div>
+  if (loading) return <div className="p-10 flex items-center justify-center"><div className="animate-pulse text-primary font-semibold font-display">Memuat Pengaturan...</div></div>
 
   if (!profile?.is_premium) {
     return (
       <div className="max-w-3xl mx-auto space-y-6 pb-10">
-        <h1 className="text-2xl font-bold tracking-tight">Pengaturan WhatsApp</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">Pengaturan WhatsApp</h1>
         
-        <Card className="border-t-4 border-t-slate-300 shadow-xl glass overflow-hidden relative">
+        <Card className="border border-slate-200 shadow-xs rounded-2xl overflow-hidden relative bg-white">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <Lock className="w-48 h-48" />
           </div>
           <CardHeader className="relative z-10 pb-2">
-            <CardTitle className="text-2xl flex items-center gap-2">
+            <CardTitle className="text-2xl flex items-center gap-2 font-display text-slate-900">
               <Lock className="w-6 h-6 text-slate-500" /> Fitur Premium Terkunci
             </CardTitle>
-            <CardDescription className="text-lg mt-2">
+            <CardDescription className="text-base mt-2">
               Kirim WhatsApp notifikasi otomatis langsung dari Nomor Pribadi Anda.
             </CardDescription>
           </CardHeader>
@@ -154,22 +154,22 @@ export default function SettingsPage() {
             </p>
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-slate-700">
-                <div className="bg-indigo-100 p-1.5 rounded-full"><Smartphone className="w-4 h-4 text-indigo-600" /></div>
+                <div className="bg-emerald-100 p-1.5 rounded-full"><Smartphone className="w-4 h-4 text-primary" /></div>
                 Menghubungkan API XSender (Fonnte/Watzap) Anda sendiri.
               </li>
               <li className="flex items-center gap-3 text-slate-700">
-                <div className="bg-indigo-100 p-1.5 rounded-full"><Send className="w-4 h-4 text-indigo-600" /></div>
+                <div className="bg-emerald-100 p-1.5 rounded-full"><Send className="w-4 h-4 text-primary" /></div>
                 Mengubah isi teks template WhatsApp pendaftaran sesuka hati.
               </li>
             </ul>
             
-            <div className="mt-8 p-6 bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl border border-amber-200">
-              <h3 className="font-bold text-amber-900 mb-2">Tertarik mencoba?</h3>
+            <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200">
+              <h3 className="font-bold text-amber-900 mb-2 font-display">Tertarik mencoba?</h3>
               <p className="text-amber-800 text-sm mb-4">
                 Layanan ini tersedia dengan biaya hanya <strong>Rp 250.000 / Tahun</strong>. Semua fitur premium akan langsung aktif untuk akun Anda.
               </p>
               <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20upgrade%20akun%20Kubah%20Timah%20Events%20saya%20ke%20Premium." target="_blank" rel="noreferrer">
-                <Button className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto">
+                <Button className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto text-white font-bold rounded-xl">
                   Hubungi Admin via WA
                 </Button>
               </a>
@@ -184,7 +184,7 @@ export default function SettingsPage() {
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pusat Notifikasi WhatsApp</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">Pusat Notifikasi WhatsApp</h1>
           <p className="text-sm text-slate-500 mt-1">Atur integrasi API dan template pesan otomatis untuk seluruh sistem.</p>
         </div>
         <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full flex items-center gap-1 border border-amber-200">
@@ -192,27 +192,27 @@ export default function SettingsPage() {
         </span>
       </div>
 
-      <div className="flex space-x-1 bg-slate-100/50 p-1 rounded-xl">
+      <div className="flex space-x-1.5 bg-slate-100/70 p-1.5 rounded-2xl border border-slate-200/60">
         <button
           onClick={() => setActiveTab("api")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
-            activeTab === "api" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-xl transition-all font-display ${
+            activeTab === "api" ? "bg-white text-primary shadow-xs border border-emerald-200" : "text-slate-600 hover:bg-emerald-50/50 hover:text-primary"
           }`}
         >
           <Settings className="w-4 h-4" /> Koneksi API
         </button>
         <button
           onClick={() => setActiveTab("pemohon")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
-            activeTab === "pemohon" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-xl transition-all font-display ${
+            activeTab === "pemohon" ? "bg-white text-primary shadow-xs border border-emerald-200" : "text-slate-600 hover:bg-emerald-50/50 hover:text-primary"
           }`}
         >
           <Users className="w-4 h-4" /> Template Peserta
         </button>
         <button
           onClick={() => setActiveTab("internal")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all ${
-            activeTab === "internal" ? "bg-white text-indigo-700 shadow-sm border border-slate-200" : "text-slate-600 hover:bg-slate-200/50"
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold rounded-xl transition-all font-display ${
+            activeTab === "internal" ? "bg-white text-primary shadow-xs border border-emerald-200" : "text-slate-600 hover:bg-emerald-50/50 hover:text-primary"
           }`}
         >
           <FileText className="w-4 h-4" /> Template Internal
@@ -221,25 +221,25 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSave}>
         {error && (
-          <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 border border-red-200 mb-6">
+          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-200 mb-6">
             {error}
           </div>
         )}
         {success && (
-          <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200 mb-6">
+          <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800 border border-emerald-200 mb-6 font-medium">
             Pengaturan WhatsApp berhasil disimpan!
           </div>
         )}
 
-        <Card className="glass shadow-xl border-t-4 border-t-indigo-500 mb-6">
+        <Card className="bg-white shadow-xs border border-slate-200/80 rounded-2xl overflow-hidden mb-6">
           
           {activeTab === "api" && (
             <>
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-indigo-500" /> Konfigurasi API
+              <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2 font-display text-slate-900">
+                  <KeyRound className="w-5 h-5 text-primary" /> Konfigurasi API
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs">
                   Masukkan kredensial API WhatsApp (XSender) Anda di bawah ini agar pesan terkirim dari nomor Anda.
                 </CardDescription>
               </CardHeader>
@@ -268,17 +268,17 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-slate-100">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                    <FlaskConical className="w-5 h-5 text-indigo-500" /> Uji Coba Kirim Pesan
+                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-4 font-display text-slate-900">
+                    <FlaskConical className="w-5 h-5 text-primary" /> Uji Coba Kirim Pesan
                   </h3>
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4 max-w-lg">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4 max-w-lg">
                     <div className="space-y-2">
                       <Label htmlFor="test_number">Nomor Tujuan</Label>
                       <Input 
                         id="test_number" 
                         value={testNumber} 
                         onChange={(e) => setTestNumber(e.target.value)} 
-                        className="bg-white" 
+                        className="bg-white focus-visible:ring-primary" 
                         placeholder="08123..."
                       />
                     </div>
@@ -289,19 +289,19 @@ export default function SettingsPage() {
                         value={testMessage}
                         onChange={(e) => setTestMessage(e.target.value)}
                         rows={3}
-                        className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                        className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                       />
                     </div>
                     
                     {testResult && (
-                      <div className={`p-3 rounded-md text-sm ${testResult.success ? (testResult.simulated ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-green-100 text-green-800 border-green-200') : 'bg-red-100 text-red-800 border-red-200'} border`}>
+                      <div className={`p-3 rounded-xl text-sm ${testResult.success ? (testResult.simulated ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-green-100 text-green-800 border-green-200') : 'bg-red-100 text-red-800 border-red-200'} border`}>
                         {testResult.success 
                           ? (testResult.simulated ? '✅ Berhasil (Mode Simulasi - API Key tidak diset / gateway tidak ditemukan)' : '✅ Pesan berhasil dikirim via Gateway!') 
                           : `❌ Gagal: ${testResult.error}`}
                       </div>
                     )}
 
-                    <Button type="button" onClick={handleTestSend} disabled={testing} className="w-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
+                    <Button type="button" onClick={handleTestSend} disabled={testing} className="w-full bg-emerald-50 text-primary border border-emerald-200 hover:bg-emerald-100 font-bold rounded-xl font-display">
                       {testing ? "Mengirim..." : "Kirim Pesan Uji Coba"}
                     </Button>
                     <p className="text-xs text-slate-500 text-center mt-2">Pastikan pengaturan API sudah disimpan sebelum melakukan uji coba.</p>
@@ -313,19 +313,19 @@ export default function SettingsPage() {
 
           {activeTab === "pemohon" && (
             <>
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Users className="w-5 h-5 text-indigo-500" /> Pesan ke Pemohon / Peserta
+              <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2 font-display text-slate-900">
+                  <Users className="w-5 h-5 text-primary" /> Pesan ke Pemohon / Peserta
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs">
                   Template notifikasi yang dikirimkan kepada pemohon atau peserta kegiatan.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8">
+              <CardContent className="space-y-8 pt-6">
                 {/* Pendaftaran Sukses */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
-                    <MessageSquare className="w-4 h-4 text-green-500" />
+                    <MessageSquare className="w-4 h-4 text-emerald-600" />
                     <Label htmlFor="wa_message_template" className="font-bold text-base">Pendaftaran / Pembuatan Event Sukses</Label>
                   </div>
                   <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
@@ -334,7 +334,7 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_message_template" name="wa_message_template" rows={6}
                     value={formData.wa_message_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
 
@@ -350,14 +350,14 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_approval_result_template" name="wa_approval_result_template" rows={6}
                     value={formData.wa_approval_result_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
 
                 {/* Reminder H-1 */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
-                    <MessageSquare className="w-4 h-4 text-orange-500" />
+                    <MessageSquare className="w-4 h-4 text-amber-500" />
                     <Label htmlFor="wa_reminder_template" className="font-bold text-base">Pengingat H-1 Acara</Label>
                   </div>
                   <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
@@ -366,7 +366,7 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_reminder_template" name="wa_reminder_template" rows={6}
                     value={formData.wa_reminder_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
               </CardContent>
@@ -375,15 +375,15 @@ export default function SettingsPage() {
 
           {activeTab === "internal" && (
             <>
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-500" /> Pesan Internal / Panitia
+              <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2 font-display text-slate-900">
+                  <FileText className="w-5 h-5 text-primary" /> Pesan Internal / Panitia
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs">
                   Template notifikasi operasional untuk pengelola, pejabat, dan panitia.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8">
+              <CardContent className="space-y-8 pt-6">
                 {/* Permintaan Approval Baru */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
@@ -396,7 +396,7 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_approval_request_template" name="wa_approval_request_template" rows={6}
                     value={formData.wa_approval_request_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
 
@@ -412,14 +412,14 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_approval_reminder_template" name="wa_approval_reminder_template" rows={6}
                     value={formData.wa_approval_reminder_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
 
                 {/* Notulen Selesai */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-3">
-                    <MessageSquare className="w-4 h-4 text-indigo-600" />
+                    <MessageSquare className="w-4 h-4 text-primary" />
                     <Label htmlFor="wa_minutes_template" className="font-bold text-base">Notulen / Laporan Diterbitkan</Label>
                   </div>
                   <CardDescription className="text-xs mb-2 bg-slate-50 p-2 rounded-md border border-slate-100">
@@ -428,15 +428,15 @@ export default function SettingsPage() {
                   <textarea 
                     id="wa_minutes_template" name="wa_minutes_template" rows={6}
                     value={formData.wa_minutes_template} onChange={handleChange} 
-                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="flex w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   />
                 </div>
               </CardContent>
             </>
           )}
 
-          <CardFooter className="bg-slate-50/50 p-6 rounded-b-xl border-t border-slate-100">
-            <Button type="submit" disabled={saving} className="w-full sm:w-auto h-11 px-8 font-semibold bg-indigo-600 hover:bg-indigo-700">
+          <CardFooter className="bg-slate-50/50 p-6 rounded-b-2xl border-t border-slate-100">
+            <Button type="submit" disabled={saving} className="w-full sm:w-auto h-11 px-8 font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl font-display shadow-xs">
               <Send className="w-4 h-4 mr-2" /> {saving ? "Menyimpan..." : "Simpan Semua Pengaturan"}
             </Button>
           </CardFooter>

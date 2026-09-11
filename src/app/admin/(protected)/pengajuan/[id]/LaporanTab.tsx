@@ -131,7 +131,7 @@ export default function LaporanTab({
   return (
     <div className="space-y-6">
       <div className="flex justify-end print:hidden">
-        <Button onClick={handlePrint} className="bg-indigo-600 hover:bg-indigo-700 font-bold gap-2">
+        <Button onClick={handlePrint} className="bg-primary hover:bg-primary-container text-on-primary font-bold gap-2 rounded-xl">
           <Printer className="h-4 w-4" /> Cetak / Simpan PDF
         </Button>
       </div>
@@ -145,13 +145,13 @@ export default function LaporanTab({
         }
       `}} />
 
-      <Card className={`print-container border-0 shadow-none sm:border sm:border-slate-200 sm:shadow-md bg-white overflow-hidden max-w-[800px] mx-auto ${isPublic ? 'mt-8' : ''}`}>
+      <Card className={`print-container border-0 shadow-none sm:border sm:border-slate-200 sm:shadow-md bg-white overflow-hidden max-w-[800px] mx-auto rounded-2xl ${isPublic ? 'mt-8' : ''}`}>
         {/* Privacy Badge */}
         {!isPublic && notulen.privacy_level && (
           <div className="print:hidden absolute top-0 right-0 m-4">
             <div className={`text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 ${
               notulen.privacy_level === 'public' ? 'bg-blue-100 text-blue-700' :
-              notulen.privacy_level === 'internal' ? 'bg-indigo-100 text-indigo-700' :
+              notulen.privacy_level === 'internal' ? 'bg-emerald-100 text-emerald-800' :
               notulen.privacy_level === 'restricted' ? 'bg-amber-100 text-amber-700' :
               'bg-red-100 text-red-700'
             }`}>

@@ -798,7 +798,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
       </div>
     )
   }
@@ -826,7 +826,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <Link href="/admin/pengajuan">
-            <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg hover:bg-indigo-50 border-slate-200">
+            <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg hover:bg-emerald-50 border-slate-200">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
@@ -838,7 +838,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 {activeStatus.label}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-0.5 truncate max-w-[300px] sm:max-w-[500px]">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-0.5 truncate max-w-[300px] sm:max-w-[500px] font-display">
               {pengajuan.nama_event}
             </h1>
           </div>
@@ -847,7 +847,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         {/* Escalate button only if approved */}
         {pengajuan.status === 'approved' && (
           <Link href={escalateToEventUrl}>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 shadow-md font-semibold text-xs sm:text-sm gap-2">
+            <Button className="bg-primary hover:bg-primary-container text-on-primary font-bold shadow-md text-xs sm:text-sm gap-2 rounded-xl">
               <ExternalLink className="h-4 w-4" /> Teruskan ke MAKT Event
             </Button>
           </Link>
@@ -860,17 +860,17 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         <div className="lg:col-span-2 space-y-6">
           
           {/* Card 1: Data Pemohon */}
-          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
-            <div className="h-1 bg-indigo-500" />
+          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden rounded-2xl">
+            <div className="h-1 bg-primary" />
             <CardHeader className="pb-3 flex flex-row items-start justify-between">
               <div>
-                <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
-                  <User className="h-4.5 w-4.5 text-indigo-600" /> Informasi Pemohon
+                <CardTitle className="text-base font-bold flex items-center gap-2 text-slate-900 font-display">
+                  <User className="h-4.5 w-4.5 text-primary" /> Informasi Pemohon
                 </CardTitle>
                 <CardDescription className="text-xs mt-1">Informasi identitas penanggungjawab peminjam</CardDescription>
               </div>
               {isSuperAdminUser && !isEditingPemohon && (
-                <Button size="sm" variant="outline" className="h-8 text-xs text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => {
+                <Button size="sm" variant="outline" className="h-8 text-xs text-primary border-emerald-300 hover:bg-emerald-50 rounded-lg" onClick={() => {
                   setEditPemohon({
                     nama_pemohon: pengajuan.nama_pemohon,
                     tipe_pemohon: pengajuan.tipe_pemohon,
@@ -887,7 +887,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm pt-2">
               {isEditingPemohon ? (
-                <div className="col-span-1 sm:col-span-2 space-y-4 bg-indigo-50/50 p-4 rounded-lg border border-indigo-100/50">
+                <div className="col-span-1 sm:col-span-2 space-y-4 bg-emerald-50/30 p-4 rounded-xl border border-emerald-100">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Pemohon</Label>
@@ -896,7 +896,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <div className="space-y-1.5">
                       <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Tipe Pemohon</Label>
                       <select 
-                        className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" 
+                        className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary" 
                         value={editPemohon.tipe_pemohon || ''} 
                         onChange={e => setEditPemohon({...editPemohon, tipe_pemohon: e.target.value as any})}
                       >
@@ -920,12 +920,12 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </div>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Alamat Lengkap</Label>
-                      <textarea value={editPemohon.alamat || ''} onChange={e => setEditPemohon({...editPemohon, alamat: e.target.value})} className="flex min-h-[60px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" />
+                      <textarea value={editPemohon.alamat || ''} onChange={e => setEditPemohon({...editPemohon, alamat: e.target.value})} className="flex min-h-[60px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary" />
                     </div>
                   </div>
                   <div className="flex gap-2 justify-end pt-2">
                     <Button variant="ghost" size="sm" onClick={() => setIsEditingPemohon(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
-                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
+                    <Button size="sm" className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                       setUpdating(true)
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editPemohon).eq("id", pengajuan.id)
@@ -966,7 +966,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <a 
                       href={`https://wa.me/${(pengajuan.whatsapp || '').replace(/[^0-9]/g, '')}`} 
                       target="_blank" 
-                      className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
+                      className="font-semibold text-primary hover:underline flex items-center gap-1"
                     >
                       <Phone className="h-3.5 w-3.5" />
                       {pengajuan.whatsapp}
@@ -976,7 +976,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <span className="text-xs text-slate-400 font-semibold block uppercase">Alamat Email</span>
                     <a 
                       href={`mailto:${pengajuan.email}`} 
-                      className="font-semibold text-indigo-600 hover:underline flex items-center gap-1"
+                      className="font-semibold text-primary hover:underline flex items-center gap-1"
                     >
                       <Mail className="h-3.5 w-3.5" />
                       {pengajuan.email}
@@ -998,13 +998,13 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             <div className="h-1 bg-blue-500" />
             <CardHeader className="pb-3 flex flex-row items-start justify-between">
               <div>
-                <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
-                  <Calendar className="h-4.5 w-4.5 text-blue-600" /> Rincian Event & Fasilitas
+                <CardTitle className="text-base font-bold flex items-center gap-2 text-slate-900 font-display">
+                  <Calendar className="h-4.5 w-4.5 text-primary" /> Rincian Event & Fasilitas
                 </CardTitle>
                 <CardDescription className="text-xs mt-1">Informasi lengkap agenda dan fasilitas yang dipinjam</CardDescription>
               </div>
               {isSuperAdminUser && !isEditingEvent && (
-                <Button size="sm" variant="outline" className="h-8 text-xs text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => {
+                <Button size="sm" variant="outline" className="h-8 text-xs text-primary border-emerald-300 hover:bg-emerald-50 rounded-lg" onClick={() => {
                   setEditEvent({
                     nama_event: pengajuan.nama_event,
                     jenis_event: pengajuan.jenis_event,
@@ -1019,7 +1019,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
             </CardHeader>
             <CardContent className="space-y-4 pt-2 text-sm">
               {isEditingEvent ? (
-                <div className="space-y-4 bg-blue-50/50 p-4 rounded-lg border border-blue-100/50">
+                <div className="space-y-4 bg-emerald-50/30 p-4 rounded-xl border border-emerald-100">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Nama Event</Label>
@@ -1035,12 +1035,12 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </div>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Deskripsi Kegiatan</Label>
-                      <textarea value={editEvent.deskripsi_kegiatan || ''} onChange={e => setEditEvent({...editEvent, deskripsi_kegiatan: e.target.value})} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500" />
+                      <textarea value={editEvent.deskripsi_kegiatan || ''} onChange={e => setEditEvent({...editEvent, deskripsi_kegiatan: e.target.value})} className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary" />
                     </div>
                   </div>
                   <div className="flex gap-2 justify-end pt-2">
                     <Button variant="ghost" size="sm" onClick={() => setIsEditingEvent(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
-                    <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
+                    <Button size="sm" className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                       setUpdating(true)
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editEvent).eq("id", pengajuan.id)
@@ -1058,24 +1058,25 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Event</span>
-                    <span className="font-bold text-slate-800 capitalize">{pengajuan.nama_event}</span>
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Nama Event</span>
+                      <span className="font-semibold text-slate-800 capitalize">{pengajuan.nama_event}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Jenis Event</span>
+                      <span className="font-semibold text-slate-800 capitalize">{pengajuan.jenis_event}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-xs text-slate-400 font-semibold block uppercase">Estimasi Peserta</span>
+                      <span className="font-semibold text-slate-800 flex items-center gap-1">
+                        <Users className="h-4 w-4 text-slate-400" />
+                        {pengajuan.estimasi_peserta ? `${pengajuan.estimasi_peserta} Orang` : "-"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-xs text-slate-400 font-semibold block uppercase">Jenis Event</span>
-                    <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs inline-block mt-0.5">{pengajuan.jenis_event}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-xs text-slate-400 font-semibold block uppercase">Estimasi Peserta</span>
-                    <span className="font-semibold text-slate-800">{pengajuan.estimasi_peserta} Orang</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-xs text-slate-400 font-semibold block uppercase">Waktu Pengajuan Dibuat</span>
-                    <span className="font-semibold text-slate-800">{formatDate(pengajuan.created_at)}</span>
-                  </div>
-                </div>
+                </>
               )}
 
               {/* Detail Khusus Kajian/Tabligh Akbar */}
@@ -1096,7 +1097,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                           setEditJudulVal(pengajuan.judul_kajian || "")
                           setIsEditingKajian(true)
                         }} 
-                        className="text-xs text-indigo-600 hover:underline ml-auto"
+                        className="text-xs text-primary hover:underline ml-auto font-semibold"
                       >
                         Edit Detail
                       </button>
@@ -1149,7 +1150,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                             setIsEditingKajian(false)
                           }}
                           disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
-                          className="bg-indigo-600 hover:bg-indigo-700"
+                          className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl"
                         >
                           {updating ? "Menyimpan..." : "Simpan Perubahan"}
                         </Button>
@@ -1183,7 +1184,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         })
                         setIsEditingJadwal(true)
                       }} 
-                      className="text-xs text-indigo-600 hover:underline flex items-center gap-1"
+                      className="text-xs text-primary hover:underline flex items-center gap-1 font-semibold"
                     >
                       <Edit3 className="h-3 w-3" /> Edit Jadwal
                     </button>
@@ -1214,7 +1215,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     </div>
                     <div className="flex gap-2 justify-end">
                       <Button variant="ghost" size="sm" onClick={() => setIsEditingJadwal(false)} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}>Batal</Button>
-                      <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
+                      <Button size="sm" className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl" disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} onClick={async () => {
                         setUpdating(true)
                         try {
                           const isoMulai = new Date(`${editJadwal.tanggal_mulai}:00+07:00`).toISOString()
@@ -1268,12 +1269,12 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 {isEditingTujuan ? (
                   <div className="flex gap-2 items-start mt-1">
                     <textarea 
-                      className="w-full text-sm p-2 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[60px]" 
+                      className="w-full text-sm p-2 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]" 
                       value={editTujuanVal} 
                       onChange={(e) => setEditTujuanVal(e.target.value)} 
                     />
                     <div className="flex flex-col gap-1">
-                      <Button size="sm" onClick={handleSaveTujuan} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} className="bg-indigo-600 hover:bg-indigo-700 text-white h-7 text-[10px]">Simpan</Button>
+                      <Button size="sm" onClick={handleSaveTujuan} disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined} className="bg-primary hover:bg-primary-container text-on-primary font-bold h-7 text-[10px] rounded-lg">Simpan</Button>
                       <Button size="sm" variant="outline" onClick={() => setIsEditingTujuan(false)} className="h-7 text-[10px]">Batal</Button>
                     </div>
                   </div>
@@ -1288,7 +1289,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         onClick={() => { setEditTujuanVal(pengajuan.tujuan_peminjaman); setIsEditingTujuan(true); }}
                         title="Edit Tujuan Peminjaman"
                       >
-                        <Edit3 className="h-3 w-3 text-slate-400 hover:text-indigo-600" />
+                        <Edit3 className="h-3 w-3 text-slate-400 hover:text-primary" />
                       </Button>
                     )}
                   </div>
@@ -1308,8 +1309,8 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 <span className="text-xs text-slate-400 font-semibold block uppercase">Fasilitas / Area Masjid yang Dipinjam</span>
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {(pengajuan.area_fasilitas || []).map((f, idx) => (
-                    <span key={idx} className="bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1">
-                      <MapPin className="h-3 w-3 text-indigo-500" />
+                    <span key={idx} className="bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-xs px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1">
+                      <MapPin className="h-3 w-3 text-primary" />
                       {f}
                     </span>
                   ))}
@@ -1337,10 +1338,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
           </Card>
 
           {/* Card 3: Lampiran Dokumen */}
-          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden rounded-2xl">
             <div className="h-1 bg-cyan-500" />
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2 text-indigo-950">
+              <CardTitle className="text-base font-bold flex items-center gap-2 text-slate-900 font-display">
                 <FileText className="h-4.5 w-4.5 text-cyan-600" /> Lampiran Surat & Proposal
               </CardTitle>
               <CardDescription className="text-xs">Dokumen pendukung untuk memverifikasi keabsahan kegiatan</CardDescription>
@@ -1349,7 +1350,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
               {/* Surat Peminjaman */}
               <div className="border border-slate-100 bg-slate-50/50 p-4 rounded-xl flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <FileText className="h-8 w-8 text-indigo-500/80 flex-shrink-0" />
+                  <FileText className="h-8 w-8 text-primary flex-shrink-0" />
                   <div className="min-w-0">
                     <h5 className="text-xs font-bold text-slate-800 truncate">Surat Peminjaman</h5>
                     <p className="text-[10px] text-slate-400">
@@ -1512,10 +1513,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         <div className="space-y-6">
           
           {/* Card 4: Action Workflow */}
-          <Card className="border border-indigo-200/80 shadow-md bg-white overflow-hidden">
-            <CardHeader className="bg-indigo-50/40 border-b border-indigo-100 pb-3">
-              <CardTitle className="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
-                <Edit3 className="h-4 w-4 text-indigo-600" /> Aksi Workflow Pengajuan
+          <Card className="border border-emerald-200/80 shadow-md bg-white overflow-hidden rounded-2xl">
+            <CardHeader className="bg-emerald-50/50 border-b border-emerald-100 pb-3">
+              <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-1.5 font-display">
+                <Edit3 className="h-4 w-4 text-primary" /> Aksi Workflow Pengajuan
               </CardTitle>
             </CardHeader>
             <CardContent className="p-5 space-y-4">
@@ -1527,7 +1528,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                 </span>
                 {['submitted', 'under_review', 'revision_requested'].includes(pengajuan.status) && allWorkflowSteps.length > 0 && (
                   <div className="text-[10px] text-slate-500 font-semibold mt-1">
-                    Urutan Aktif: <span className="text-indigo-600">Level {pengajuan.current_approval_level} - {getStepName()}</span>
+                    Urutan Aktif: <span className="text-primary font-bold">Level {pengajuan.current_approval_level} - {getStepName()}</span>
                   </div>
                 )}
               </div>
@@ -1544,7 +1545,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     <Button 
                       onClick={() => triggerStatusChange('approved')} 
                       disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
-                      className="bg-green-600 hover:bg-green-700 h-10 font-bold text-xs"
+                      className="bg-primary hover:bg-primary-container text-on-primary h-10 font-bold text-xs rounded-xl"
                     >
                       Setujui (Approve) Level ini
                     </Button>
@@ -1552,7 +1553,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       onClick={() => triggerStatusChange('revision_requested', true)} 
                       disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                       variant="outline"
-                      className="h-10 font-bold text-xs text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
+                      className="h-10 font-bold text-xs text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 rounded-xl"
                     >
                       Minta Revisi Dokumen
                     </Button>
@@ -1560,7 +1561,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       onClick={() => triggerStatusChange('rejected', true)} 
                       disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                       variant="destructive"
-                      className="h-10 font-semibold text-xs"
+                      className="h-10 font-semibold text-xs rounded-xl"
                     >
                       Tolak (Reject) Pengajuan
                     </Button>
@@ -1583,7 +1584,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   <Button 
                     onClick={handleResubmit} 
                     disabled={updating}
-                    className="bg-indigo-600 hover:bg-indigo-700 h-10 font-bold text-xs text-white"
+                    className="bg-primary hover:bg-primary-container text-on-primary h-10 font-bold text-xs rounded-xl font-display"
                   >
                     Ajukan Kembali setelah Revisi
                   </Button>
@@ -1595,7 +1596,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                     onClick={() => triggerStatusChange('cancelled')} 
                     disabled={updating}
                     variant="ghost"
-                    className="h-9 font-medium text-xs text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                    className="h-9 font-medium text-xs text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl"
                   >
                     Batalkan Pengajuan
                   </Button>
@@ -1618,7 +1619,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       onClick={() => triggerStatusChange('cancelled')} 
                       disabled={updating}
                       variant="outline"
-                      className="w-full h-9 font-bold text-xs text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                      className="w-full h-9 font-bold text-xs text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl"
                     >
                       Batalkan Persetujuan & Event
                     </Button>
@@ -1630,7 +1631,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
           {/* Reason Input Modal (Inline overlay for Rejection / Revision reason) */}
           {showReasonInput && (
-            <Card className="border border-orange-300 shadow-lg bg-orange-50/20">
+            <Card className="border border-orange-300 shadow-lg bg-orange-50/20 rounded-2xl">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xs font-bold text-slate-800 uppercase tracking-wide">
                   Tulis Catatan / Alasan {targetStatus === 'rejected' ? 'Penolakan' : 'Revisi'}
@@ -1641,11 +1642,11 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   value={statusReason}
                   onChange={e => setStatusReason(e.target.value)}
                   placeholder={`Tulis alasan ${targetStatus === 'rejected' ? 'penolakan' : 'revisi dokumen'} agar pemohon dapat mengetahuinya...`}
-                  className="flex min-h-[90px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex min-h-[90px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 <div className="flex justify-end gap-1.5 text-xs">
-                  <Button variant="outline" size="sm" onClick={() => setShowReasonInput(false)} className="h-8 text-xs">Batal</Button>
-                  <Button onClick={handleReasonSubmit} className="bg-indigo-600 hover:bg-indigo-700 h-8 text-xs font-semibold text-white">Kirim & Ubah Status</Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowReasonInput(false)} className="h-8 text-xs rounded-lg">Batal</Button>
+                  <Button onClick={handleReasonSubmit} className="bg-primary hover:bg-primary-container text-on-primary h-8 text-xs font-bold rounded-lg">Kirim & Ubah Status</Button>
                 </div>
               </CardContent>
             </Card>
@@ -1657,10 +1658,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
 
           {/* Card 5: Catatan Persetujuan Pejabat (Berjenjang) */}
           {approvalsList.length > 0 && (
-            <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+            <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden rounded-2xl">
               <CardHeader className="pb-2 border-b border-slate-100">
-                <CardTitle className="text-xs font-bold text-slate-800 flex items-center gap-1">
-                  <Award className="h-4.5 w-4.5 text-indigo-600" /> Catatan Persetujuan Pejabat
+                <CardTitle className="text-xs font-bold text-slate-800 flex items-center gap-1 font-display">
+                  <Award className="h-4.5 w-4.5 text-primary" /> Catatan Persetujuan Pejabat
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-3">
@@ -1684,10 +1685,10 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
           )}
 
           {/* Card 6: Catatan Admin & Privacy */}
-          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden rounded-2xl">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                <Shield className="h-4 w-4 text-indigo-600" /> Catatan Admin & Privasi
+              <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5 font-display">
+                <Shield className="h-4 w-4 text-primary" /> Catatan Admin & Privasi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1702,7 +1703,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       value="detail_publik"
                       checked={privacyEvent === 'detail_publik'}
                       onChange={() => setPrivacyEvent('detail_publik')}
-                      className="text-indigo-600 focus:ring-indigo-500" 
+                      className="text-primary focus:ring-primary accent-primary" 
                     />
                     <span>Detail Publik (Tampilkan di Kalender)</span>
                   </label>
@@ -1713,7 +1714,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       value="publik_terbatas"
                       checked={privacyEvent === 'publik_terbatas'}
                       onChange={() => setPrivacyEvent('publik_terbatas')}
-                      className="text-indigo-600 focus:ring-indigo-500" 
+                      className="text-primary focus:ring-primary accent-primary" 
                     />
                     <span>Khusus Internal (Tampil di Kalender dengan Label &quot;Internal / Undangan&quot;)</span>
                   </label>
@@ -1724,7 +1725,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       value="umum_saja"
                       checked={privacyEvent === 'umum_saja'}
                       onChange={() => setPrivacyEvent('umum_saja')}
-                      className="text-indigo-600 focus:ring-indigo-500" 
+                      className="text-primary focus:ring-primary accent-primary" 
                     />
                     <span>Umum Saja (Tampilkan Anonim / &quot;Ada Kegiatan di MAKT&quot;)</span>
                   </label>
@@ -1735,7 +1736,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       value="rahasia"
                       checked={privacyEvent === 'rahasia'}
                       onChange={() => setPrivacyEvent('rahasia')}
-                      className="text-indigo-600 focus:ring-indigo-500" 
+                      className="text-primary focus:ring-primary accent-primary" 
                     />
                     <span>Rahasia (Hanya Admin / Pengelola)</span>
                   </label>
@@ -1750,14 +1751,14 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                   value={catatanAdmin}
                   onChange={e => setCatatanAdmin(e.target.value)}
                   placeholder="Masukkan catatan internal untuk sesama admin (opsional)..."
-                  className="flex min-h-[90px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex min-h-[90px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
               <Button 
                 onClick={handleSaveNotes} 
                 disabled={updating}
-                className="w-full bg-slate-800 hover:bg-slate-900 h-9 font-semibold text-xs text-white"
+                className="w-full bg-primary hover:bg-primary-container text-on-primary h-9 font-bold text-xs rounded-xl"
               >
                 {updating ? "Menyimpan..." : "Simpan Catatan & Privasi"}
               </Button>

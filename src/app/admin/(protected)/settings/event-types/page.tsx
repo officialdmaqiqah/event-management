@@ -341,20 +341,20 @@ export default function EventTypesSettingsPage() {
         
         {/* Left Grid: Event Types List (3 Columns) */}
         <div className="lg:col-span-3 space-y-6">
-          <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-3 flex flex-row items-center justify-between gap-4">
+          <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl overflow-hidden">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between gap-4 border-b border-slate-100 bg-slate-50/50">
               <div>
-                <CardTitle className="text-base font-bold text-slate-800">Daftar Klasifikasi Event</CardTitle>
+                <CardTitle className="text-base font-bold text-slate-900 font-display">Daftar Klasifikasi Event</CardTitle>
                 <CardDescription className="text-xs">Klik salah satu baris untuk mengonfigurasi workflow approval</CardDescription>
               </div>
-              <Button size="sm" onClick={openCreateTypeModal} className="h-8 bg-indigo-600 hover:bg-indigo-700 text-xs gap-1 font-semibold">
+              <Button size="sm" onClick={openCreateTypeModal} className="h-8 bg-primary hover:bg-primary-container text-on-primary text-xs gap-1 font-bold rounded-xl font-display">
                 <Plus className="h-4 w-4" /> Tambah Jenis
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               {loading ? (
                 <div className="flex justify-center items-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
                 </div>
               ) : eventTypes.length === 0 ? (
                 <p className="text-slate-400 text-center py-12 text-sm">Belum ada jenis event di database.</p>
@@ -377,7 +377,7 @@ export default function EventTypesSettingsPage() {
                             key={type.id} 
                             onClick={() => setSelectedType(type)}
                             className={`cursor-pointer hover:bg-slate-50/50 transition-colors ${
-                              isSelected ? 'bg-indigo-50/40 hover:bg-indigo-50/60' : ''
+                              isSelected ? 'bg-emerald-50/60 hover:bg-emerald-50/80' : ''
                             }`}
                           >
                             <TableCell className="font-semibold text-slate-800">
@@ -405,7 +405,7 @@ export default function EventTypesSettingsPage() {
                                 <Button 
                                   variant="ghost" 
                                   size="icon" 
-                                  className="h-8 w-8 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50"
+                                  className="h-8 w-8 text-slate-500 hover:text-primary hover:bg-emerald-50 rounded-lg"
                                   onClick={() => openEditTypeModal(type)}
                                 >
                                   <Edit2 className="h-4 w-4" />
@@ -413,7 +413,7 @@ export default function EventTypesSettingsPage() {
                                 <Button 
                                   variant="ghost" 
                                   size="icon" 
-                                  className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg"
                                   onClick={() => confirmDeleteType(type.id, type.name)}
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -434,14 +434,14 @@ export default function EventTypesSettingsPage() {
         {/* Right Grid: Selected Type Workflow configuration (2 Columns) */}
         <div className="lg:col-span-2 space-y-6">
           {selectedType ? (
-            <Card className="border border-indigo-200 shadow-md bg-white overflow-hidden animate-fadeIn">
-              <div className="bg-indigo-50/50 p-4 border-b border-indigo-100 flex items-center justify-between gap-4">
+            <Card className="border border-emerald-200 shadow-xs bg-white rounded-2xl overflow-hidden animate-fadeIn">
+              <div className="bg-emerald-50/60 p-4 border-b border-emerald-100 flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <span className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider block">Workflow Approval</span>
-                  <h3 className="font-bold text-indigo-950 truncate text-base">{selectedType.name}</h3>
+                  <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider block">Workflow Approval</span>
+                  <h3 className="font-bold text-slate-900 truncate text-base font-display">{selectedType.name}</h3>
                 </div>
                 {selectedType.needs_approval ? (
-                  <Button size="sm" onClick={openAddStepForm} className="h-8 bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold gap-1">
+                  <Button size="sm" onClick={openAddStepForm} className="h-8 bg-primary hover:bg-primary-container text-on-primary text-xs font-bold gap-1 rounded-xl font-display">
                     <Plus className="h-4 w-4" /> Tambah Level
                   </Button>
                 ) : null}
@@ -462,13 +462,13 @@ export default function EventTypesSettingsPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="relative pl-6 border-l-2 border-indigo-100 space-y-5 ml-2">
+                  <div className="relative pl-6 border-l-2 border-emerald-200 space-y-5 ml-2">
                     {workflowSteps.map((step) => {
                       const userObj = users.find(u => u.user_id === step.user_id)
                       return (
                         <div key={step.id} className="relative">
                           {/* Indicator Level dot */}
-                          <span className="absolute -left-[31px] top-1.5 h-4.5 w-4.5 rounded-full bg-indigo-600 text-white font-bold text-[9px] flex items-center justify-center border-2 border-white ring-2 ring-indigo-50">
+                          <span className="absolute -left-[31px] top-1.5 h-4.5 w-4.5 rounded-full bg-primary text-on-primary font-bold text-[9px] flex items-center justify-center border-2 border-white ring-2 ring-emerald-100">
                             {step.level}
                           </span>
 
@@ -492,7 +492,7 @@ export default function EventTypesSettingsPage() {
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0 rounded-lg"
                               onClick={() => executeDeleteStep(step.id)}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -506,9 +506,9 @@ export default function EventTypesSettingsPage() {
               </CardContent>
             </Card>
           ) : (
-            <Card className="border border-slate-200 bg-slate-50/50 p-8 text-center text-slate-400 h-full flex flex-col items-center justify-center min-h-[200px]">
+            <Card className="border border-slate-200/80 bg-white p-8 text-center text-slate-400 h-full flex flex-col items-center justify-center min-h-[200px] rounded-2xl">
               <Layers className="h-10 w-10 text-slate-300 mb-3" />
-              <p className="font-semibold text-slate-700 text-xs">Konfigurasi Workflow Approval</p>
+              <p className="font-semibold text-slate-700 text-xs font-display">Konfigurasi Workflow Approval</p>
               <p className="text-[10px] text-slate-400 mt-1 max-w-[250px]">Pilih salah satu klasifikasi event di sebelah kiri untuk melihat dan menyusun workflow approval berjenjang.</p>
             </Card>
           )}
@@ -519,10 +519,10 @@ export default function EventTypesSettingsPage() {
       {/* ================= MODAL EDIT/TAMBAH EVENT TYPE ================= */}
       {isEditingType && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="max-w-md w-full shadow-2xl border-0 bg-white">
+          <Card className="max-w-md w-full shadow-2xl border-0 bg-white rounded-2xl overflow-hidden">
             <CardHeader className="pb-4 border-b border-slate-100">
-              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-1.5">
-                <Settings className="h-4.5 w-4.5 text-indigo-600" />
+              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-1.5 font-display">
+                <Settings className="h-4.5 w-4.5 text-primary" />
                 {typeForm.id ? "Edit Jenis Event" : "Tambah Jenis Event Baru"}
               </CardTitle>
             </CardHeader>
@@ -536,6 +536,7 @@ export default function EventTypesSettingsPage() {
                     value={typeForm.name} 
                     onChange={e => setTypeForm(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="Contoh: Rapat Pengurus, Kajian Akbar"
+                    className="focus-visible:ring-primary"
                     required
                   />
                 </div>
@@ -547,7 +548,7 @@ export default function EventTypesSettingsPage() {
                     id="default-privacy"
                     value={typeForm.default_privacy}
                     onChange={e => setTypeForm(prev => ({ ...prev, default_privacy: e.target.value as any }))}
-                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option value="detail_publik">Detail Publik (Tampil Penuh)</option>
                     <option value="umum_saja">Umum Saja (Tampil Anonim)</option>
@@ -556,7 +557,7 @@ export default function EventTypesSettingsPage() {
                 </div>
 
                 {/* Needs Approval Toggle */}
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <Label className="text-xs font-bold text-slate-800">Butuh Approval?</Label>
                     <p className="text-[10px] text-slate-400">Peminjaman harus disetujui pejabat</p>
@@ -565,12 +566,12 @@ export default function EventTypesSettingsPage() {
                     type="checkbox" 
                     checked={typeForm.needs_approval} 
                     onChange={e => setTypeForm(prev => ({ ...prev, needs_approval: e.target.checked }))}
-                    className="h-4.5 w-4.5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                    className="h-4.5 w-4.5 text-emerald-600 focus:ring-primary border-slate-300 rounded cursor-pointer"
                   />
                 </div>
 
                 {/* Enable Notulen Toggle */}
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <Label className="text-xs font-bold text-slate-800">Fitur Notulen</Label>
                     <p className="text-[10px] text-slate-400">Aktifkan pencatatan notulen rapat</p>
@@ -579,12 +580,12 @@ export default function EventTypesSettingsPage() {
                     type="checkbox" 
                     checked={typeForm.enable_notulen} 
                     onChange={e => setTypeForm(prev => ({ ...prev, enable_notulen: e.target.checked }))}
-                    className="h-4.5 w-4.5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                    className="h-4.5 w-4.5 text-emerald-600 focus:ring-primary border-slate-300 rounded cursor-pointer"
                   />
                 </div>
 
                 {/* Enable Absensi Toggle */}
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <Label className="text-xs font-bold text-slate-800">Fitur Absensi</Label>
                     <p className="text-[10px] text-slate-400">Aktifkan pendaftaran & QR check-in</p>
@@ -593,12 +594,12 @@ export default function EventTypesSettingsPage() {
                     type="checkbox" 
                     checked={typeForm.enable_absensi} 
                     onChange={e => setTypeForm(prev => ({ ...prev, enable_absensi: e.target.checked }))}
-                    className="h-4.5 w-4.5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                    className="h-4.5 w-4.5 text-emerald-600 focus:ring-primary border-slate-300 rounded cursor-pointer"
                   />
                 </div>
 
                 {/* Active status */}
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <Label className="text-xs font-bold text-slate-800">Status Aktif</Label>
                     <p className="text-[10px] text-slate-400">Tampilkan jenis event di form pengajuan</p>
@@ -607,13 +608,13 @@ export default function EventTypesSettingsPage() {
                     type="checkbox" 
                     checked={typeForm.is_active} 
                     onChange={e => setTypeForm(prev => ({ ...prev, is_active: e.target.checked }))}
-                    className="h-4.5 w-4.5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                    className="h-4.5 w-4.5 text-emerald-600 focus:ring-primary border-slate-300 rounded cursor-pointer"
                   />
                 </div>
               </CardContent>
               <div className="flex justify-end gap-2 p-4 border-t border-slate-100 text-xs">
-                <Button type="button" variant="outline" size="sm" onClick={() => setIsEditingType(false)}>Batal</Button>
-                <Button type="submit" disabled={saving} className="bg-indigo-600 hover:bg-indigo-700 text-white" size="sm">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsEditingType(false)} className="rounded-xl">Batal</Button>
+                <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display" size="sm">
                   {saving ? "Menyimpan..." : "Simpan Jenis Event"}
                 </Button>
               </div>
@@ -625,10 +626,10 @@ export default function EventTypesSettingsPage() {
       {/* ================= MODAL TAMBAH WORKFLOW STEP ================= */}
       {isAddingStep && selectedType && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="max-w-md w-full shadow-2xl border-0 bg-white">
+          <Card className="max-w-md w-full shadow-2xl border-0 bg-white rounded-2xl overflow-hidden">
             <CardHeader className="pb-4 border-b border-slate-100">
-              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-1.5">
-                <Layers className="h-4.5 w-4.5 text-indigo-600" />
+              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-1.5 font-display">
+                <Layers className="h-4.5 w-4.5 text-primary" />
                 Tambah Tingkatan Approval - {selectedType.name}
               </CardTitle>
             </CardHeader>
@@ -643,6 +644,7 @@ export default function EventTypesSettingsPage() {
                     min="1"
                     value={stepForm.level} 
                     onChange={e => setStepForm(prev => ({ ...prev, level: parseInt(e.target.value) || 1 }))}
+                    className="focus-visible:ring-primary"
                     required
                   />
                 </div>
@@ -655,6 +657,7 @@ export default function EventTypesSettingsPage() {
                     value={stepForm.jabatan} 
                     onChange={e => setStepForm(prev => ({ ...prev, jabatan: e.target.value }))}
                     placeholder="Contoh: Sekretaris, Ketua, Kepala Divisi"
+                    className="focus-visible:ring-primary"
                     required
                   />
                   <p className="text-[10px] text-slate-400">Pengguna dengan Jabatan yang sama pada profilnya yang akan dapat menyetujui level ini.</p>
@@ -667,7 +670,7 @@ export default function EventTypesSettingsPage() {
                     id="step-user"
                     value={stepForm.user_id}
                     onChange={e => setStepForm(prev => ({ ...prev, user_id: e.target.value }))}
-                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option value="">-- Semua Pengguna Dengan Jabatan Diatas --</option>
                     {users.map(u => (
@@ -679,7 +682,7 @@ export default function EventTypesSettingsPage() {
                 </div>
 
                 {/* Mandatory Checkbox */}
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                   <div>
                     <Label className="text-xs font-bold text-slate-800">Level Wajib?</Label>
                     <p className="text-[10px] text-slate-400">Mencegah pelewatan tingkatan approval</p>
@@ -688,13 +691,13 @@ export default function EventTypesSettingsPage() {
                     type="checkbox" 
                     checked={stepForm.is_mandatory} 
                     onChange={e => setStepForm(prev => ({ ...prev, is_mandatory: e.target.checked }))}
-                    className="h-4.5 w-4.5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                    className="h-4.5 w-4.5 text-emerald-600 focus:ring-primary border-slate-300 rounded cursor-pointer"
                   />
                 </div>
               </CardContent>
               <div className="flex justify-end gap-2 p-4 border-t border-slate-100 text-xs">
-                <Button type="button" variant="outline" size="sm" onClick={() => setIsAddingStep(false)}>Batal</Button>
-                <Button type="submit" disabled={saving} className="bg-indigo-600 hover:bg-indigo-700 text-white" size="sm">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsAddingStep(false)} className="rounded-xl">Batal</Button>
+                <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display" size="sm">
                   {saving ? "Menyimpan..." : "Tambah Level"}
                 </Button>
               </div>

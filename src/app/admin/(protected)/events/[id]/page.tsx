@@ -164,7 +164,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     return new Intl.DateTimeFormat('id-ID', options).format(d).replace('.', ':');
   }
 
-  if (loading) return <div className="p-10 flex min-h-screen items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-650 border-t-transparent" /></div>
+  if (loading) return <div className="p-10 flex min-h-screen items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" /></div>
   
   if (!event) {
     notFound()
@@ -179,61 +179,61 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       {/* Top Header Panel */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div>
-          <span className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold mb-3 border border-indigo-100">
-            <ShieldCheck className="h-3.5 w-3.5" /> Detail Event (Admin Area)
+          <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold mb-3 border border-emerald-200/60 font-display">
+            <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Detail Event (Admin Area)
           </span>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-1">{event.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-1 font-display">{event.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium">
-            <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-indigo-500" /> {getWIBDate(event.start_datetime)}</span>
-            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-indigo-500" /> {event.location}</span>
+            <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-primary" /> {getWIBDate(event.start_datetime)}</span>
+            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-primary" /> {event.location}</span>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <Link href="/admin">
-            <Button variant="outline" className="h-10 text-xs font-semibold">Daftar Event</Button>
+            <Button variant="outline" className="h-10 text-xs font-semibold rounded-xl">Daftar Event</Button>
           </Link>
           <Link href={`/admin/events/${event.id}/edit`}>
-            <Button variant="outline" className="h-10 text-xs font-semibold border-indigo-200 text-indigo-700 hover:bg-indigo-50">Edit Event</Button>
+            <Button variant="outline" className="h-10 text-xs font-semibold border-emerald-300 text-primary hover:bg-emerald-50 rounded-xl">Edit Event</Button>
           </Link>
           <ExportCsvButton participants={participants || []} eventTitle={event.title} eventCustomFields={event.custom_fields || []} />
           <CopyGuestLinkButton slug={event.registration_slug} />
           <Link href={`/admin/events/${event.id}/checkin`}>
-            <Button className="h-10 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white">Mulai Check-in</Button>
+            <Button className="h-10 text-xs font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl font-display">Mulai Check-in</Button>
           </Link>
         </div>
       </div>
 
       {/* Tabs Navigation */}
       <div className="max-w-5xl mx-auto px-0 mb-6">
-        <div className="flex gap-4 sm:gap-6 border-b border-indigo-200 overflow-x-auto bg-white p-4 rounded-2xl shadow-sm border border-indigo-50">
+        <div className="flex gap-4 sm:gap-6 border border-slate-200 overflow-x-auto bg-white p-4 rounded-2xl shadow-sm">
           <button 
             onClick={() => setActiveTab('registrasi')} 
-            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'registrasi' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 font-display ${activeTab === 'registrasi' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <UserPlus className="h-4.5 w-4.5" /> Registrasi
           </button>
           <button 
             onClick={() => setActiveTab('absensi')} 
-            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'absensi' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 font-display ${activeTab === 'absensi' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <UserCheck className="h-4.5 w-4.5" /> Absensi & Scanner
           </button>
           <button 
             onClick={() => setActiveTab('notulen')} 
-            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'notulen' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 font-display ${activeTab === 'notulen' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <FileText className="h-4.5 w-4.5" /> Notulen
           </button>
           <button 
             onClick={() => setActiveTab('dokumentasi')} 
-            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'dokumentasi' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 font-display ${activeTab === 'dokumentasi' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <ImageIcon className="h-4.5 w-4.5" /> Dokumentasi
           </button>
           <button 
             onClick={() => setActiveTab('laporan')} 
-            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'laporan' ? 'border-b-2 border-indigo-600 text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`pb-2 text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 font-display ${activeTab === 'laporan' ? 'border-b-2 border-primary text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <Printer className="h-4.5 w-4.5" /> Laporan
           </button>
@@ -250,8 +250,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                   <div className="space-y-3 flex-1 w-full">
                     <div>
-                      <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                        <LinkIcon className="h-4.5 w-4.5 text-indigo-600" /> Tautan Pendaftaran Peserta (Public)
+                      <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1.5 font-display">
+                        <LinkIcon className="h-4.5 w-4.5 text-primary" /> Tautan Pendaftaran Peserta (Public)
                       </h4>
                       <p className="text-xs text-slate-500">Bagikan tautan ini kepada jamaah/peserta untuk melakukan pendaftaran online.</p>
                     </div>
@@ -264,12 +264,12 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       <div className="flex gap-2">
                         <Button 
                           onClick={handleCopyLink}
-                          className={`h-9 text-xs font-bold ${copied ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-slate-800 hover:bg-slate-900 text-white'}`}
+                          className={`h-9 text-xs font-bold rounded-xl ${copied ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-primary hover:bg-primary-container text-on-primary'}`}
                         >
                           {copied ? "Tersalin!" : "Salin Link"}
                         </Button>
                         <a href={registrationUrl} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-initial">
-                          <Button variant="outline" className="w-full sm:w-auto h-9.5 text-xs font-semibold gap-1">
+                          <Button variant="outline" className="w-full sm:w-auto h-9.5 text-xs font-semibold gap-1 rounded-xl">
                             Buka Form <ExternalLink className="h-3.5 w-3.5" />
                           </Button>
                         </a>
@@ -279,7 +279,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
                   <div className="flex flex-col sm:flex-row items-center gap-4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 w-full md:w-auto justify-end">
                     <div className="text-center sm:text-left">
-                      <h5 className="text-xs font-bold text-slate-700">QR Code Pendaftaran</h5>
+                      <h5 className="text-xs font-bold text-slate-700 font-display">QR Code Pendaftaran</h5>
                       <p className="text-[10px] text-slate-400 mt-0.5">Scan untuk mendaftar di lokasi.</p>
                     </div>
                     <img 
@@ -305,9 +305,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium text-slate-500 mb-1">Total Pendaftar</p>
-                        <h3 className="text-3xl font-bold text-slate-800">{totalRegistered}</h3>
+                        <h3 className="text-3xl font-bold text-slate-800 font-display">{totalRegistered}</h3>
                       </div>
-                      <div className="bg-indigo-50 p-3 rounded-xl"><Users className="h-6 w-6 text-indigo-600" /></div>
+                      <div className="bg-emerald-50 p-3 rounded-xl"><Users className="h-6 w-6 text-primary" /></div>
                     </div>
                   </CardContent>
                 </Card>
@@ -317,7 +317,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               <div className="lg:col-span-3">
                 <Card className="shadow-sm border border-slate-200 rounded-2xl overflow-hidden bg-white">
                   <CardHeader className="bg-white border-b border-slate-100 pb-4">
-                    <CardTitle className="text-sm font-bold text-slate-800">Daftar Pendaftar (Semua Status)</CardTitle>
+                    <CardTitle className="text-sm font-bold text-slate-800 font-display">Daftar Pendaftar (Semua Status)</CardTitle>
                     <CardDescription className="text-xs">Berikut adalah daftar lengkap orang yang telah mengisi form pendaftaran.</CardDescription>
                   </CardHeader>
                   <CardContent className="p-0">
@@ -360,7 +360,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                                       <Button
                                         disabled={processingCheckIn === p.id}
                                         onClick={() => handleCheckInManual(p.id)}
-                                        className="h-8 text-[10px] font-bold bg-indigo-650 hover:bg-indigo-700 text-white"
+                                        className="h-8 text-[10px] font-bold bg-primary hover:bg-primary-container text-on-primary rounded-lg"
                                       >
                                         {processingCheckIn === p.id ? "Memproses..." : "Check-in"}
                                       </Button>
@@ -395,9 +395,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-sm font-medium text-slate-500 mb-1">Telah Hadir (Check-in)</p>
-                      <h3 className="text-3xl font-bold text-emerald-600">{totalAttended}</h3>
+                      <h3 className="text-3xl font-bold text-primary font-display">{totalAttended}</h3>
                     </div>
-                    <div className="bg-emerald-50 p-3 rounded-xl"><UserCheck className="h-6 w-6 text-emerald-600" /></div>
+                    <div className="bg-emerald-50 p-3 rounded-xl"><UserCheck className="h-6 w-6 text-primary" /></div>
                   </div>
                 </CardContent>
               </Card>
@@ -407,16 +407,16 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-sm font-medium text-slate-500 mb-1">Belum Hadir</p>
-                      <h3 className="text-3xl font-bold text-slate-700">{totalPending}</h3>
+                      <h3 className="text-3xl font-bold text-slate-700 font-display">{totalPending}</h3>
                     </div>
                     <div className="bg-slate-100 p-3 rounded-xl"><Users className="h-6 w-6 text-slate-400" /></div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-sm border border-indigo-150 rounded-2xl overflow-hidden bg-indigo-50/10 flex flex-col justify-center p-5">
+              <Card className="shadow-sm border border-slate-200 rounded-2xl overflow-hidden bg-emerald-50/20 flex flex-col justify-center p-5">
                 <Link href={`/admin/events/${event.id}/checkin`} className="w-full">
-                  <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-md shadow-emerald-900/10 flex items-center justify-center gap-2 transition-all text-xs sm:text-sm">
+                  <button className="w-full bg-primary hover:bg-primary-container text-on-primary py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2 transition-all text-xs sm:text-sm font-display">
                     <Camera className="h-4.5 w-4.5" /> Buka Scanner Tiket QR
                   </button>
                 </Link>
@@ -424,16 +424,16 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             </div>
 
             {/* Attendance Title and Add Form toggle */}
-            <div className="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+            <div className="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
               <div>
-                <h3 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                  <UserCheck className="h-4.5 w-4.5 text-emerald-600" /> Peserta Telah Hadir (Checked-in)
+                <h3 className="font-bold text-slate-800 text-sm flex items-center gap-1.5 font-display">
+                  <UserCheck className="h-4.5 w-4.5 text-primary" /> Peserta Telah Hadir (Checked-in)
                 </h3>
                 <p className="text-xs text-slate-500">Daftar jamaah/peserta yang statusnya telah dikonfirmasi hadir.</p>
               </div>
               <button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="bg-slate-800 hover:bg-slate-900 text-white px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                className="bg-primary hover:bg-primary-container text-on-primary px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm font-display"
               >
                 <Plus className="h-3.5 w-3.5" /> {showAddForm ? "Batal" : "Tambah Kehadiran Manual"}
               </button>
@@ -441,9 +441,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
             {/* Manual Attendance Registration Card */}
             {showAddForm && (
-              <Card className="border border-indigo-150 bg-indigo-50/20 p-5 rounded-xl shadow-sm">
+              <Card className="border border-emerald-200 bg-emerald-50/20 p-5 rounded-2xl shadow-sm">
                 <form onSubmit={handleAddParticipant} className="space-y-4">
-                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wide border-b border-indigo-100 pb-2">
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wide border-b border-emerald-100 pb-2 font-display">
                     Input Pendaftaran & Kehadiran Manual
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -482,14 +482,14 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                       type="button" 
                       variant="ghost" 
                       onClick={() => setShowAddForm(false)} 
-                      className="h-9 text-xs font-semibold"
+                      className="h-9 text-xs font-semibold rounded-xl"
                     >
                       Batal
                     </Button>
                     <Button 
                       type="submit" 
                       disabled={addingParticipant} 
-                      className="h-9 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white"
+                      className="h-9 text-xs font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl font-display"
                     >
                       {addingParticipant ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
                       Check-in Sekarang

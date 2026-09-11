@@ -119,7 +119,7 @@ function OrgRoleModal({
               <select
                 value={form.organization_id}
                 onChange={e => setForm(p => ({ ...p, organization_id: e.target.value }))}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white"
               >
                 <option value="">-- Pilih Organisasi --</option>
                 {orgs.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
@@ -130,7 +130,7 @@ function OrgRoleModal({
               <select
                 value={form.role}
                 onChange={e => setForm(p => ({ ...p, role: e.target.value as SystemRoleType }))}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white"
               >
                 {ALL_ROLES.filter(r => r !== 'super_admin').map(r => (
                   <option key={r} value={r}>{ROLE_LABELS[r]}</option>
@@ -140,7 +140,7 @@ function OrgRoleModal({
                 <p className="text-xs text-gray-400">{ROLE_DESCRIPTIONS[form.role]}</p>
               )}
             </div>
-            <Button onClick={handleAdd} disabled={saving} className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2">
+            <Button onClick={handleAdd} disabled={saving} className="w-full bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl gap-2 font-display">
               <Plus className="w-4 h-4" /> {saving ? "Menyimpan..." : "Assign Role"}
             </Button>
           </div>
@@ -253,7 +253,7 @@ export default function UsersManagementPage() {
 
   if (loading) return (
     <div className="p-10 flex items-center justify-center">
-      <div className="animate-pulse text-indigo-500 font-semibold">Memuat Data Pengguna...</div>
+      <div className="animate-pulse text-primary font-semibold font-display">Memuat Data Pengguna...</div>
     </div>
   )
 
@@ -261,8 +261,8 @@ export default function UsersManagementPage() {
     <div className="space-y-6 pb-10">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Kelola Pengguna</h1>
-          <p className="text-sm text-gray-500 mt-1">{users.length} pengguna terdaftar</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">Kelola Pengguna</h1>
+          <p className="text-sm text-slate-500 mt-1">{users.length} pengguna terdaftar</p>
         </div>
       </div>
 
@@ -274,17 +274,17 @@ export default function UsersManagementPage() {
           const showRoleExpand = expandedRole === user.user_id
 
           return (
-            <Card key={user.user_id} className={`shadow-sm border-t-4 transition-shadow hover:shadow-md ${
+            <Card key={user.user_id} className={`rounded-2xl shadow-xs border-t-4 transition-shadow hover:shadow-md ${
               superAdmin ? "border-t-red-400 bg-red-50/20"
               : user.is_premium ? "border-t-amber-500 bg-amber-50/10"
-              : "border-t-slate-200"
+              : "border-t-emerald-600 bg-white"
             }`}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2 truncate text-slate-800">
+                  <span className="flex items-center gap-2 truncate text-slate-800 font-display font-bold">
                     <User className="h-4 w-4 text-slate-400 flex-shrink-0" />
                     <span className="truncate">{user.full_name || "Tanpa Nama"}</span>
-                    {isMe && <span className="text-xs text-indigo-500 font-normal">(saya)</span>}
+                    {isMe && <span className="text-xs text-primary font-bold">(saya)</span>}
                   </span>
                   {superAdmin ? (
                     <Shield className="h-5 w-5 text-red-400 flex-shrink-0" />
@@ -312,8 +312,8 @@ export default function UsersManagementPage() {
                 {myOrgRoles.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {myOrgRoles.map(r => (
-                      <span key={r.id} className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
-                        <Building2 className="w-2.5 h-2.5" />
+                      <span key={r.id} className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-100 font-medium">
+                        <Building2 className="w-2.5 h-2.5 text-primary" />
                         {r.organizations?.short_name || "Org"}
                       </span>
                     ))}
@@ -331,9 +331,9 @@ export default function UsersManagementPage() {
                       value={user.full_name || ""}
                       onChange={e => setUsers(u => u.map(x => x.user_id === user.user_id ? { ...x, full_name: e.target.value } : x))}
                       placeholder="Contoh: Budi Santoso"
-                      className="h-8 text-xs bg-white/50"
+                      className="h-8 text-xs bg-white/50 focus-visible:ring-primary"
                     />
-                    <Button size="sm" className="h-8 text-xs px-2.5 bg-indigo-600 hover:bg-indigo-700"
+                    <Button size="sm" className="h-8 text-xs px-2.5 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-lg"
                       onClick={() => saveFullName(user.user_id, user.full_name || "")}>
                       Simpan
                     </Button>
@@ -346,7 +346,7 @@ export default function UsersManagementPage() {
                   <select
                     value={user.system_role || ""}
                     onChange={e => saveSystemRole(user.user_id, e.target.value as SystemRoleType | "")}
-                    className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                    className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 bg-white"
                   >
                     <option value="">-- Tidak ada role global --</option>
                     {ALL_ROLES.map(r => (
@@ -366,9 +366,9 @@ export default function UsersManagementPage() {
                       value={user.jabatan || ""}
                       onChange={e => setUsers(u => u.map(x => x.user_id === user.user_id ? { ...x, jabatan: e.target.value } : x))}
                       placeholder="Contoh: Ketua DKM"
-                      className="h-8 text-xs bg-white/50"
+                      className="h-8 text-xs bg-white/50 focus-visible:ring-primary"
                     />
-                    <Button size="sm" className="h-8 text-xs px-2.5 bg-indigo-600 hover:bg-indigo-700"
+                    <Button size="sm" className="h-8 text-xs px-2.5 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-lg"
                       onClick={() => saveJabatan(user.user_id, user.jabatan || "")}>
                       Simpan
                     </Button>
@@ -387,9 +387,9 @@ export default function UsersManagementPage() {
                       value={user.whatsapp || ""}
                       onChange={e => setUsers(u => u.map(x => x.user_id === user.user_id ? { ...x, whatsapp: e.target.value } : x))}
                       placeholder="Contoh: 0812..."
-                      className="h-8 text-xs bg-white/50"
+                      className="h-8 text-xs bg-white/50 focus-visible:ring-primary"
                     />
-                    <Button size="sm" className="h-8 text-xs px-2.5 bg-green-600 hover:bg-green-700"
+                    <Button size="sm" className="h-8 text-xs px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg"
                       onClick={() => saveWhatsApp(user.user_id, user.whatsapp || "")}>
                       Simpan
                     </Button>
@@ -402,7 +402,7 @@ export default function UsersManagementPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Akses Sistem</span>
                     <Button size="sm" variant={user.is_approved ? "outline" : "default"}
-                      className={user.is_approved ? "border-green-200 text-green-700 hover:bg-green-50 h-7 text-xs" : "bg-blue-600 hover:bg-blue-700 h-7 text-xs"}
+                      className={user.is_approved ? "border-emerald-200 text-emerald-800 hover:bg-emerald-50 h-7 text-xs rounded-lg font-medium" : "bg-primary hover:bg-primary-container text-on-primary h-7 text-xs rounded-lg font-bold"}
                       onClick={() => toggleApproval(user.user_id, user.is_approved)}>
                       {user.is_approved ? "Cabut Akses" : "Setujui Akses"}
                     </Button>
@@ -412,7 +412,7 @@ export default function UsersManagementPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Status Premium</span>
                     <Button size="sm" variant={user.is_premium ? "outline" : "default"}
-                      className={user.is_premium ? "border-amber-200 text-amber-700 hover:bg-amber-50 h-7 text-xs" : "bg-indigo-600 hover:bg-indigo-700 h-7 text-xs"}
+                      className={user.is_premium ? "border-amber-200 text-amber-700 hover:bg-amber-50 h-7 text-xs rounded-lg font-medium" : "bg-primary hover:bg-primary-container text-on-primary h-7 text-xs rounded-lg font-bold"}
                       onClick={() => togglePremium(user.user_id, user.is_premium)}>
                       {user.is_premium ? "Cabut Premium" : "Aktifkan Premium"}
                     </Button>
@@ -422,9 +422,9 @@ export default function UsersManagementPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Role Organisasi</span>
                     <Button size="sm" variant="outline"
-                      className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 h-7 text-xs gap-1"
+                      className="border-emerald-200 text-emerald-800 hover:bg-emerald-50 h-7 text-xs gap-1 rounded-lg font-medium"
                       onClick={() => setSelectedUser(user)}>
-                      <Building2 className="w-3 h-3" />
+                      <Building2 className="w-3 h-3 text-primary" />
                       Atur ({myOrgRoles.length})
                     </Button>
                   </div>

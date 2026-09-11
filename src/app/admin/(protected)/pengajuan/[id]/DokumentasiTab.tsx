@@ -203,17 +203,17 @@ export default function DokumentasiTab({
   if (loading) return <div className="p-8 text-center text-slate-500">Memuat Dokumentasi...</div>
 
   return (
-    <Card className="border border-slate-200 shadow-sm">
+    <Card className="border border-slate-200 shadow-sm rounded-2xl">
       <CardHeader className="bg-slate-50/50 border-b border-slate-100">
-        <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-          <ImageIcon className="h-4.5 w-4.5 text-indigo-600" /> Dokumentasi Foto Rapat
+        <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2 font-display">
+          <ImageIcon className="h-4.5 w-4.5 text-primary" /> Dokumentasi Foto Rapat
         </CardTitle>
         <CardDescription className="text-xs">Unggah foto-foto kegiatan. Format: JPG/PNG, Maks: 2MB per foto.</CardDescription>
       </CardHeader>
       
       <CardContent className="pt-6 space-y-6">
         {/* Upload Area */}
-        <div className="border-2 border-dashed border-indigo-100 bg-indigo-50/30 rounded-xl p-8 text-center">
+        <div className="border-2 border-dashed border-emerald-200 bg-emerald-50/20 rounded-xl p-8 text-center">
           <Input 
             type="file" 
             multiple 
@@ -225,11 +225,11 @@ export default function DokumentasiTab({
           />
           <Label htmlFor="photo-upload" className={`cursor-pointer flex flex-col items-center justify-center ${(!meetingMinutesId || uploading) ? 'opacity-50 cursor-not-allowed' : ''}`}>
             {uploading ? (
-              <Loader2 className="h-10 w-10 text-indigo-400 mb-3 animate-spin" />
+              <Loader2 className="h-10 w-10 text-emerald-500 mb-3 animate-spin" />
             ) : (
-              <UploadCloud className="h-10 w-10 text-indigo-500 mb-3" />
+              <UploadCloud className="h-10 w-10 text-primary mb-3" />
             )}
-            <span className="text-sm font-bold text-slate-700">
+            <span className="text-sm font-bold text-slate-700 font-display">
               {uploading ? "Mengunggah..." : "Klik untuk Memilih Foto"}
             </span>
             <span className="text-xs text-slate-500 mt-1">Anda dapat memilih beberapa foto sekaligus</span>
@@ -258,7 +258,7 @@ export default function DokumentasiTab({
                   <div className="relative">
                     <Input 
                       placeholder="Tambahkan keterangan foto..." 
-                      className="text-xs h-8 pr-8 border-transparent hover:border-slate-300 focus:border-indigo-500 focus:bg-white bg-transparent transition-all"
+                      className="text-xs h-8 pr-8 border-transparent hover:border-slate-300 focus:border-primary focus:bg-white bg-transparent transition-all"
                       defaultValue={photo.caption || ""}
                       onBlur={(e) => updateCaption(photo.id, e.target.value)}
                     />
@@ -266,7 +266,7 @@ export default function DokumentasiTab({
                   </div>
                   <div className="flex items-center gap-2 px-1">
                     <select 
-                      className="text-[10px] w-full border border-slate-200 rounded p-1 bg-white text-slate-600 focus:ring-0 focus:border-indigo-400"
+                      className="text-[10px] w-full border border-slate-200 rounded p-1 bg-white text-slate-600 focus:ring-0 focus:border-primary"
                       value={photo.visibility || 'internal'}
                       onChange={(e) => updateVisibility(photo.id, e.target.value)}
                     >

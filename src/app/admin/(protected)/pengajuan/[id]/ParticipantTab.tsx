@@ -100,39 +100,39 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
             <div className="bg-white p-4 rounded-xl border-2 border-slate-100 shadow-sm mb-6">
               <QRCodeSVG value={absenLink} size={220} level="M" />
             </div>
-            <Button onClick={() => setShowQRModal(false)} className="w-full bg-indigo-600 hover:bg-indigo-700 font-bold">Tutup Barcode</Button>
+            <Button onClick={() => setShowQRModal(false)} className="w-full bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">Tutup Barcode</Button>
           </div>
         </div>
       )}
 
       {/* Stats & Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border border-indigo-100 shadow-sm">
+        <Card className="border border-slate-200 shadow-sm rounded-2xl">
           <CardContent className="p-6 flex items-center gap-4">
-            <div className="h-12 w-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+            <div className="h-12 w-12 rounded-full bg-emerald-50 flex items-center justify-center text-primary">
               <Users className="h-6 w-6" />
             </div>
             <div>
               <p className="text-sm font-semibold text-slate-500">Total Kehadiran</p>
-              <h3 className="text-2xl font-bold text-slate-900">{totalHadir} Orang</h3>
+              <h3 className="text-2xl font-bold text-slate-900 font-display">{totalHadir} Orang</h3>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 shadow-sm md:col-span-2">
+        <Card className="border border-slate-200 shadow-sm md:col-span-2 rounded-2xl">
           <CardContent className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-bold text-slate-800">Bagikan Link Absensi Rapat</p>
+              <p className="text-sm font-bold text-slate-800 font-display">Bagikan Link Absensi Rapat</p>
               <p className="text-xs text-slate-500 mt-1">Peserta dapat melakukan absen mandiri via GPS menggunakan link atau barcode.</p>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
               <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-500 truncate max-w-[150px] sm:max-w-[200px]">
                 /absen-rapat/{pengajuanId.substring(0,8)}...
               </div>
-              <Button onClick={() => setShowQRModal(true)} variant="outline" className="h-9 gap-1.5 shrink-0 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+              <Button onClick={() => setShowQRModal(true)} variant="outline" className="h-9 gap-1.5 shrink-0 border-emerald-300 text-primary hover:bg-emerald-50 rounded-xl">
                 <QrCode className="h-4 w-4" /> QR Code
               </Button>
-              <Button onClick={handleCopyLink} variant="outline" className="h-9 gap-1.5 shrink-0 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+              <Button onClick={handleCopyLink} variant="outline" className="h-9 gap-1.5 shrink-0 border-emerald-300 text-primary hover:bg-emerald-50 rounded-xl">
                 {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Tersalin" : "Salin Link"}
               </Button>
@@ -142,21 +142,21 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
       </div>
 
       {/* Table */}
-      <Card className="border border-slate-200 shadow-sm overflow-hidden">
+      <Card className="border border-slate-200 shadow-sm overflow-hidden rounded-2xl">
         <CardHeader className="bg-slate-50/50 border-b border-slate-100 flex flex-row items-center justify-between py-4">
           <div>
-            <CardTitle className="text-base font-bold text-slate-800">Daftar Kehadiran</CardTitle>
+            <CardTitle className="text-base font-bold text-slate-800 font-display">Daftar Kehadiran</CardTitle>
             <CardDescription className="text-xs">Data peserta yang telah check-in ke rapat ini.</CardDescription>
           </div>
           <div>
-            <Button onClick={() => setOpenModal(!openModal)} className="bg-indigo-600 hover:bg-indigo-700 h-9 text-xs font-semibold gap-1.5 shadow-sm">
+            <Button onClick={() => setOpenModal(!openModal)} className="bg-primary hover:bg-primary-container text-on-primary h-9 text-xs font-bold gap-1.5 shadow-sm rounded-xl font-display">
               <UserPlus className="h-4 w-4" /> {openModal ? "Batal" : "Input Manual"}
             </Button>
           </div>
         </CardHeader>
         {openModal && (
           <div className="p-4 border-b border-slate-100 bg-slate-50/80">
-            <h4 className="text-sm font-bold text-slate-800 mb-4">Input Kehadiran Manual</h4>
+            <h4 className="text-sm font-bold text-slate-800 mb-4 font-display">Input Kehadiran Manual</h4>
             <form onSubmit={handleAddParticipant} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div className="space-y-1.5">
                 <Label>Nama Lengkap</Label>
@@ -170,7 +170,7 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
                 <Label>Organisasi (Opsional)</Label>
                 <Input value={newParticipant.organization} onChange={e => setNewParticipant({...newParticipant, organization: e.target.value})} placeholder="Contoh: Divisi Acara" />
               </div>
-              <Button type="submit" disabled={submitting} className="w-full bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display">
                 {submitting ? "Menyimpan..." : "Simpan"}
               </Button>
             </form>
@@ -222,7 +222,7 @@ export default function ParticipantTab({ pengajuanId }: { pengajuanId: string })
                     </TableCell>
                     <TableCell>
                       {p.check_in_method === 'gps' && <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-semibold"><MapPin className="h-3 w-3" /> GPS</span>}
-                      {p.check_in_method === 'qr' && <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-semibold"><QrCode className="h-3 w-3" /> QR Code</span>}
+                      {p.check_in_method === 'qr' && <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2 py-1 rounded text-xs font-semibold"><QrCode className="h-3 w-3" /> QR Code</span>}
                       {p.check_in_method === 'manual' && <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-semibold"><ClipboardEdit className="h-3 w-3" /> Manual</span>}
                       {!p.check_in_method && <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-semibold">Unknown</span>}
                     </TableCell>

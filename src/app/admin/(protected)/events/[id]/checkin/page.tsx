@@ -96,7 +96,7 @@ export default function CheckinPage({ params }: { params: { id: string } }) {
     p.whatsapp.includes(searchQuery)
   )
 
-  if (loading) return <div className="p-10 flex h-screen items-center justify-center"><div className="animate-pulse text-indigo-500 font-semibold">Memuat Data...</div></div>
+  if (loading) return <div className="p-10 flex h-screen items-center justify-center"><div className="animate-pulse text-primary font-semibold font-display">Memuat Data...</div></div>
   if (!event) return <div className="p-10 text-center text-red-500">Event tidak ditemukan</div>
 
   const totalRegistered = participants.length
@@ -106,28 +106,28 @@ export default function CheckinPage({ params }: { params: { id: string } }) {
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 font-display">
             Check-in Peserta
           </h1>
           <p className="text-slate-500 font-medium">{event.title}</p>
         </div>
         <Link href={`/admin/events/${params.id}`}>
-          <Button variant="outline" className="border-indigo-200 text-indigo-700">Kembali ke Detail Event</Button>
+          <Button variant="outline" className="border-emerald-300 text-primary hover:bg-emerald-50 rounded-xl">Kembali ke Detail Event</Button>
         </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass shadow-xl border-t-4 border-t-blue-500 md:col-span-2">
+        <Card className="glass shadow-sm border-t-4 border-t-primary rounded-2xl md:col-span-2">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle className="text-xl">Cari & Verifikasi Tiket</CardTitle>
+                <CardTitle className="text-xl font-display">Cari & Verifikasi Tiket</CardTitle>
                 <CardDescription>Scan QR Code tiket atau ketik manual</CardDescription>
               </div>
               <Button 
                 onClick={() => setShowScanner(!showScanner)} 
                 variant={showScanner ? "destructive" : "default"}
-                className={!showScanner ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                className={!showScanner ? "bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl font-display" : "rounded-xl"}
               >
                 <Camera className="w-4 h-4 mr-2" />
                 {showScanner ? "Tutup Kamera" : "Scan QR"}
@@ -203,14 +203,14 @@ export default function CheckinPage({ params }: { params: { id: string } }) {
         </Card>
 
         <div className="space-y-6">
-          <Card className="glass border-t-4 border-t-indigo-500 shadow-xl">
+          <Card className="glass border-t-4 border-t-primary shadow-sm rounded-2xl">
             <CardHeader>
-              <CardTitle className="text-lg">Statistik Kehadiran</CardTitle>
+              <CardTitle className="text-lg font-display">Statistik Kehadiran</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex justify-between items-center">
-                <div className="text-indigo-900 font-medium">Total Pendaftar</div>
-                <div className="text-2xl font-bold text-indigo-700">{totalRegistered}</div>
+              <div className="bg-emerald-50 border border-emerald-200/60 p-4 rounded-xl flex justify-between items-center">
+                <div className="text-emerald-950 font-medium font-display">Total Pendaftar</div>
+                <div className="text-2xl font-bold text-primary font-display">{totalRegistered}</div>
               </div>
               <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex justify-between items-center">
                 <div className="text-green-900 font-medium">Sudah Hadir</div>

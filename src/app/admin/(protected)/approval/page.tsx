@@ -152,19 +152,19 @@ export default function PejabatApprovalPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <ShieldCheck className="h-7 w-7 text-indigo-600" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-display">
+            <ShieldCheck className="h-7 w-7 text-primary" />
             Persetujuan Peminjaman
           </h1>
           <p className="text-sm text-slate-500">Tinjau dan proses pengajuan peminjaman fasilitas yang menunggu persetujuan Anda</p>
         </div>
         
         {profile?.jabatan && (
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 flex items-center gap-2 self-start sm:self-center">
-            <Award className="h-5 w-5 text-indigo-600" />
+          <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2 flex items-center gap-2 self-start sm:self-center">
+            <Award className="h-5 w-5 text-primary" />
             <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Jabatan Anda</span>
-              <span className="text-xs font-bold text-indigo-950 capitalize">{profile.jabatan}</span>
+              <span className="text-[10px] text-emerald-700/80 font-bold uppercase tracking-wider block">Jabatan Anda</span>
+              <span className="text-xs font-bold text-emerald-950 capitalize">{profile.jabatan}</span>
             </div>
           </div>
         )}
@@ -180,11 +180,11 @@ export default function PejabatApprovalPage() {
       )}
 
       {/* Main Content */}
-      <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden">
+      <Card className="border border-slate-200/80 shadow-sm bg-white overflow-hidden rounded-2xl">
         <CardContent className="p-0">
           {loading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" />
+              <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
             </div>
           ) : pendingApprovals.length === 0 ? (
             <div className="text-center py-20 text-slate-500">
@@ -217,7 +217,7 @@ export default function PejabatApprovalPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        <div className="font-bold text-indigo-950">{item.nama_event}</div>
+                        <div className="font-bold text-slate-900">{item.nama_event}</div>
                         <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-0.5">
                           <MapPin className="h-3 w-3" />
                           <span className="truncate max-w-[200px]">{item.area_fasilitas.join(", ")}</span>
@@ -235,7 +235,7 @@ export default function PejabatApprovalPage() {
                       </TableCell>
                       <TableCell className="text-right pr-6">
                         <Link href={`/admin/pengajuan/${item.id}`}>
-                          <Button size="sm" className="h-8 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm">
+                          <Button size="sm" className="h-8 text-xs font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl border-0 shadow-xs font-display">
                             <Eye className="h-3.5 w-3.5 mr-1" /> Tinjau
                           </Button>
                         </Link>

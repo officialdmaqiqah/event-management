@@ -24,8 +24,8 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-indigo-600" /> Statistik Pengunjung
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2 font-display">
+            <BarChart3 className="w-6 h-6 text-primary" /> Statistik Pengunjung
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Ringkasan kunjungan dan interaksi jamaah selama 30 hari terakhir.
@@ -34,63 +34,63 @@ export default function AnalyticsPage() {
         <button 
           onClick={loadData}
           disabled={loading}
-          className="flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors shadow-sm disabled:opacity-50"
+          className="flex items-center gap-2 bg-white border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-primary transition-colors shadow-xs disabled:opacity-50 font-display"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
         </button>
       </div>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
           {[1,2,3,4].map(i => (
-            <div key={i} className="bg-white rounded-xl h-28 border border-slate-100"></div>
+            <div key={i} className="bg-white rounded-2xl h-28 border border-slate-100"></div>
           ))}
         </div>
       ) : data ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
+            <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-500">Total Kunjungan</CardTitle>
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Kunjungan</CardTitle>
                 <MousePointerClick className="w-4 h-4 text-sky-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-800">{data.totalViews.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-slate-900 font-display">{data.totalViews.toLocaleString()}</div>
                 <p className="text-xs text-slate-400 mt-1">Halaman dilihat</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-500">Pengunjung Unik</CardTitle>
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500">Pengunjung Unik</CardTitle>
                 <Users className="w-4 h-4 text-emerald-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-800">{data.uniqueVisitors.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-slate-900 font-display">{data.uniqueVisitors.toLocaleString()}</div>
                 <p className="text-xs text-slate-400 mt-1">Berdasarkan perangkat</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-500">Total Bagikan</CardTitle>
-                <Share2 className="w-4 h-4 text-indigo-500" />
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Bagikan</CardTitle>
+                <Share2 className="w-4 h-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-800">
+                <div className="text-2xl font-bold text-slate-900 font-display">
                   {Object.values(data.shares).reduce((a: any, b: any) => a + b, 0)}
                 </div>
                 <p className="text-xs text-slate-400 mt-1">Kali event dibagikan</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-500">Unduh & Simpan</CardTitle>
-                <Download className="w-4 h-4 text-orange-500" />
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500">Unduh & Simpan</CardTitle>
+                <Download className="w-4 h-4 text-amber-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-800">
+                <div className="text-2xl font-bold text-slate-900 font-display">
                   {Object.values(data.downloads).reduce((a: any, b: any) => a + b, 0)}
                 </div>
                 <p className="text-xs text-slate-400 mt-1">Flyer & kalender diunduh</p>
@@ -99,10 +99,10 @@ export default function AnalyticsPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Halaman Terpopuler</CardTitle>
-                <CardDescription>Top 5 halaman paling banyak dilihat</CardDescription>
+            <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white">
+              <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="text-base font-bold text-slate-900 font-display">Halaman Terpopuler</CardTitle>
+                <CardDescription className="text-xs">Top 5 halaman paling banyak dilihat</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

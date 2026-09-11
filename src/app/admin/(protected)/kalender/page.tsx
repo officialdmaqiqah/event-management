@@ -337,21 +337,21 @@ export default function AdminCalendarPage() {
       {/* Title & View Controls */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Kalender Master Admin</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">Kalender Master Admin</h1>
           <p className="text-sm text-slate-500">Tampilan lengkap seluruh jadwal kegiatan (termasuk Rahasia).</p>
         </div>
-        <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm w-fit">
+        <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-xs w-fit">
           <Button 
             variant={viewMode === 'month' ? 'default' : 'ghost'} size="sm" 
             onClick={() => setViewMode('month')}
-            className={viewMode === 'month' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
+            className={`rounded-lg text-xs font-bold font-display ${viewMode === 'month' ? 'bg-primary text-on-primary shadow-xs' : 'text-slate-600 hover:text-primary hover:bg-emerald-50/50'}`}
           >
             <Grid className="h-4 w-4 mr-1.5" /> Bulan
           </Button>
           <Button 
             variant={viewMode === 'week' ? 'default' : 'ghost'} size="sm" 
             onClick={() => setViewMode('week')}
-            className={viewMode === 'week' ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' : 'text-slate-500'}
+            className={`rounded-lg text-xs font-bold font-display ${viewMode === 'week' ? 'bg-primary text-on-primary shadow-xs' : 'text-slate-600 hover:text-primary hover:bg-emerald-50/50'}`}
           >
             <List className="h-4 w-4 mr-1.5" /> Minggu
           </Button>
@@ -359,16 +359,16 @@ export default function AdminCalendarPage() {
       </div>
 
       {/* Filters */}
-      <Card className="border border-slate-200 shadow-sm">
+      <Card className="border border-slate-200/80 shadow-xs rounded-2xl">
         <CardHeader 
           className="pb-3 flex flex-row items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors p-4"
           onClick={() => setShowFilters(!showFilters)}
         >
           <div className="flex flex-row items-center gap-2">
-            <Filter className="h-4 w-4 text-indigo-600" />
-            <div className="font-bold text-slate-800 text-sm">Filter Pencarian</div>
+            <Filter className="h-4 w-4 text-primary" />
+            <div className="font-bold text-slate-900 text-sm font-display">Filter Pencarian</div>
           </div>
-          <Button variant="ghost" size="sm" className="h-6 text-xs text-indigo-600 px-2">
+          <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-primary hover:bg-emerald-50 px-2 rounded-lg">
             {showFilters ? "Sembunyikan" : "Tampilkan"}
           </Button>
         </CardHeader>
@@ -378,19 +378,19 @@ export default function AdminCalendarPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input 
                 placeholder="Cari event..." value={search} onChange={e => setSearch(e.target.value)}
-                className="pl-9"
+                className="pl-9 focus-visible:ring-primary"
               />
             </div>
             <select 
               value={filterJenis} onChange={e => setFilterJenis(e.target.value)}
-              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 mt-0"
+              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-slate-700 mt-0"
             >
               <option value="">Semua Jenis</option>
               {jenisOptions.map(j => <option key={j} value={j}>{j}</option>)}
             </select>
             <select 
               value={filterArea} onChange={e => setFilterArea(e.target.value)}
-              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 mt-0"
+              className="flex h-10 w-full md:w-48 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-slate-700 mt-0"
             >
               <option value="">Semua Area</option>
               {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
@@ -400,20 +400,20 @@ export default function AdminCalendarPage() {
       </Card>
 
       {/* Calendar Navigation */}
-      <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <Button variant="outline" size="sm" onClick={prevTime}><ChevronLeft className="h-4 w-4 mr-1" /> Prev</Button>
-        <div className="text-lg font-bold text-slate-800 capitalize flex items-center gap-2">
-          <CalendarDays className="h-5 w-5 text-indigo-500 hidden sm:block" />
+      <div className="flex items-center justify-between bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+        <Button variant="outline" size="sm" onClick={prevTime} className="rounded-xl"><ChevronLeft className="h-4 w-4 mr-1" /> Prev</Button>
+        <div className="text-lg font-bold text-slate-900 capitalize flex items-center gap-2 font-display">
+          <CalendarDays className="h-5 w-5 text-primary hidden sm:block" />
           {format(currentDate, viewMode === 'month' ? "MMMM yyyy" : "'Minggu' do MMMM yyyy", { locale: localeID })}
         </div>
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" onClick={goToday} className="hidden sm:flex">Hari Ini</Button>
-          <Button variant="outline" size="sm" onClick={nextTime}>Next <ChevronRight className="h-4 w-4 ml-1" /></Button>
+          <Button variant="ghost" size="sm" onClick={goToday} className="hidden sm:flex rounded-xl font-medium hover:bg-emerald-50 hover:text-primary">Hari Ini</Button>
+          <Button variant="outline" size="sm" onClick={nextTime} className="rounded-xl">Next <ChevronRight className="h-4 w-4 ml-1" /></Button>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
         <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
           {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map(day => (
             <div key={day} className="py-2.5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:block">{day}</div>
@@ -424,7 +424,7 @@ export default function AdminCalendarPage() {
         </div>
 
         {loading ? (
-          <div className="p-20 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-indigo-600 border-t-transparent" /></div>
+          <div className="p-20 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" /></div>
         ) : (
           <div className={`grid grid-cols-7 ${viewMode === 'month' ? 'auto-rows-[140px] sm:auto-rows-[160px]' : 'auto-rows-[minmax(250px,auto)]'}`}>
             {days.map((day, i) => {
@@ -442,7 +442,7 @@ export default function AdminCalendarPage() {
                 >
                   <div className="flex justify-between items-start mb-1">
                     <span className={`text-sm font-semibold flex items-center justify-center h-6 w-6 rounded-full 
-                      ${isToday ? 'bg-indigo-600 text-white shadow-md' : !isCurrentMonth ? 'text-slate-300' : 'text-slate-700'}`
+                      ${isToday ? 'bg-primary text-on-primary shadow-md' : !isCurrentMonth ? 'text-slate-300' : 'text-slate-700'}`
                     }>
                       {format(day, 'd')}
                     </span>
@@ -455,8 +455,8 @@ export default function AdminCalendarPage() {
                   <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                     {dayEvents.map(ev => {
                       // Admin sees true colors based on privacy
-                      let bgColor = 'bg-indigo-50 border-indigo-100 text-indigo-700'
-                      let badgeColor = 'bg-indigo-200 text-indigo-800'
+                      let bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                      let badgeColor = 'bg-emerald-200 text-emerald-900'
                       let Icon = Eye
                       
                       const isTerbatas = ev.privacy_event === 'publik_terbatas'
@@ -478,8 +478,8 @@ export default function AdminCalendarPage() {
                         bgColor = 'bg-amber-100 border-amber-300 text-amber-800 shadow-sm'
                         badgeColor = 'bg-amber-200 text-amber-800'
                       } else if (isRutin) {
-                        bgColor = 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm'
-                        badgeColor = 'bg-emerald-200 text-emerald-800'
+                        bgColor = 'bg-emerald-100 border-emerald-300 text-emerald-900 shadow-sm'
+                        badgeColor = 'bg-emerald-300 text-emerald-950'
                       }
 
                       return (
@@ -516,7 +516,7 @@ export default function AdminCalendarPage() {
 
       {/* Admin Legend */}
       <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
-        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-500"></div> Peminjaman (Publik/Admin)</div>
+        <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary"></div> Peminjaman (Publik/Admin)</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-200 border border-emerald-300"></div> Kajian Rutin</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300"></div> Peminjaman (Internal/Rahasia)</div>
         <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-pink-500"></div> Event dengan Pendaftaran Terbuka</div>
@@ -526,11 +526,11 @@ export default function AdminCalendarPage() {
       {/* Event Details Dialog (Admin Version - Shows Everything) */}
       {selectedEvent && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <Card className="max-w-md w-full shadow-2xl border-0 overflow-hidden rounded-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className={`h-1.5 ${
               selectedEvent.privacy_event === 'rahasia' ? 'bg-red-500' : 
               selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-500' :
-              selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-indigo-500'
+              selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-500' : 'bg-primary'
             }`} />
             <CardHeader className="pb-2 border-b border-slate-100 bg-white">
               <div className="flex justify-between items-start">
@@ -538,12 +538,12 @@ export default function AdminCalendarPage() {
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold mb-1 border ${
                     selectedEvent.privacy_event === 'rahasia' ? 'bg-red-50 text-red-700 border-red-200' : 
                     selectedEvent.privacy_event === 'umum_saja' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    selectedEvent.privacy_event === 'publik_terbatas' ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   }`}>
                     {selectedEvent.privacy_event === 'rahasia' && <EyeOff className="h-3 w-3 mr-1" />}
                     Privasi: {selectedEvent.privacy_event.replace('_', ' ').toUpperCase()}
                   </span>
-                  <CardTitle className="text-lg font-bold text-slate-900 leading-tight">
+                  <CardTitle className="text-lg font-bold text-slate-900 leading-tight font-display">
                     {selectedEvent.nama_event}
                   </CardTitle>
                   <CardDescription className="mt-1">{selectedEvent.jenis_event}</CardDescription>
@@ -638,7 +638,7 @@ export default function AdminCalendarPage() {
                     </Button>
                   ) : (
                     <Link href={`/${selectedEvent.public_slug}`}>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
+                      <Button className="w-full bg-primary hover:bg-primary-container text-on-primary font-bold shadow-md rounded-xl font-display">
                         Lihat Detail Pendaftaran
                       </Button>
                     </Link>
@@ -700,7 +700,7 @@ export default function AdminCalendarPage() {
                           </button>
                           <div className="border-t border-slate-100 my-1"></div>
                           <button
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-700 rounded-md transition-all flex items-center gap-2"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-primary rounded-md transition-all flex items-center gap-2"
                             onClick={() => {
                               handleCopyText(selectedEvent);
                               setShowShareMenu(false);
@@ -727,13 +727,13 @@ export default function AdminCalendarPage() {
                       {showCalMenu && (
                         <div className="absolute bottom-full right-0 mb-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl z-20 p-1.5 py-2 space-y-1">
                           <button
-                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-700 rounded-md transition-all flex items-center gap-2"
+                            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-primary rounded-md transition-all flex items-center gap-2"
                             onClick={() => {
                               handleGoogleCalendar(selectedEvent);
                               setShowCalMenu(false);
                             }}
                           >
-                            <CalendarPlus className="w-3.5 h-3.5 text-indigo-500" /> Google Calendar
+                            <CalendarPlus className="w-3.5 h-3.5 text-primary" /> Google Calendar
                           </button>
                           <button
                             className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-rose-700 rounded-md transition-all flex items-center gap-2"

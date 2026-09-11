@@ -235,21 +235,21 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
     }
   }
 
-  if (fetching) return <div className="p-10 flex h-screen items-center justify-center"><div className="animate-pulse text-indigo-500 font-semibold">Memuat Data Event...</div></div>
+  if (fetching) return <div className="p-10 flex h-screen items-center justify-center"><div className="animate-pulse text-primary font-semibold font-display">Memuat Data Event...</div></div>
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Edit Event</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display">Edit Event</h1>
         <Link href={`/admin/events/${params.id}`}>
-          <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">Batal</Button>
+          <Button variant="outline" className="border-emerald-200 text-emerald-800 hover:bg-emerald-50 rounded-xl font-bold text-xs">Batal</Button>
         </Link>
       </div>
 
-      <Card className="glass shadow-xl border-t-4 border-t-indigo-500">
+      <Card className="rounded-2xl border border-slate-200/80 shadow-xs bg-white overflow-hidden">
         <form onSubmit={handleSubmit}>
-          <CardHeader>
-            <CardTitle className="text-xl">Informasi Dasar</CardTitle>
+          <CardHeader className="border-b border-slate-100 bg-slate-50/50">
+            <CardTitle className="text-lg font-bold font-display text-slate-900">Informasi Dasar</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8 pt-6">
             {error && (
@@ -315,7 +315,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                   <div className="flex justify-between items-end">
                     <Label htmlFor="banner" className="text-gray-700 font-semibold">Banner / Flyer Baru</Label>
                     {formData.banner_url && (
-                      <a href={formData.banner_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Banner Saat Ini</a>
+                      <a href={formData.banner_url} target="_blank" rel="noreferrer" className="text-xs text-primary font-bold hover:underline">Lihat Banner Saat Ini</a>
                     )}
                   </div>
                   {formData.banner_url && !bannerFile && !deleteBanner && (
@@ -350,7 +350,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                   <div className="flex justify-between items-end">
                     <Label htmlFor="logo" className="text-gray-700 font-semibold">Logo Penyelenggara Baru</Label>
                     {formData.logo_url && (
-                      <a href={formData.logo_url} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">Lihat Logo Saat Ini</a>
+                      <a href={formData.logo_url} target="_blank" rel="noreferrer" className="text-xs text-primary font-bold hover:underline">Lihat Logo Saat Ini</a>
                     )}
                   </div>
                   {formData.logo_url && !logoFile && !deleteLogo && (
@@ -383,15 +383,15 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-4">
-              <h3 className="font-semibold text-indigo-900">Sistem Pendaftaran & Absensi</h3>
+            <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-4">
+              <h3 className="font-semibold text-emerald-900 font-display">Sistem Pendaftaran & Absensi</h3>
               
               <div className="space-y-2">
                 <Label htmlFor="requires_registration">Sistem Kehadiran *</Label>
                 <select
                   id="requires_registration"
                   name="requires_registration"
-                  className="flex h-10 w-full rounded-md border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="flex h-10 w-full rounded-md border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   value={String(formData.requires_registration)}
                   onChange={handleChange}
                 >
@@ -407,12 +407,12 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
 
               <div className="space-y-4 pt-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <Label className="block text-indigo-800">Geotagging Lokasi (Opsional untuk pembatasan radius absen)</Label>
+                  <Label className="block text-emerald-900 font-medium">Geotagging Lokasi (Opsional untuk pembatasan radius absen)</Label>
                   <Button 
                     type="button" 
                     variant="outline" 
                     size="sm"
-                    className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs"
+                    className="border-emerald-200 text-emerald-800 hover:bg-emerald-50 text-xs rounded-xl font-medium"
                     onClick={() => {
                       if (!navigator.geolocation) {
                         alert("Browser Anda tidak mendukung deteksi lokasi (GPS).");
@@ -452,7 +452,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                 </div>
                 <p className="text-xs text-slate-500 mb-6">Kosongkan latitude/longitude jika tidak ingin membatasi absen berdasarkan lokasi GPS.</p>
                 
-                <Label className="block text-indigo-800 mt-6">Batas Waktu Absen (Check-in Window)</Label>
+                <Label className="block text-primary font-display font-bold mt-6">Batas Waktu Absen (Check-in Window)</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="checkin_start_datetime" className="text-xs">Waktu Mulai Buka Absen</Label>
@@ -548,7 +548,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
               <textarea 
                 id="description" 
                 name="description" 
-                className="flex min-h-[100px] w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="flex min-h-[100px] w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                 value={formData.description} 
                 onChange={handleChange} 
               />
@@ -559,7 +559,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
               <select
                 id="status"
                 name="status"
-                className="flex h-10 w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="flex h-10 w-full rounded-md border border-gray-200 bg-white/50 px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                 value={formData.status}
                 onChange={handleChange}
               >
@@ -570,8 +570,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
               </select>
             </div>
           </CardContent>
-          <CardFooter className="bg-slate-50/50 p-6 rounded-b-xl border-t border-slate-100 mt-4">
-            <Button type="submit" disabled={loading} className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all">
+          <CardFooter className="bg-slate-50/50 p-6 rounded-b-2xl border-t border-slate-100 mt-4">
+            <Button type="submit" disabled={loading} className="w-full h-12 text-base font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl font-display shadow-xs transition-all">
               {loading ? "Menyimpan Perubahan..." : "Update Event"}
             </Button>
           </CardFooter>
