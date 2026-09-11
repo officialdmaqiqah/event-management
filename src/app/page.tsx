@@ -483,7 +483,7 @@ export default async function Home() {
                 className="w-full min-h-[48px] px-6 rounded-full bg-primary text-on-primary font-display text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all hover:bg-primary-container"
               >
                 <span className="material-symbols-outlined text-[20px]">add_task</span>
-                <span>Ajukan Izin Acara Sekarang</span>
+                <span>Ajukan Izin Acara</span>
               </Link>
               <a 
                 href="https://wa.me/6282175426357?text=Assalamualaikum%2C%20Mau%20Tanya%20Tata%20Cara%20Menggunakan%20Fasilitas%20Masjid%20Agung%20Kubah%20Timah" 
@@ -492,7 +492,7 @@ export default async function Home() {
                 className="w-full min-h-[44px] px-4 rounded-full bg-surface-container-lowest text-primary font-display text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors"
               >
                 <span className="material-symbols-outlined text-[18px] text-primary">chat</span>
-                <span>Hotline DKM (WhatsApp)</span>
+                <span>Hubungi DKM</span>
               </a>
             </div>
           </div>
@@ -510,15 +510,6 @@ export default async function Home() {
             <span>Jl. Jenderal Sudirman No. 1, Pangkalpinang</span>
             <span>Email: sekretariat@kubahtimah.id</span>
           </div>
-          <a 
-            className="min-h-[44px] px-5 rounded-full bg-primary-container text-on-primary font-display text-xs font-bold flex items-center justify-center gap-2 self-start hover:opacity-95 transition-opacity" 
-            href="https://wa.me/6282175426357" 
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span className="material-symbols-outlined text-[18px]">chat</span>
-            <span>WhatsApp Hotline DKM</span>
-          </a>
           <div className="pt-2 text-center text-[11px] text-outline border-t border-slate-200">
             <span>© {new Date().getFullYear()} Masjid Agung Kubah Timah. All rights reserved.</span>
           </div>

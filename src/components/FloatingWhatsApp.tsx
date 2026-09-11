@@ -17,16 +17,16 @@ export default function FloatingWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center gap-1 sm:gap-1.5 group"
-      aria-label="Tanya & Konsultasi via WhatsApp"
+      aria-label="Konsultasi via WhatsApp"
     >
-      {/* Label Tanya & Konsultasi */}
+      {/* Label Konsultasi */}
       <div className="bg-white text-slate-800 text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.12)] border border-slate-200/80 whitespace-nowrap flex items-center gap-1.5 group-hover:-translate-y-0.5 group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.15)] transition-all duration-300">
         <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-emerald-500"></span>
         </span>
         <span className="font-display font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
-          Tanya & Konsultasi
+          Konsultasi
         </span>
       </div>
 
