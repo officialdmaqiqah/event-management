@@ -77,19 +77,7 @@ export default async function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/60 to-transparent"></div>
           </div>
 
-          <div className="relative z-10 flex flex-col gap-4">
-            {/* Tagline Pill & Prayer Status */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-[11px] font-bold shadow-sm">
-                <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
-                Pusat Syiar & Edukasi Umat
-              </span>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/15 backdrop-blur-md text-surface font-display text-[11px] font-semibold">
-                <span className="material-symbols-outlined text-[14px] text-secondary-fixed">mosque</span>
-                <span>Kota Pangkalpinang</span>
-              </div>
-            </div>
-
+          <div className="relative z-10 flex flex-col gap-3 py-2 sm:py-4">
             {/* Headline & Subtitle */}
             <div className="flex flex-col gap-2">
               <h1 className="font-display text-2xl sm:text-4xl font-bold text-on-primary tracking-tight leading-snug">
@@ -99,24 +87,6 @@ export default async function Home() {
               <p className="font-body text-xs sm:text-sm text-tertiary-fixed font-normal leading-relaxed max-w-xl">
                 Jelajahi jadwal kajian terkini, ikuti agenda syiar Islam, atau rencanakan penyelenggaraan acara spesial Anda dengan fasilitas premium MAKT.
               </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-              <Link 
-                href="/ajukan-peminjaman" 
-                className="min-h-[48px] px-6 rounded-full bg-secondary-container text-on-secondary-container font-display text-sm font-bold flex items-center justify-center gap-2 shadow-md hover:opacity-95 active:scale-95 transition-all"
-              >
-                <span className="material-symbols-outlined text-[20px]">calendar_add_on</span>
-                <span>Rencanakan Acara</span>
-              </Link>
-              <Link 
-                href="/kalender" 
-                className="min-h-[48px] px-6 rounded-full bg-surface-container-lowest/15 hover:bg-surface-container-lowest/25 backdrop-blur-md text-on-primary font-display text-sm font-semibold flex items-center justify-center gap-2 transition-colors border border-white/20"
-              >
-                <span className="material-symbols-outlined text-[20px]">menu_book</span>
-                <span>Jadwal Kajian & Event</span>
-              </Link>
             </div>
 
             {/* Verified Footer */}
