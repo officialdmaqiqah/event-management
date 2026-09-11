@@ -465,10 +465,6 @@ export default function CalendarClient() {
       <main className="flex-1 container mx-auto p-4 sm:p-6 lg:max-w-6xl">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold mb-1.5">
-              <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-              <span>Jadwal Terbuka & Terintegrasi</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-primary font-display tracking-tight flex items-center gap-2">
               Kalender Kegiatan Publik
             </h1>
