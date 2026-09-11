@@ -2,7 +2,6 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { HomeAgendaSection } from "@/components/HomeAgendaSection"
 import { PrayerTopBar } from "@/components/PrayerTopBar"
-import { HeroRotatingHeadline } from "@/components/HeroRotatingHeadline"
 
 export default async function Home() {
   const supabase = createClient()
@@ -65,26 +64,62 @@ export default async function Home() {
 
       <main className="flex-1 flex flex-col w-full max-w-4xl mx-auto pt-24">
         
-        {/* 3. HERO SECTION (Ikon Kubah Emas Bercahaya & Radiant Aura) */}
-        <section className="relative w-full overflow-hidden bg-gradient-to-br from-[#0B3B2B] via-primary to-[#06241A] px-4 sm:px-8 pt-6 pb-12 rounded-b-3xl sm:rounded-3xl mt-0 sm:mt-2 shadow-xl border border-emerald-700/30">
-          {/* Backdrop Image with Ken Burns Zoom & Scrim */}
+        {/* 3. HERO SECTION (Dengan Animasi Suasana Islami Elegan) */}
+        <section className="relative w-full overflow-hidden bg-primary px-4 sm:px-6 pt-6 pb-12 rounded-b-3xl sm:rounded-3xl mt-0 sm:mt-2 shadow-lg">
+          {/* Backdrop Image with Ken Burns Zoom & Atmospheric Scrim */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img 
               alt="Masjid Agung Kubah Timah" 
-              className="w-full h-full object-cover opacity-25 filter brightness-90 transform-gpu animate-kenburns origin-center" 
+              className="w-full h-full object-cover opacity-35 filter brightness-95 transform-gpu animate-kenburns origin-center" 
               src="/pelataran-depan.jpg"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/90 to-primary/50"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/75 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/85 to-primary/45"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/65 to-transparent"></div>
           </div>
 
-          {/* Ambient Lighting & Glow */}
-          <div className="absolute -top-16 -left-16 w-52 h-52 rounded-full bg-amber-400/15 blur-3xl pointer-events-none animate-pulse-glow" />
+          {/* Ambient Floating Glow Orbs */}
+          <div className="absolute -top-16 -left-16 w-52 h-52 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
           <div className="absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none animate-pulse-glow" style={{ animationDelay: '2s' }} />
 
-          {/* Main Hero Content with Dynamic Rotating Headline */}
-          <div className="relative z-10 py-1 sm:py-2">
-            <HeroRotatingHeadline />
+          {/* Rotating Subtle Islamic Mandala Star Motif Watermark */}
+          <div className="absolute -top-10 -right-10 w-60 h-60 opacity-10 pointer-events-none text-amber-200 animate-[spin_90s_linear_infinite]">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-full h-full">
+              <circle cx="50" cy="50" r="46" strokeDasharray="3 3" />
+              <circle cx="50" cy="50" r="38" />
+              <rect x="25" y="25" width="50" height="50" transform="rotate(0 50 50)" />
+              <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)" />
+              <circle cx="50" cy="50" r="18" />
+              <polygon points="50,14 61,38 88,38 66,54 74,80 50,64 26,80 34,54 12,38 39,38" />
+            </svg>
+          </div>
+
+          {/* Floating Stardust Particles */}
+          <span className="absolute top-6 right-1/4 text-amber-300/40 pointer-events-none animate-float-slow text-[13px] select-none">✦</span>
+          <span className="absolute bottom-10 right-16 text-emerald-200/35 pointer-events-none animate-float-reverse text-[11px] select-none">✧</span>
+
+          <div className="relative z-10 flex flex-col gap-3 py-2 sm:py-4">
+            {/* Headline & Subtitle dengan Shimmer Emas Elegan */}
+            <div className="flex flex-col gap-2">
+              <h1 className="font-display text-2xl sm:text-4xl font-bold text-on-primary tracking-tight leading-snug">
+                Pusat Layanan Kegiatan <br />
+                <span className="bg-gradient-to-r from-secondary-fixed via-[#FFF6D4] to-secondary-fixed bg-[length:200%_auto] animate-shimmer bg-clip-text text-transparent inline-block font-extrabold drop-shadow-xs">
+                  Masjid Agung Kubah Timah
+                </span>
+              </h1>
+              <p className="font-body text-xs sm:text-sm text-tertiary-fixed font-normal leading-relaxed max-w-xl">
+                Jelajahi jadwal kajian terkini, ikuti agenda syiar Islam, atau rencanakan penyelenggaraan acara spesial Anda dengan fasilitas premium MAKT.
+              </p>
+            </div>
+
+            {/* Verified Footer dengan Indikator Radar Live */}
+            <div className="flex items-center gap-2 text-tertiary-fixed/90 text-xs font-medium pt-1">
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-fixed opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary-fixed"></span>
+              </div>
+              <span className="material-symbols-outlined text-[16px] text-secondary-fixed">verified</span>
+              <span>Resmi DKM Masjid Agung Kubah Timah Pangkalpinang</span>
+            </div>
           </div>
         </section>
 
