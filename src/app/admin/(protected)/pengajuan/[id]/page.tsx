@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import Link from "next/link"
 import { 
-  Calendar, Clock, MapPin, User, Building, Phone, Mail, 
+  Calendar, Clock, MapPin, User, Users, Building, Phone, Mail, 
   FileText, CheckCircle, XCircle, AlertCircle, Shield, 
   ArrowLeft, ExternalLink, FileDown, Send, Edit3, Lock, Award, ShieldCheck, Loader2, UploadCloud
 } from "lucide-react"
@@ -27,6 +27,7 @@ import { isViewer } from "@/lib/permissions"
 type Pengajuan = {
   id: string
   nomor_pengajuan: string
+  user_id?: string | null
   status: 'draft' | 'submitted' | 'under_review' | 'revision_requested' | 'approved' | 'rejected' | 'cancelled'
   tipe_pemohon: 'pribadi' | 'lembaga' | 'komunitas' | 'instansi'
   nama_pemohon: string
@@ -778,6 +779,16 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       return
     }
     executeStatusChange(targetStatus, statusReason)
+  }
+
+  const showDialog = (type: DialogType, title: string, message: string, action: () => void = () => {}) => {
+    setDialogState({
+      isOpen: true,
+      type,
+      title,
+      message,
+      action
+    })
   }
 
   const closeDialog = () => {
