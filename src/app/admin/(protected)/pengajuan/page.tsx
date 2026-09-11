@@ -370,7 +370,7 @@ export default function AdminPengajuanPage() {
 
             <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
               <Button variant="outline" size="sm" onClick={resetFilters} className="text-xs h-8">Reset Filter</Button>
-              <Button size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-emerald-50 text-primary border border-emerald-200 hover:bg-emerald-100 font-bold">Refresh Data</Button>
+              <Button variant="custom" size="sm" onClick={fetchPengajuan} className="text-xs h-8 bg-emerald-50 text-primary border border-emerald-200 hover:bg-emerald-100 font-bold px-3 rounded-lg transition-colors">Refresh Data</Button>
             </div>
           </CardContent>
         )}

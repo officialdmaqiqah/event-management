@@ -169,7 +169,7 @@ export default function SettingsPage() {
                 Layanan ini tersedia dengan biaya hanya <strong>Rp 250.000 / Tahun</strong>. Semua fitur premium akan langsung aktif untuk akun Anda.
               </p>
               <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20upgrade%20akun%20Kubah%20Timah%20Events%20saya%20ke%20Premium." target="_blank" rel="noreferrer">
-                <Button className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto text-white font-bold rounded-xl">
+                <Button variant="custom" className="bg-amber-600 hover:bg-amber-700 w-full sm:w-auto text-white font-bold rounded-xl h-10 px-4">
                   Hubungi Admin via WA
                 </Button>
               </a>
@@ -301,7 +301,14 @@ export default function SettingsPage() {
                       </div>
                     )}
 
-                    <Button type="button" onClick={handleTestSend} disabled={testing} className="w-full bg-emerald-50 text-primary border border-emerald-200 hover:bg-emerald-100 font-bold rounded-xl font-display">
+                    <Button 
+                      type="button" 
+                      variant="custom"
+                      onClick={handleTestSend} 
+                      disabled={testing} 
+                      className="w-full h-11 bg-primary hover:bg-primary-container text-white font-bold rounded-xl font-display shadow-sm transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Send className="w-4 h-4" />
                       {testing ? "Mengirim..." : "Kirim Pesan Uji Coba"}
                     </Button>
                     <p className="text-xs text-slate-500 text-center mt-2">Pastikan pengaturan API sudah disimpan sebelum melakukan uji coba.</p>
@@ -436,7 +443,7 @@ export default function SettingsPage() {
           )}
 
           <CardFooter className="bg-slate-50/50 p-6 rounded-b-2xl border-t border-slate-100">
-            <Button type="submit" disabled={saving} className="w-full sm:w-auto h-11 px-8 font-bold bg-primary hover:bg-primary-container text-on-primary rounded-xl font-display shadow-xs">
+            <Button type="submit" variant="custom" disabled={saving} className="w-full sm:w-auto h-11 px-8 font-bold bg-primary hover:bg-primary-container text-white rounded-xl font-display shadow-xs flex items-center justify-center">
               <Send className="w-4 h-4 mr-2" /> {saving ? "Menyimpan..." : "Simpan Semua Pengaturan"}
             </Button>
           </CardFooter>
