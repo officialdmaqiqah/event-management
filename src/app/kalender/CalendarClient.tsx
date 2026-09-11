@@ -428,37 +428,42 @@ export default function CalendarClient() {
 
         {/* Navbar */}
         <header className="h-16 container mx-auto px-4 sm:px-6 lg:max-w-6xl flex items-center justify-between gap-3 sm:gap-4">
-          <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 min-w-0 group" title="Beranda MAKT Event">
             <img 
               alt="Logo Masjid Agung Kubah Timah" 
-              className="h-10 sm:h-11 w-auto object-contain shrink-0" 
+              className="h-9 sm:h-11 w-auto object-contain shrink-0" 
               src="/logo-makt-full.png?v=5"
             />
             <div className="flex flex-col min-w-0">
               <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
+              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 truncate">
+                <span className="hidden min-[340px]:inline">Masjid Agung Kubah Timah</span>
+              </span>
             </div>
           </Link>
-          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-6 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 p-1.5 sm:p-0 text-xs font-bold text-slate-700 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 sm:hover:bg-transparent"
+              title="Beranda"
             >
-              <Home className="h-4 w-4" />
-              <span className="hidden min-[380px]:inline">Beranda</span>
+              <Home className="h-4 w-4 shrink-0" />
+              <span className="hidden sm:inline">Beranda</span>
             </Link>
             <Link 
               href="/ajukan-peminjaman" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 p-1.5 sm:p-0 text-xs font-bold text-slate-700 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 sm:hover:bg-transparent"
+              title="Ajukan Event"
             >
-              <CalendarPlus className="h-4 w-4" />
+              <CalendarPlus className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Ajukan Event</span>
             </Link>
             <Link 
               href="/admin" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 p-1.5 sm:p-0 text-xs font-bold text-slate-700 hover:text-primary transition-colors rounded-lg hover:bg-slate-100 sm:hover:bg-transparent"
+              title="Login Admin"
             >
-              <User className="h-4 w-4" />
+              <User className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Login Admin</span>
             </Link>
           </div>

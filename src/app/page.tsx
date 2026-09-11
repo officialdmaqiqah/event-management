@@ -31,15 +31,17 @@ export default async function Home() {
 
         {/* 2. NAVBAR (Logo Only tanpa teks berulang) */}
         <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
-          <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 min-w-0 group" title="Beranda MAKT Event">
             <img 
               alt="Logo Masjid Agung Kubah Timah" 
-              className="h-10 sm:h-11 w-auto object-contain shrink-0" 
+              className="h-9 sm:h-11 w-auto object-contain shrink-0" 
               src="/logo-makt-full.png?v=5"
             />
             <div className="flex flex-col min-w-0">
               <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
+              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 truncate">
+                <span className="hidden min-[340px]:inline">Masjid Agung Kubah Timah</span>
+              </span>
             </div>
           </Link>
 
@@ -47,9 +49,10 @@ export default async function Home() {
             <Link 
               href="/cek-status" 
               className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-sm"
+              title="Cek Status Pengajuan"
             >
               <span className="material-symbols-outlined text-[16px]">search_check</span>
-              <span className="hidden min-[380px]:inline">Cek Status</span>
+              <span className="hidden sm:inline">Cek Status</span>
             </Link>
             <Link 
               href="/admin/login" 
