@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Calendar, Users, MapPin, CalendarDays, CheckCircle2, AlertCircle } from "lucide-react"
+import { Calendar, Users, MapPin, CalendarDays, CheckCircle2, AlertCircle, PlusCircle, ArrowRight, Sparkles, BookOpen, ShieldCheck } from "lucide-react"
 
 export default async function AdminDashboard() {
   const supabase = createClient()
@@ -49,115 +49,156 @@ export default async function AdminDashboard() {
   }
   const { data: upcomingPeminjaman } = await upcomingQuery
 
-  const getWIBDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    const options: Intl.DateTimeFormatOptions = {
-      timeZone: 'Asia/Jakarta',
-      year: 'numeric', month: 'short', day: '2-digit',
-      hour: '2-digit', minute: '2-digit',
-      hour12: false
-    };
-    const parts = new Intl.DateTimeFormat('id-ID', options).formatToParts(d);
-    const day = parts.find(p => p.type === 'day')?.value;
-    const month = parts.find(p => p.type === 'month')?.value;
-    const year = parts.find(p => p.type === 'year')?.value;
-    const hour = parts.find(p => p.type === 'hour')?.value;
-    const minute = parts.find(p => p.type === 'minute')?.value;
-    return `${day} ${month} ${year}, ${hour}:${minute}`;
-  }
-
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Dashboard Utama</h1>
-          <p className="text-slate-500 mt-1">Ringkasan aktivitas peminjaman dan event publik</p>
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-display text-[11px] font-bold mb-1.5 shadow-xs">
+            <ShieldCheck className="h-3.5 w-3.5 text-secondary" />
+            <span>Pusat Kendali Administrasi MAKT</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-primary font-display">
+            Dashboard Pengurus
+          </h1>
+          <p className="text-xs sm:text-sm text-on-surface-variant mt-0.5">
+            Ringkasan data perizinan peminjaman fasilitas dan agenda syiar Masjid Agung Kubah Timah.
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link href="/ajukan-peminjaman">
-            <Button className="bg-indigo-600 hover:bg-indigo-700">+ Buat Peminjaman</Button>
+            <Button className="bg-primary text-on-primary hover:bg-primary-container font-display text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 h-10 px-4">
+              <PlusCircle className="h-4 w-4" />
+              <span>Buat Peminjaman</span>
+            </Button>
           </Link>
           <Link href="/admin/events/new">
-            <Button variant="outline" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50">+ Buat Event Publik</Button>
+            <Button className="bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 h-10 px-4">
+              <Sparkles className="h-4 w-4" />
+              <span>Buat Event Publik</span>
+            </Button>
           </Link>
         </div>
       </div>
 
+      {/* 3 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="border-l-4 border-l-amber-500 shadow-sm">
-          <CardContent className="p-6">
+        {/* Card 1: Menunggu Approval */}
+        <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="h-1 w-full bg-amber-500 absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500">Peminjaman Menunggu Approval</p>
-                <h3 className="text-3xl font-bold text-slate-800 mt-2">{pendingCount || 0}</h3>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Menunggu Approval</p>
+                <h3 className="text-3xl font-black text-slate-900 mt-1.5 font-display">{pendingCount || 0}</h3>
+                <span className="text-[11px] text-amber-700 font-semibold mt-1 inline-block">
+                  Butuh verifikasi pengurus
+                </span>
               </div>
-              <div className="p-3 bg-amber-50 rounded-full">
-                <AlertCircle className="w-6 h-6 text-amber-500" />
+              <div className="p-3.5 bg-amber-50 text-amber-600 rounded-2xl border border-amber-100/80">
+                <AlertCircle className="w-6 h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-emerald-500 shadow-sm">
-          <CardContent className="p-6">
+        {/* Card 2: Peminjaman Disetujui */}
+        <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="h-1 w-full bg-primary absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500">Peminjaman Disetujui</p>
-                <h3 className="text-3xl font-bold text-slate-800 mt-2">{approvedCount || 0}</h3>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Peminjaman Disetujui</p>
+                <h3 className="text-3xl font-black text-slate-900 mt-1.5 font-display">{approvedCount || 0}</h3>
+                <span className="text-[11px] text-emerald-700 font-semibold mt-1 inline-block">
+                  Izin terbit & terjadwal
+                </span>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-full">
-                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+              <div className="p-3.5 bg-emerald-50 text-primary rounded-2xl border border-emerald-100/80">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500 shadow-sm">
-          <CardContent className="p-6">
+        {/* Card 3: Event Publik Aktif */}
+        <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="h-1 w-full bg-secondary-fixed absolute top-0 inset-x-0" />
+          <CardContent className="p-5 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500">Event Publik Aktif</p>
-                <h3 className="text-3xl font-bold text-slate-800 mt-2">{activeEventCount || 0}</h3>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Event Publik Terbit</p>
+                <h3 className="text-3xl font-black text-slate-900 mt-1.5 font-display">{activeEventCount || 0}</h3>
+                <span className="text-[11px] text-emerald-800 font-semibold mt-1 inline-block">
+                  Kajian & syiar umum aktif
+                </span>
               </div>
-              <div className="p-3 bg-blue-50 rounded-full">
-                <Users className="w-6 h-6 text-blue-500" />
+              <div className="p-3.5 bg-secondary-fixed/30 text-on-secondary-fixed rounded-2xl border border-secondary-fixed/50">
+                <Users className="w-6 h-6 text-emerald-900" />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <Card className="shadow-sm">
-          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
+      {/* Main 2-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+        {/* Left Column: Jadwal Peminjaman Terdekat */}
+        <Card className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <CardHeader className="bg-surface-container-low/50 border-b border-slate-100 py-4 px-5 sm:px-6">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg">Jadwal Peminjaman Terdekat</CardTitle>
-                <CardDescription>Kegiatan yang akan berlangsung di MAKT</CardDescription>
+                <CardTitle className="text-base sm:text-lg font-bold text-primary font-display">
+                  Jadwal Peminjaman Terdekat
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
+                  Agenda pemakaian fasilitas yang akan segera berlangsung
+                </CardDescription>
               </div>
-              <CalendarDays className="h-5 w-5 text-slate-400" />
+              <div className="w-9 h-9 rounded-full bg-emerald-50 text-primary flex items-center justify-center">
+                <CalendarDays className="h-5 w-5" />
+              </div>
             </div>
           </CardHeader>
+          
           <CardContent className="p-0">
             {upcomingPeminjaman && upcomingPeminjaman.length > 0 ? (
               <div className="divide-y divide-slate-100">
                 {upcomingPeminjaman.map((item) => (
-                  <div key={item.id} className="p-4 flex items-start gap-3 sm:gap-4 hover:bg-slate-50 transition-colors">
-                    <div className="bg-indigo-50 text-indigo-700 p-2 sm:p-3 rounded-lg flex-shrink-0 text-center min-w-[50px] sm:min-w-[60px]">
-                      <div className="text-sm font-semibold">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', timeZone: 'Asia/Jakarta' })}</div>
-                      <div className="text-[10px] sm:text-xs">{new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short', timeZone: 'Asia/Jakarta' })}</div>
+                  <div key={item.id} className="p-4 sm:p-5 flex items-start gap-3 sm:gap-4 hover:bg-slate-50/80 transition-colors">
+                    <div className="bg-emerald-50 text-primary border border-emerald-100/80 p-2 sm:p-2.5 rounded-xl flex-shrink-0 text-center min-w-[52px] sm:min-w-[58px]">
+                      <div className="text-base font-black font-display leading-none">
+                        {new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', timeZone: 'Asia/Jakarta' })}
+                      </div>
+                      <div className="text-[10px] font-bold text-emerald-800 uppercase mt-1">
+                        {new Date(item.tanggal_mulai).toLocaleDateString('id-ID', { month: 'short', timeZone: 'Asia/Jakarta' })}
+                      </div>
                     </div>
+                    
                     <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="min-w-0">
-                        <h4 className="font-semibold text-slate-900 truncate capitalize text-sm sm:text-base leading-tight">{item.nama_event}</h4>
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-500 mt-1 sm:mt-1.5">
-                          <span className="flex items-center gap-1 whitespace-nowrap"><Calendar className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta', hour12: false }).replace(/\./g, ':')} WIB</span>
-                          <span className="flex items-center gap-1 truncate"><MapPin className="h-3 sm:h-3.5 w-3 sm:w-3.5 shrink-0" /> <span className="truncate">{item.area_fasilitas[0]}</span></span>
+                        <h4 className="font-bold text-slate-900 truncate capitalize text-sm sm:text-base leading-snug">
+                          {item.nama_event}
+                        </h4>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-500 mt-1">
+                          <span className="flex items-center gap-1 whitespace-nowrap text-slate-600 font-medium">
+                            <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                            {new Date(item.tanggal_mulai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta', hour12: false }).replace(/\./g, ':')} WIB
+                          </span>
+                          <span className="flex items-center gap-1 truncate text-slate-600 font-medium">
+                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                            <span className="truncate">{item.area_fasilitas[0]}</span>
+                          </span>
                         </div>
                       </div>
-                      <div className="shrink-0 mt-1 sm:mt-0">
-                        <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 sm:py-1 rounded-full font-semibold uppercase ${item.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                          {item.status}
+                      
+                      <div className="shrink-0">
+                        <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase ${
+                          item.status === 'approved' 
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                            : 'bg-amber-100 text-amber-800 border border-amber-200'
+                        }`}>
+                          {item.status === 'approved' ? 'Disetujui' : item.status}
                         </span>
                       </div>
                     </div>
@@ -165,44 +206,71 @@ export default async function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="p-8 text-center text-slate-500">
-                <p>Tidak ada peminjaman dalam waktu dekat.</p>
+              <div className="p-10 text-center text-slate-500 space-y-1">
+                <Calendar className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm font-semibold">Tidak ada peminjaman dalam waktu dekat</p>
+                <p className="text-xs text-slate-400">Pengajuan baru yang disetujui akan muncul di sini.</p>
               </div>
             )}
-            <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
-              <Link href="/admin/pengajuan" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
-                Lihat Semua Peminjaman &rarr;
+            
+            <div className="p-3.5 bg-slate-50 border-t border-slate-100 text-center">
+              <Link 
+                href="/admin/pengajuan" 
+                className="text-xs font-bold text-primary hover:text-emerald-800 inline-flex items-center gap-1 transition-colors"
+              >
+                <span>Kelola Semua Pengajuan Peminjaman</span>
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm bg-gradient-to-br from-indigo-900 to-slate-900 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
-          <CardHeader className="relative z-10">
-            <CardTitle className="text-xl">Panduan Penggunaan</CardTitle>
-            <CardDescription className="text-indigo-200">Perbedaan fitur utama pada sistem ini</CardDescription>
-          </CardHeader>
-          <CardContent className="relative z-10 space-y-4">
-            <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="bg-indigo-500/30 p-1.5 rounded-md"><MapPin className="h-4 w-4 text-indigo-300" /></div>
-                <h4 className="font-semibold text-indigo-100">1. Peminjaman Ruang</h4>
+        {/* Right Column: Panduan Penggunaan Sistem MAKT */}
+        <Card className="rounded-2xl bg-gradient-to-br from-[#0D4734] via-[#093527] to-[#06281E] text-white overflow-hidden relative shadow-md border-0">
+          <div className="absolute -top-12 -right-12 w-64 h-64 bg-[#FED65B]/15 rounded-full blur-3xl pointer-events-none" />
+          
+          <CardHeader className="relative z-10 pb-3 pt-6 px-6">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-8 h-8 rounded-full bg-[#FED65B] text-[#241A00] flex items-center justify-center font-bold">
+                <BookOpen className="h-4 w-4 text-[#735C00]" />
               </div>
-              <p className="text-sm text-indigo-200 leading-relaxed">Gunakan fitur ini untuk memesan ruang rapat atau area masjid. Sistem sudah menyediakan fitur Absensi Internal berbasis GPS untuk rapat Anda.</p>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#FED65B]">Panduan Pengurus</span>
+            </div>
+            <CardTitle className="text-xl font-bold font-display text-white">
+              Struktur Manajemen Fitur MAKT
+            </CardTitle>
+            <CardDescription className="text-xs text-emerald-200/80">
+              Panduan pembagian alur kerja peminjaman fasilitas dan publikasi event
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="relative z-10 space-y-3.5 px-6 pb-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="bg-[#FED65B]/20 p-1.5 rounded-lg text-[#FED65B]">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <h4 className="font-bold text-sm text-[#FED65B]">1. Peminjaman Fasilitas & Rapat</h4>
+              </div>
+              <p className="text-xs text-emerald-100/90 leading-relaxed">
+                Digunakan untuk permohonan ruangan/area (Ruang VIP, Serbaguna, Pelataran). Sistem menyediakan fitur Absensi Internal berbasis GPS untuk memonitor kehadiran rapat pengurus/panitia.
+              </p>
             </div>
             
-            <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="bg-emerald-500/30 p-1.5 rounded-md"><Users className="h-4 w-4 text-emerald-300" /></div>
-                <h4 className="font-semibold text-indigo-100">2. Event Publik</h4>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="bg-emerald-400/20 p-1.5 rounded-lg text-emerald-300">
+                  <Users className="h-4 w-4" />
+                </div>
+                <h4 className="font-bold text-sm text-emerald-200">2. Event Publik & E-Tiket</h4>
               </div>
-              <p className="text-sm text-indigo-200 leading-relaxed">Jika rapat/peminjaman Anda adalah acara besar (seperti kajian akbar) yang butuh pendaftaran jamaah luar, silakan buat Event Publik untuk menyebarkan form pendaftaran (E-Ticket).</p>
+              <p className="text-xs text-emerald-100/90 leading-relaxed">
+                Jika kegiatan terbuka untuk umum (seperti Tabligh Akbar, Seminar, atau Kajian Rutin) yang membutuhkan kuota pendaftaran jamaah, gunakan fitur Event Publik untuk menerbitkan formulir registrasi online dan E-Tiket QR.
+              </p>
             </div>
           </CardContent>
         </Card>
       </div>
-
     </div>
   )
 }
