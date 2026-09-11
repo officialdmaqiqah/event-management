@@ -119,6 +119,24 @@ export async function POST(req: Request) {
 
     if (error) throw error
 
+    // Pastikan field privacy_event, url_flyer, nama_ustadz, judul_kajian tersimpan sesuai input pemohon
+    if (data && data.id) {
+      const updateFields: Record<string, any> = {}
+      if (body.privacy_event) updateFields.privacy_event = body.privacy_event
+      if (body.url_flyer) updateFields.url_flyer = body.url_flyer
+      if (body.nama_ustadz) updateFields.nama_ustadz = body.nama_ustadz
+      if (body.judul_kajian) updateFields.judul_kajian = body.judul_kajian
+
+      if (Object.keys(updateFields).length > 0) {
+        try {
+          const supabaseAdmin = createAdminClient()
+          await supabaseAdmin.from('pengajuan_peminjaman').update(updateFields).eq('id', data.id)
+        } catch (updateErr) {
+          console.error("Gagal update extra fields pengajuan:", updateErr)
+        }
+      }
+    }
+
     // Send WA Notifications asynchronously (fire and forget)
     if (data && data.id) {
       const isLocal = process.env.NODE_ENV === 'development'
