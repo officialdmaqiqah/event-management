@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle, UploadCloud, Edit3 } from "lucide-react"
+import { Calendar, Search, ArrowLeft, Clock, MapPin, AlertCircle, FileText, CheckCircle, HelpCircle, XCircle, UploadCloud, Edit3, Home, CalendarPlus } from "lucide-react"
 import { submitRevisiAction } from "@/app/actions/pengajuan"
 import { uploadFileAction } from "@/app/actions/upload"
 import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
@@ -330,16 +330,16 @@ function CekStatusContent() {
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <Home className="h-4 w-4" />
               <span className="hidden min-[380px]:inline">Beranda</span>
             </Link>
             <Link 
               href="/ajukan-peminjaman" 
-              className="h-8 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-xs"
+              className="h-8 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1.5 hover:bg-secondary-container transition-colors shadow-xs"
             >
-              <span className="material-symbols-outlined text-[15px] sm:hidden">add_circle</span>
+              <CalendarPlus className="h-4 w-4" />
               <span className="hidden min-[360px]:inline">Ajukan Acara</span>
             </Link>
           </div>

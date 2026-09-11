@@ -16,7 +16,7 @@ import { CustomDialog, DialogType } from "@/components/ui/custom-dialog"
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, Filter, 
   MapPin, Clock, Info, User, List, Grid, CalendarDays, EyeOff, Sparkles, BookOpen, Lock, X, FileImage,
-  CalendarPlus, Copy, Share2, Download, ArrowLeft, Globe
+  CalendarPlus, Copy, Share2, Download, ArrowLeft, Globe, Home
 } from "lucide-react"
 import Link from "next/link"
 import { PrayerTopBar } from "@/components/PrayerTopBar"
@@ -442,19 +442,20 @@ export default function CalendarClient() {
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <Home className="h-4 w-4" />
               <span className="hidden min-[380px]:inline">Beranda</span>
             </Link>
             <Link href="/ajukan-peminjaman">
-              <Button size="sm" className="hidden sm:flex bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-full shadow-xs">
-                Ajukan Event
+              <Button size="sm" className="hidden sm:inline-flex items-center gap-1.5 bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-full shadow-xs px-3.5">
+                <CalendarPlus className="h-4 w-4" />
+                <span>Ajukan Event</span>
               </Button>
             </Link>
             <Link href="/admin">
-              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold px-2 sm:px-3">
-                <span className="material-symbols-outlined text-[18px] sm:hidden">person</span>
+              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold px-2 sm:px-3 inline-flex items-center gap-1.5">
+                <User className="h-4 w-4" />
                 <span className="hidden sm:inline">Login Admin</span>
               </Button>
             </Link>
