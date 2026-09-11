@@ -427,24 +427,25 @@ export default function CalendarClient() {
         <PrayerTopBar containerClassName="container lg:max-w-6xl" />
 
         {/* Navbar */}
-        <header className="h-16 container mx-auto px-4 sm:px-6 lg:max-w-6xl flex items-center justify-between gap-4">
+        <header className="h-16 container mx-auto px-4 sm:px-6 lg:max-w-6xl flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
             <img 
               alt="Logo Masjid Agung Kubah Timah" 
               className="h-10 sm:h-11 w-auto object-contain shrink-0" 
               src="/logo-makt-full.png?v=5"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
             </div>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+              className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
             >
-              <ArrowLeft className="h-3.5 w-3.5" /> Beranda
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span className="hidden min-[380px]:inline">Beranda</span>
             </Link>
             <Link href="/ajukan-peminjaman">
               <Button size="sm" className="hidden sm:flex bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary-container font-display text-xs font-bold rounded-full shadow-xs">
@@ -452,8 +453,9 @@ export default function CalendarClient() {
               </Button>
             </Link>
             <Link href="/admin">
-              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold">
-                Login Admin
+              <Button variant="ghost" size="sm" className="text-on-surface-variant hover:text-primary font-display text-xs font-bold px-2 sm:px-3">
+                <span className="material-symbols-outlined text-[18px] sm:hidden">person</span>
+                <span className="hidden sm:inline">Login Admin</span>
               </Button>
             </Link>
           </div>

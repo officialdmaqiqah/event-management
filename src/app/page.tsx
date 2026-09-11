@@ -23,37 +23,37 @@ export default async function Home() {
   }
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen flex flex-col relative selection:bg-secondary-fixed selection:text-on-secondary-fixed pb-24 md:pb-12 font-sans">
+    <div className="bg-surface text-on-surface min-h-screen flex flex-col relative selection:bg-secondary-fixed selection:text-on-secondary-fixed pb-12 font-sans">
       
       {/* 1. TOP UTILITY BAR (Live Waktu Sholat Pangkalpinang, Masehi & Hijriah) */}
       <div className="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
         <PrayerTopBar />
 
         {/* 2. NAVBAR (Logo Only tanpa teks berulang) */}
-        <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+        <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
             <img 
               alt="Logo Masjid Agung Kubah Timah" 
               className="h-10 sm:h-11 w-auto object-contain shrink-0" 
               src="/logo-makt-full.png?v=5"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Link 
               href="/cek-status" 
-              className="h-9 px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-sm"
+              className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-sm"
             >
               <span className="material-symbols-outlined text-[16px]">search_check</span>
-              <span>Cek Status</span>
+              <span className="hidden min-[380px]:inline">Cek Status</span>
             </Link>
             <Link 
               href="/admin/login" 
-              className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary hover:bg-primary-container transition-colors shadow-sm"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary flex items-center justify-center text-on-primary hover:bg-primary-container transition-colors shadow-sm"
               title="Portal Pengurus / Admin"
             >
               <span className="material-symbols-outlined text-[18px]">person</span>
@@ -554,48 +554,6 @@ export default async function Home() {
           </div>
         </footer>
       </main>
-
-      {/* 12. FIXED BOTTOM DOCK NAVIGATION (Persis Stitch - Responsif Mobile/Tablet) */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(6,40,30,0.08)] border-t border-slate-100 md:hidden">
-        <div className="flex justify-around items-center h-16 px-4 max-w-md mx-auto">
-          <Link 
-            href="/" 
-            className="flex flex-col items-center justify-center min-w-[56px] text-primary font-bold transition-colors"
-          >
-            <span className="material-symbols-outlined text-[22px]">mosque</span>
-            <span className="font-display text-[11px]">Beranda</span>
-          </Link>
-          <Link 
-            href="/kalender" 
-            className="flex flex-col items-center justify-center min-w-[56px] text-on-surface-variant hover:text-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-[22px]">calendar_month</span>
-            <span className="font-display text-[11px]">Kajian</span>
-          </Link>
-          <Link 
-            href="/ajukan-peminjaman" 
-            className="flex flex-col items-center justify-center min-w-[56px] text-on-surface-variant hover:text-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-[22px] text-secondary">add_circle</span>
-            <span className="font-display text-[11px]">Ajukan</span>
-          </Link>
-          <Link 
-            href="/cek-status" 
-            className="flex flex-col items-center justify-center min-w-[56px] text-on-surface-variant hover:text-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-[22px]">verified</span>
-            <span className="font-display text-[11px]">Status</span>
-          </Link>
-          <Link 
-            href="/bantuan" 
-            className="flex flex-col items-center justify-center min-w-[56px] text-on-surface-variant hover:text-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-[22px]">support_agent</span>
-            <span className="font-display text-[11px]">Bantuan</span>
-          </Link>
-        </div>
-      </nav>
-
     </div>
   )
 }

@@ -389,7 +389,7 @@ export default function AjukanPeminjamanPage() {
           <img src="/logo-makt-full.png?v=5" alt="Logo Masjid Agung Kubah Timah" className="h-11 w-auto object-contain" />
           <div className="flex flex-col text-left">
             <span className="font-black text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-            <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+            <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
           </div>
         </Link>
         <h1 className="font-display text-3xl md:text-4xl font-extrabold text-[#0D4734] tracking-tight">

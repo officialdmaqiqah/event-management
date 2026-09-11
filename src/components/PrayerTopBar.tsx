@@ -37,6 +37,26 @@ interface PrayerTopBarProps {
   containerClassName?: string
 }
 
+function getIndonesianHijriDate(date: Date = new Date()): string {
+  // Algoritma konversi hisab kalender Hijriah Indonesia / Umm al-Qura
+  const jd = Math.floor((date.getTime() + 86400000 * 2440587.5) / 86400000)
+  const l = jd - 1948440 + 10632
+  const n = Math.floor((l - 1) / 10631)
+  const l2 = l - 10631 * n + 354
+  const j = (Math.floor((10985 - l2) / 5316)) * (Math.floor((50 * l2) / 17719)) + (Math.floor(l2 / 5670)) * (Math.floor((43 * l2) / 15238))
+  const l3 = l2 - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29
+  const m = Math.floor((24 * l3) / 709)
+  const day = l3 - Math.floor((709 * m) / 24)
+  const year = 30 * n + j - 30
+  const islamicMonths = [
+    "Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", 
+    "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban", 
+    "Ramadhan", "Syawal", "Dzulqa'dah", "Dzulhijjah"
+  ]
+  const monthName = islamicMonths[m - 1] || "Rabiul Awal"
+  return `${day} ${monthName} ${year} H`
+}
+
 export function PrayerTopBar({ 
   className = "", 
   containerClassName = "max-w-4xl" 
@@ -50,7 +70,7 @@ export function PrayerTopBar({
   useEffect(() => {
     const now = new Date()
     
-    // Format Masehi: Jumat, 11 Sep 2026
+    // Format Masehi: Jum, 11 Sep 2026
     const masehiStr = new Intl.DateTimeFormat("id-ID", {
       weekday: "short",
       day: "numeric",
@@ -59,17 +79,8 @@ export function PrayerTopBar({
     }).format(now)
     setMasehiDate(masehiStr)
 
-    // Format Hijriah: 29 Rabiul Awal 1448 H
-    try {
-      const hijriStr = new Intl.DateTimeFormat("id-ID-u-ca-islamic-umalqura", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }).format(now)
-      setHijriDate(hijriStr)
-    } catch {
-      setHijriDate("1448 H")
-    }
+    // Format Hijriah menggunakan kalkulasi akurat (menghindari bug Android ICU 'SM')
+    setHijriDate(getIndonesianHijriDate(now))
 
     // 2. Fetch Jadwal Sholat Kemenag Pangkalpinang (ID 0907)
     const fetchPrayer = async () => {
@@ -121,7 +132,7 @@ export function PrayerTopBar({
     const nextIndex = findNextPrayer()
     setActiveIdx(nextIndex)
 
-    // 4. Otomatis berganti setiap 4 detik untuk showcase seluruh waktu sholat
+    // 4. Otomatis berganti setiap 4.5 detik untuk showcase seluruh waktu sholat
     const interval = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % PRAYER_NAMES.length)
     }, 4500)
@@ -134,30 +145,33 @@ export function PrayerTopBar({
 
   return (
     <div className={`w-full bg-surface-container-low/90 border-b border-slate-200/60 ${className}`}>
-      <div className={`${containerClassName} mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-y-1 gap-x-3 text-on-surface-variant font-display text-[11px]`}>
-        {/* Lokasi & Tanggal Masehi + Hijriah */}
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <div className="flex items-center gap-1 font-bold text-primary">
+      <div className={`${containerClassName} mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-2 text-on-surface-variant font-display text-[11px]`}>
+        {/* Lokasi & Tanggal Masehi + Hijriah (Single-Line Rapi di Mobile) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
+          <div className="flex items-center gap-1 font-bold text-primary shrink-0">
             <span className="material-symbols-outlined text-[14px] text-primary">location_on</span>
-            <span>Masjid Agung Kubah Timah</span>
+            <span className="hidden sm:inline">Masjid Agung Kubah Timah</span>
+            <span className="inline sm:hidden">Kubah Timah</span>
           </div>
-          <span className="hidden sm:inline text-slate-300">•</span>
+          <span className="text-slate-300">•</span>
           {masehiDate && (
-            <span className="text-slate-600 font-medium">
+            <span className="text-slate-600 font-medium whitespace-nowrap truncate">
               {masehiDate}
             </span>
           )}
-          <span className="hidden sm:inline text-slate-300">•</span>
           {hijriDate && (
-            <span className="text-secondary font-semibold">
-              {hijriDate}
-            </span>
+            <>
+              <span className="hidden md:inline text-slate-300">•</span>
+              <span className="hidden md:inline text-secondary font-semibold whitespace-nowrap">
+                {hijriDate}
+              </span>
+            </>
           )}
         </div>
 
         {/* Jadwal Sholat Berganti (Subuh -> Syuruq -> Dhuha -> Dzuhur -> Ashar -> Maghrib -> Isya) */}
-        <div className="flex items-center gap-2 font-bold ml-auto sm:ml-0">
-          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-lowest border border-slate-200/70 shadow-xs">
+        <div className="flex items-center gap-2 font-bold shrink-0">
+          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-lowest border border-slate-200/70 shadow-xs whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
             <span className="text-secondary uppercase tracking-wider text-[10px]">
               {currentPrayer.label}
@@ -167,8 +181,8 @@ export function PrayerTopBar({
             </span>
           </div>
 
-          {/* Mini indicator dots */}
-          <div className="hidden md:flex items-center gap-1">
+          {/* Mini indicator dots (Desktop only) */}
+          <div className="hidden lg:flex items-center gap-1">
             {PRAYER_NAMES.map((p, idx) => (
               <button
                 key={p.key}

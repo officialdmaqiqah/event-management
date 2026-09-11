@@ -21,10 +21,13 @@ function SuksesContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-16 px-4 flex flex-col justify-center items-center">
       {/* Header / Logo */}
-      <div className="mb-8 text-center">
-        <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-8 hover:text-indigo-800 transition-colors">
-          <img src="/logo-makt-full.png" alt="MAKT Logo" className="h-8 w-auto" />
-          Kubah Timah Events
+      <div className="mb-6 text-center">
+        <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group hover:opacity-95 transition-opacity">
+          <img src="/logo-makt-full.png?v=5" alt="Logo Masjid Agung Kubah Timah" className="h-10 w-auto object-contain" />
+          <div className="flex flex-col text-left">
+            <span className="font-black text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
+            <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
+          </div>
         </Link>
       </div>
 

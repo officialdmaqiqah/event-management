@@ -315,30 +315,32 @@ function CekStatusContent() {
         <PrayerTopBar />
         
         {/* Navbar Ringkas */}
-        <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+        <header className="h-16 max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
           <Link href="/" className="flex items-center gap-2.5 min-w-0 group" title="Beranda MAKT Event">
             <img 
               alt="Logo Masjid Agung Kubah Timah" 
               className="h-10 sm:h-11 w-auto object-contain shrink-0" 
               src="/logo-makt-full.png?v=5"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none group-hover:text-primary transition-colors">MAKT Event</span>
-              <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-emerald-800 leading-tight mt-0.5">Masjid Agung Kubah Timah</span>
+              <span className="text-[9px] sm:text-[11px] uppercase font-bold tracking-tight sm:tracking-wider text-emerald-800 leading-tight mt-0.5 whitespace-nowrap">Masjid Agung Kubah Timah</span>
             </div>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
+              className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-bold text-primary hover:text-emerald-800 transition-colors"
             >
-              <ArrowLeft className="h-3.5 w-3.5" /> Beranda
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span className="hidden min-[380px]:inline">Beranda</span>
             </Link>
             <Link 
               href="/ajukan-peminjaman" 
-              className="h-8 px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-xs"
+              className="h-8 px-2.5 sm:px-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-display text-xs font-bold flex items-center gap-1 hover:bg-secondary-container transition-colors shadow-xs"
             >
-              <span>Ajukan Acara</span>
+              <span className="material-symbols-outlined text-[15px] sm:hidden">add_circle</span>
+              <span className="hidden min-[360px]:inline">Ajukan Acara</span>
             </Link>
           </div>
         </header>
