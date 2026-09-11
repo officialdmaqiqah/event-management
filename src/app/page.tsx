@@ -2,6 +2,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { HomeAgendaSection } from "@/components/HomeAgendaSection"
 import { PrayerTopBar } from "@/components/PrayerTopBar"
+import { HeroRotatingHeadline } from "@/components/HeroRotatingHeadline"
 
 export default async function Home() {
   const supabase = createClient()
@@ -81,105 +82,9 @@ export default async function Home() {
           <div className="absolute -top-16 -left-16 w-52 h-52 rounded-full bg-amber-400/15 blur-3xl pointer-events-none animate-pulse-glow" />
           <div className="absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none animate-pulse-glow" style={{ animationDelay: '2s' }} />
 
-          {/* Grid Layout: Left Content, Right Glowing Dome */}
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 py-2 sm:py-4">
-            
-            {/* Kolom Kiri: Teks & Informasi */}
-            <div className="flex-1 flex flex-col gap-3">
-              <div className="flex flex-col gap-2">
-                <h1 className="font-display text-2xl sm:text-4xl font-bold text-on-primary tracking-tight leading-snug">
-                  Pusat Layanan Kegiatan <br />
-                  <span className="bg-gradient-to-r from-secondary-fixed via-[#FFF6D4] to-secondary-fixed bg-[length:200%_auto] animate-shimmer bg-clip-text text-transparent inline-block font-extrabold drop-shadow-xs">
-                    Masjid Agung Kubah Timah
-                  </span>
-                </h1>
-                <p className="font-body text-xs sm:text-sm text-tertiary-fixed font-normal leading-relaxed max-w-lg">
-                  Jelajahi jadwal kajian terkini, ikuti agenda syiar Islam, atau rencanakan penyelenggaraan acara spesial Anda dengan fasilitas premium MAKT.
-                </p>
-              </div>
-
-              {/* Verified Footer dengan Indikator Radar Live */}
-              <div className="flex items-center gap-2 text-tertiary-fixed/90 text-xs font-medium pt-1">
-                <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-fixed opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary-fixed"></span>
-                </div>
-                <span className="material-symbols-outlined text-[16px] text-secondary-fixed">verified</span>
-                <span>Resmi DKM Masjid Agung Kubah Timah Pangkalpinang</span>
-              </div>
-            </div>
-
-            {/* Kolom Kanan: Glowing Kubah Timah Silhouette & Aura Animation (Desktop & Tablet) */}
-            <div className="hidden sm:flex shrink-0 w-48 h-48 md:w-56 md:h-56 relative items-center justify-center animate-float-slow pointer-events-none select-none">
-              <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_25px_rgba(254,214,91,0.35)]">
-                <defs>
-                  {/* Radiant Glow Gradient */}
-                  <radialGradient id="kubahAuraGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#FED65B" stopOpacity="0.45" />
-                    <stop offset="45%" stopColor="#D4AF37" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#0D4734" stopOpacity="0" />
-                  </radialGradient>
-                  
-                  {/* Dome Body Gold Gradient */}
-                  <linearGradient id="kubahGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FFF4D0" />
-                    <stop offset="35%" stopColor="#FED65B" />
-                    <stop offset="75%" stopColor="#D4AF37" />
-                    <stop offset="100%" stopColor="#8C6E0A" />
-                  </linearGradient>
-
-                  <linearGradient id="kubahDarkShade" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#FED65B" stopOpacity="0.3" />
-                    <stop offset="60%" stopColor="#0A3828" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#041B13" stopOpacity="0.95" />
-                  </linearGradient>
-                </defs>
-
-                {/* Aura Glow Pulses */}
-                <circle cx="120" cy="120" r="100" fill="url(#kubahAuraGlow)" className="animate-pulse" />
-                <circle cx="120" cy="120" r="88" stroke="#FED65B" strokeWidth="1" strokeDasharray="4 4" opacity="0.35" className="animate-[spin_60s_linear_infinite] origin-center" />
-                <circle cx="120" cy="120" r="110" stroke="#FFE088" strokeWidth="1" opacity="0.2" className="animate-ping origin-center" />
-
-                {/* Dome Base Foundation */}
-                <path d="M44 195 H196 V205 C196 208 192 210 186 210 H54 C48 210 44 208 44 205 Z" fill="url(#kubahGoldGrad)" opacity="0.9" />
-                <rect x="54" y="186" width="132" height="9" rx="2" fill="url(#kubahGoldGrad)" opacity="0.8" />
-
-                {/* Main Dome Body Silhouette (Pointed Kubah Timah) */}
-                <path d="M58 186 C58 122 86 72 120 54 C154 72 182 122 182 186 Z" fill="url(#kubahDarkShade)" stroke="url(#kubahGoldGrad)" strokeWidth="2.5" />
-
-                {/* Iconic Diamond Facets on the Dome (Belah Ketupat Kubah Timah) */}
-                <path d="M120 56 L120 186" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" opacity="0.5" />
-                <path d="M85 88 L120 116 L155 88" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" opacity="0.65" />
-                <path d="M68 122 L120 154 L172 122" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" opacity="0.65" />
-                <path d="M60 156 L120 186 L180 156" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" opacity="0.65" />
-
-                {/* Shimmering Center Diamonds */}
-                <path d="M120 84 L96 112 L120 136 L144 112 Z" fill="url(#kubahGoldGrad)" fillOpacity="0.2" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" />
-                <path d="M120 126 L92 154 L120 178 L148 154 Z" fill="url(#kubahGoldGrad)" fillOpacity="0.22" stroke="url(#kubahGoldGrad)" strokeWidth="1.2" />
-
-                {/* Pinnacle Finial & Crescent (Bulan Sabit Emas) */}
-                <line x1="120" y1="54" x2="120" y2="28" stroke="url(#kubahGoldGrad)" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx="120" cy="38" r="3" fill="#FFF4D0" />
-                
-                {/* Crescent Moon */}
-                <path d="M120 14 C112 14 107 20 107 26 C107 33 113 38 121 38 C116 36 113 31 113 26 C113 20 117 16 120 14 Z" fill="url(#kubahGoldGrad)" />
-                
-                {/* Glimmer Sparkles at Pinnacle */}
-                <circle cx="120" cy="14" r="2.5" fill="#FFFFFF" className="animate-ping" />
-                <path d="M132 18 L134 12 L140 10 L134 8 L132 2 L130 8 L124 10 L130 12 Z" fill="#FFF" opacity="0.85" className="animate-pulse" />
-              </svg>
-            </div>
-
-            {/* Versi Mobile Watermark: Kubah bersinar anggun di latar belakang kanan atas */}
-            <div className="sm:hidden absolute -top-2 -right-4 w-32 h-32 opacity-25 pointer-events-none select-none animate-float-slow">
-              <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <circle cx="120" cy="120" r="95" fill="url(#kubahAuraGlow)" />
-                <path d="M58 186 C58 122 86 72 120 54 C154 72 182 122 182 186 Z" fill="url(#kubahDarkShade)" stroke="url(#kubahGoldGrad)" strokeWidth="2" />
-                <line x1="120" y1="54" x2="120" y2="28" stroke="url(#kubahGoldGrad)" strokeWidth="2" strokeLinecap="round" />
-                <path d="M120 14 C112 14 107 20 107 26 C107 33 113 38 121 38 C116 36 113 31 113 26 C113 20 117 16 120 14 Z" fill="url(#kubahGoldGrad)" />
-              </svg>
-            </div>
-
+          {/* Main Hero Content with Dynamic Rotating Headline */}
+          <div className="relative z-10 py-1 sm:py-2">
+            <HeroRotatingHeadline />
           </div>
         </section>
 
