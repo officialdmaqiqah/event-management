@@ -575,12 +575,6 @@ export default async function Home() {
                     Jadwal Acara & Kajian
                   </Link>
                 </li>
-                <li>
-                  <Link href="/laporan-rapat" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[15px] text-emerald-700">arrow_forward</span>
-                    Notulen & Laporan
-                  </Link>
-                </li>
               </ul>
             </div>
 
@@ -589,16 +583,10 @@ export default async function Home() {
               <span className="font-display text-xs font-bold text-slate-900 uppercase tracking-wider">
                 Sekretariat DKM
               </span>
-              <div className="flex flex-col gap-2 text-xs text-slate-600">
+              <div className="flex flex-col gap-2.5 text-xs text-slate-600">
                 <div className="flex items-start gap-2">
                   <span className="material-symbols-outlined text-[16px] text-emerald-700 shrink-0 mt-0.5">location_on</span>
                   <span className="leading-snug">Jl. Jenderal Sudirman No. 1, Pangkalpinang</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[16px] text-emerald-700 shrink-0">mail</span>
-                  <a href="mailto:sekretariat@kubahtimah.id" className="hover:text-primary transition-colors">
-                    sekretariat@kubahtimah.id
-                  </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[16px] text-emerald-700 shrink-0">chat</span>
