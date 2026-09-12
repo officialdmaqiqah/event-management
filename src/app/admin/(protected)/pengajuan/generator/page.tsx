@@ -158,18 +158,32 @@ export default function GeneratorPage() {
 
   const copyToAll = (sourceDayId: number) => {
     const source = configs[sourceDayId]
+    const sourceDayName = DAYS.find(d => d.id === sourceDayId)?.name || ""
+    const hasOtherEnabled = DAYS.some(d => d.id !== sourceDayId && configs[d.id]?.enabled)
+
     setConfigs(prev => {
       const next = { ...prev }
       DAYS.forEach(d => {
-        if (d.id !== sourceDayId && prev[d.id].enabled) {
-          // Deep copy sessions
-          next[d.id] = { 
-            ...next[d.id], 
-            sessions: source.sessions.map(s => ({ ...s, id: Math.random().toString(36).substring(7) }))
+        if (d.id !== sourceDayId) {
+          const shouldApply = hasOtherEnabled ? prev[d.id]?.enabled : true
+          if (shouldApply) {
+            next[d.id] = { 
+              enabled: true, 
+              sessions: source.sessions.map(s => ({ ...s, id: Math.random().toString(36).substring(7) }))
+            }
           }
         }
       })
       return next
+    })
+
+    setDialogState({
+      isOpen: true,
+      type: 'success',
+      title: 'Format Berhasil Disalin',
+      message: hasOtherEnabled 
+        ? `Format sesi dari Hari ${sourceDayName} berhasil disalin ke seluruh hari yang aktif.`
+        : `Format sesi dari Hari ${sourceDayName} berhasil disalin ke seluruh hari lainnya.`
     })
   }
 
@@ -179,8 +193,11 @@ export default function GeneratorPage() {
       return
     }
 
-    const start = new Date(startDate)
-    const end = new Date(endDate)
+    const [startYear, startMonth, startDay] = startDate.split('-').map(Number)
+    const [endYear, endMonth, endDay] = endDate.split('-').map(Number)
+
+    const start = new Date(startYear, startMonth - 1, startDay, 12, 0, 0)
+    const end = new Date(endYear, endMonth - 1, endDay, 12, 0, 0)
 
     if (start > end) {
       setDialogState({ isOpen: true, type: 'error', title: 'Error', message: 'Tanggal akhir harus setelah tanggal mulai.' })
@@ -203,12 +220,16 @@ export default function GeneratorPage() {
         const dayOfWeek = currentDate.getDay() 
         const config = configs[dayOfWeek]
         
-        if (config.enabled) {
-          const tglStr = currentDate.toISOString().split('T')[0]
+        if (config?.enabled) {
+          const y = currentDate.getFullYear()
+          const m = String(currentDate.getMonth() + 1).padStart(2, '0')
+          const d = String(currentDate.getDate()).padStart(2, '0')
+          const tglStr = `${y}-${m}-${d}`
           
           config.sessions.forEach((session) => {
             let deskripsi = 'Kajian Rutin Terjadwal Otomatis';
-            if (session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") {
+            const isFridayPrayer = session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at"
+            if (isFridayPrayer) {
               deskripsi += `\nKhotib & Imam: ${session.khotib_imam || '-'}\nCadangan Khotib & Imam: ${session.cadangan_khotib_imam || '-'}\nMa'asyirol: ${session.maasyirol || '-'}\nMuazin: ${session.muazin || '-'}`;
             }
 
@@ -223,8 +244,8 @@ export default function GeneratorPage() {
               alamat: 'Pangkalpinang',
               nama_event: session.judul_kajian,
               judul_kajian: session.judul_kajian,
-              nama_ustadz: session.nama_ustadz || null,
-              jenis_event: session.jenis_event,
+              nama_ustadz: isFridayPrayer ? null : (session.nama_ustadz || null),
+              jenis_event: isFridayPrayer ? 'Sholat Jumat' : session.jenis_event,
               tujuan_peminjaman: 'Kegiatan Kajian Rutin',
               estimasi_peserta: 100,
               tanggal_mulai: `${tglStr}T${session.waktu_mulai}:00+07:00`,
@@ -292,14 +313,14 @@ export default function GeneratorPage() {
           <CardTitle className="font-display">1. Pilih Rentang Waktu</CardTitle>
           <CardDescription>Tentukan dari tanggal berapa sampai tanggal berapa jadwal ini berlaku.</CardDescription>
         </CardHeader>
-        <CardContent className="pt-6 flex flex-col sm:flex-row gap-6">
+        <CardContent className="p-6 flex flex-col sm:flex-row gap-6">
           <div className="space-y-2 w-full sm:max-w-[250px]">
-            <Label>Dari Tanggal</Label>
-            <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-slate-50" />
+            <Label className="text-xs font-bold text-slate-700">Dari Tanggal</Label>
+            <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="bg-white border-slate-200" />
           </div>
           <div className="space-y-2 w-full sm:max-w-[250px]">
-            <Label>Sampai Tanggal</Label>
-            <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-slate-50" />
+            <Label className="text-xs font-bold text-slate-700">Sampai Tanggal</Label>
+            <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="bg-white border-slate-200" />
           </div>
         </CardContent>
       </Card>
@@ -329,76 +350,92 @@ export default function GeneratorPage() {
                     
                     {config.enabled && (
                       <Button variant="ghost" size="sm" onClick={() => copyToAll(day.id)} className="ml-auto text-xs text-primary hover:bg-emerald-50 rounded-lg hidden sm:flex">
-                        <Copy className="w-3 h-3 mr-1" /> Salin Format Hari Ini ke Hari Lain
+                        <Copy className="w-3.5 h-3.5 mr-1.5" /> Salin Format Hari Ini ke Hari Lain
                       </Button>
                     )}
                   </div>
 
                   {config.enabled && (
-                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 border-l-2 border-emerald-200 pl-4 ml-2">
-                      {config.sessions.map((session, index) => (
-                        <div key={session.id} className="relative bg-slate-50 border border-slate-100 rounded-lg p-4">
-                          <div className="absolute -left-7 top-4 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                            Sesi {index + 1}
-                          </div>
-                          
-                          {config.sessions.length > 1 && (
-                            <div className="absolute right-4 top-4">
-                              <Button variant="outline" size="icon" onClick={() => removeSession(day.id, session.id)} className="h-7 w-7 text-red-500 hover:bg-red-50 hover:text-red-600 border-red-100 shadow-sm rounded-md bg-white">
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
+                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 border-l-2 border-emerald-300 pl-4 sm:pl-6 ml-2 sm:ml-3">
+                      {config.sessions.map((session, index) => {
+                        const isFridayPrayer = session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at"
+                        return (
+                          <div key={session.id} className="relative bg-slate-50 border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs">
+                            {/* Timeline node indicator */}
+                            <div className="absolute -left-[23px] sm:-left-[31px] top-5 w-3.5 h-3.5 rounded-full bg-white border-2 border-primary shadow-2xs flex items-center justify-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                             </div>
-                          )}
 
-                          <div className="flex flex-col gap-4 mt-2">
-                            {/* Row 1: Waktu & Judul */}
-                            <div className="flex flex-col md:flex-row gap-4">
-                              <div className="space-y-1.5 md:w-1/3">
-                                <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Waktu Pelaksanaan</Label>
-                                <div className="flex items-center gap-2">
-                                  <TimeInput value={session.waktu_mulai} onChange={e => updateSession(day.id, session.id, 'waktu_mulai', e.target.value)} className="h-10 bg-white flex-1" />
-                                  <span className="text-slate-400 font-medium">-</span>
-                                  <TimeInput value={session.waktu_selesai} onChange={e => updateSession(day.id, session.id, 'waktu_selesai', e.target.value)} className="h-10 bg-white flex-1" />
-                                </div>
+                            {/* Session Header */}
+                            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+                              <div className="flex items-center gap-2">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 font-display">
+                                  Sesi {index + 1}
+                                </span>
                               </div>
-                              <div className="space-y-1.5 flex-1 md:pr-10">
-                                <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Judul / Tema Kajian</Label>
-                                <Input value={session.judul_kajian} onChange={e => updateSession(day.id, session.id, 'judul_kajian', e.target.value)} className="h-10 bg-white" placeholder="Contoh: Kajian Tafsir Jalalain" />
-                              </div>
+                              
+                              {config.sessions.length > 1 && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  onClick={() => removeSession(day.id, session.id)} 
+                                  className="h-7 px-2 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5 mr-1" /> Hapus Sesi
+                                </Button>
+                              )}
                             </div>
-                            
-                            {/* Row 2: Ustadz */}
-                            {!(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
-                              <div className="space-y-1.5">
-                                <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
-                                <Input value={session.nama_ustadz} onChange={e => updateSession(day.id, session.id, 'nama_ustadz', e.target.value)} className="h-10 bg-white w-full" placeholder="Contoh: Ustadz H. Abdul Somad" />
-                              </div>
-                            )}
-                            
-                            {/* Petugas Sholat Jumat */}
-                            {(session.jenis_event === 'Sholat Jumat' || session.judul_kajian === "Sholat Jum'at") && (
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 p-3 bg-emerald-50/50 rounded-xl border border-emerald-200/60">
-                                <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Khotib & Imam</Label>
-                                  <Input value={session.khotib_imam} onChange={e => updateSession(day.id, session.id, 'khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Khotib & Imam" />
+
+                            <div className="flex flex-col gap-4">
+                              {/* Row 1: Waktu & Judul */}
+                              <div className="flex flex-col md:flex-row gap-4">
+                                <div className="space-y-1.5 md:w-1/3">
+                                  <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Waktu Pelaksanaan</Label>
+                                  <div className="flex items-center gap-2">
+                                    <TimeInput value={session.waktu_mulai} onChange={e => updateSession(day.id, session.id, 'waktu_mulai', e.target.value)} className="h-10 bg-white flex-1" />
+                                    <span className="text-slate-400 font-medium">-</span>
+                                    <TimeInput value={session.waktu_selesai} onChange={e => updateSession(day.id, session.id, 'waktu_selesai', e.target.value)} className="h-10 bg-white flex-1" />
+                                  </div>
                                 </div>
-                                <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[10px] text-primary font-bold uppercase tracking-tight leading-tight">Cadangan Khotib & Imam</Label>
-                                  <Input value={session.cadangan_khotib_imam} onChange={e => updateSession(day.id, session.id, 'cadangan_khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Cadangan" />
-                                </div>
-                                <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Ma'asyirol</Label>
-                                  <Input value={session.maasyirol} onChange={e => updateSession(day.id, session.id, 'maasyirol', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Ma'asyirol" />
-                                </div>
-                                <div className="flex flex-col justify-end space-y-1.5">
-                                  <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Muazin</Label>
-                                  <Input value={session.muazin} onChange={e => updateSession(day.id, session.id, 'muazin', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Muazin" />
+                                <div className="space-y-1.5 flex-1">
+                                  <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Judul / Tema Kajian</Label>
+                                  <Input value={session.judul_kajian} onChange={e => updateSession(day.id, session.id, 'judul_kajian', e.target.value)} className="h-10 bg-white" placeholder="Contoh: Kajian Tafsir Jalalain" />
                                 </div>
                               </div>
-                            )}
+                              
+                              {/* Row 2: Ustadz */}
+                              {!isFridayPrayer && (
+                                <div className="space-y-1.5">
+                                  <Label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Nama Ustadz / Pemateri</Label>
+                                  <Input value={session.nama_ustadz} onChange={e => updateSession(day.id, session.id, 'nama_ustadz', e.target.value)} className="h-10 bg-white w-full" placeholder="Contoh: Ustadz H. Abdul Somad" />
+                                </div>
+                              )}
+                              
+                              {/* Petugas Sholat Jumat */}
+                              {isFridayPrayer && (
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-1 p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200/70">
+                                  <div className="flex flex-col justify-end space-y-1.5">
+                                    <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Khotib & Imam</Label>
+                                    <Input value={session.khotib_imam} onChange={e => updateSession(day.id, session.id, 'khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Khotib & Imam" />
+                                  </div>
+                                  <div className="flex flex-col justify-end space-y-1.5">
+                                    <Label className="text-[10px] text-primary font-bold uppercase tracking-tight leading-tight">Cadangan Khotib & Imam</Label>
+                                    <Input value={session.cadangan_khotib_imam} onChange={e => updateSession(day.id, session.id, 'cadangan_khotib_imam', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Cadangan" />
+                                  </div>
+                                  <div className="flex flex-col justify-end space-y-1.5">
+                                    <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Ma'asyirol</Label>
+                                    <Input value={session.maasyirol} onChange={e => updateSession(day.id, session.id, 'maasyirol', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Ma'asyirol" />
+                                  </div>
+                                  <div className="flex flex-col justify-end space-y-1.5">
+                                    <Label className="text-[10px] text-primary font-bold uppercase tracking-tight">Muazin</Label>
+                                    <Input value={session.muazin} onChange={e => updateSession(day.id, session.id, 'muazin', e.target.value)} className="h-9 bg-white text-sm" placeholder="Nama Muazin" />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      })}
                       
                       <Button variant="outline" size="sm" onClick={() => addSession(day.id)} className="mt-2 text-primary border-emerald-300 hover:bg-emerald-50 border-dashed w-full sm:w-auto">
                         <Plus className="w-4 h-4 mr-1" /> Tambah Sesi Kajian Lain di Hari {day.name}

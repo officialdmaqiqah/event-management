@@ -46,8 +46,23 @@ CardDescription.displayName = "CardDescription"
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className = "", ...props }, ref) => {
-    const hasCustomPadding = Boolean(className && /\b(p\w*-\d+|p-\d+)/.test(className))
-    const basePadding = hasCustomPadding ? "" : "p-6 pt-0"
+    // Check if user specified all-around padding like p-0, p-4, sm:p-6
+    const hasAllPadding = /(?:^|\s)(?:[a-z]+:)?p-\d+/.test(className)
+    
+    let basePadding = ""
+    if (!hasAllPadding) {
+      const hasTopPadding = /(?:^|\s)(?:[a-z]+:)?pt-\d+/.test(className)
+      const hasBottomPadding = /(?:^|\s)(?:[a-z]+:)?pb-\d+/.test(className)
+      const hasXPadding = /(?:^|\s)(?:[a-z]+:)?p[xlr]-\d+/.test(className)
+      const hasYPadding = /(?:^|\s)(?:[a-z]+:)?py-\d+/.test(className)
+
+      const parts: string[] = []
+      if (!hasXPadding) parts.push("px-6")
+      if (!hasBottomPadding && !hasYPadding) parts.push("pb-6")
+      if (!hasTopPadding && !hasYPadding) parts.push("pt-0")
+      basePadding = parts.join(" ")
+    }
+
     return (
       <div
         ref={ref}
