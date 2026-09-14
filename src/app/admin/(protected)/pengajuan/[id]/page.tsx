@@ -941,8 +941,22 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editPemohon).eq("id", pengajuan.id)
                         if (error) throw error
+
+                        if (editPemohon.nama_pemohon || editPemohon.nama_lembaga) {
+                          await syncAdminEventToCalendar(pengajuan.id, {
+                            organizer_name: editPemohon.nama_lembaga || editPemohon.nama_pemohon
+                          })
+                        }
+
                         setPengajuan({...pengajuan, ...editPemohon} as Pengajuan)
                         setIsEditingPemohon(false)
+                        setDialogState({
+                          isOpen: true,
+                          type: 'alert',
+                          title: 'Berhasil',
+                          message: 'Informasi pemohon berhasil diperbarui.',
+                          action: () => {}
+                        })
                       } catch (err: any) {
                         alert("Gagal menyimpan: " + err.message)
                       } finally {
@@ -1056,8 +1070,26 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                       try {
                         const { error } = await supabase.from("pengajuan_peminjaman").update(editEvent).eq("id", pengajuan.id)
                         if (error) throw error
+
+                        // Sinkronisasi ke tabel events (kalender)
+                        const eventPayload: any = {}
+                        if (editEvent.nama_event) eventPayload.title = editEvent.nama_event
+                        if (editEvent.jenis_event) eventPayload.type = editEvent.jenis_event
+                        if (editEvent.deskripsi_kegiatan !== undefined) eventPayload.description = editEvent.deskripsi_kegiatan
+                        
+                        if (Object.keys(eventPayload).length > 0) {
+                          await syncAdminEventToCalendar(pengajuan.id, eventPayload)
+                        }
+
                         setPengajuan({...pengajuan, ...editEvent} as Pengajuan)
                         setIsEditingEvent(false)
+                        setDialogState({
+                          isOpen: true,
+                          type: 'alert',
+                          title: 'Berhasil',
+                          message: 'Rincian event berhasil diperbarui dan disinkronkan ke kalender.',
+                          action: () => {}
+                        })
                       } catch (err: any) {
                         alert("Gagal menyimpan: " + err.message)
                       } finally {
@@ -1155,10 +1187,40 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
                         <Button 
                           size="sm" 
                           onClick={async () => {
-                            await updateField("nama_event", editNamaEventVal)
-                            await updateField("nama_ustadz", editUstadzVal)
-                            await updateField("judul_kajian", editJudulVal)
-                            setIsEditingKajian(false)
+                            setUpdating(true)
+                            try {
+                              const updatePayload: any = {
+                                nama_event: editNamaEventVal,
+                                nama_ustadz: editUstadzVal,
+                                judul_kajian: editJudulVal
+                              }
+                              const { error } = await supabase
+                                .from("pengajuan_peminjaman")
+                                .update(updatePayload)
+                                .eq("id", pengajuan.id)
+                              
+                              if (error) throw error
+
+                              // Sinkronisasi judul ke tabel events (kalender)
+                              if (editNamaEventVal) {
+                                await syncAdminEventToCalendar(pengajuan.id, { title: editNamaEventVal })
+                              }
+
+                              setPengajuan(prev => prev ? { ...prev, ...updatePayload } : null)
+                              setIsEditingKajian(false)
+                              setDialogState({
+                                isOpen: true,
+                                type: 'alert',
+                                title: 'Berhasil',
+                                message: 'Detail kajian dan pemateri berhasil diperbarui.',
+                                action: () => {}
+                              })
+                            } catch (err: any) {
+                              console.error(err)
+                              alert("Gagal menyimpan: " + err.message)
+                            } finally {
+                              setUpdating(false)
+                            }
                           }}
                           disabled={updating || isViewer(currentUserProfile)} title={isViewer(currentUserProfile) ? "Aksi dinonaktifkan dalam mode Guest" : undefined}
                           className="bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl"

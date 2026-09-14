@@ -346,18 +346,20 @@ export default function CalendarClient() {
 
           mergedEvents.push({
             id: pe.id,
-            nama_event: pe.title,
-            jenis_event: pe.type,
-            tanggal_mulai: pe.start_datetime,
-            tanggal_selesai: pe.end_datetime || pe.start_datetime,
-            area_fasilitas: [pe.location],
+            nama_event: correspondingPengajuan?.nama_event || pe.title,
+            jenis_event: correspondingPengajuan?.jenis_event || pe.type,
+            tanggal_mulai: correspondingPengajuan?.tanggal_mulai || pe.start_datetime,
+            tanggal_selesai: correspondingPengajuan?.tanggal_selesai || pe.end_datetime || pe.start_datetime,
+            area_fasilitas: correspondingPengajuan?.area_fasilitas || [pe.location],
             privacy_event: correspondingPengajuan?.privacy_event || 'detail_publik',
             nama_pemohon: pe.organizer_name || correspondingPengajuan?.nama_pemohon || 'Admin MAKT',
             nama_lembaga: correspondingPengajuan?.nama_lembaga || null,
-            deskripsi_kegiatan: pe.description || correspondingPengajuan?.deskripsi_kegiatan || undefined,
+            deskripsi_kegiatan: correspondingPengajuan?.deskripsi_kegiatan || pe.description || undefined,
             is_public_event: correspondingPengajuan?.privacy_event !== 'publik_terbatas', 
             public_slug: pe.registration_slug,
             banner_url: pe.banner_url || correspondingPengajuan?.url_flyer || undefined,
+            nama_ustadz: correspondingPengajuan?.nama_ustadz || undefined,
+            judul_kajian: correspondingPengajuan?.judul_kajian || undefined,
             updated_at: pe.updated_at || correspondingPengajuan?.updated_at || undefined
           })
         })

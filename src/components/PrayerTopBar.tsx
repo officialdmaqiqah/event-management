@@ -38,23 +38,62 @@ interface PrayerTopBarProps {
 }
 
 function getIndonesianHijriDate(date: Date = new Date()): string {
-  // Algoritma konversi hisab kalender Hijriah Indonesia / Umm al-Qura
-  const jd = Math.floor((date.getTime() + 86400000 * 2440587.5) / 86400000)
-  const l = jd - 1948440 + 10632
-  const n = Math.floor((l - 1) / 10631)
-  const l2 = l - 10631 * n + 354
-  const j = (Math.floor((10985 - l2) / 5316)) * (Math.floor((50 * l2) / 17719)) + (Math.floor(l2 / 5670)) * (Math.floor((43 * l2) / 15238))
-  const l3 = l2 - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29
-  const m = Math.floor((24 * l3) / 709)
-  const day = l3 - Math.floor((709 * m) / 24)
-  const year = 30 * n + j - 30
-  const islamicMonths = [
-    "Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", 
-    "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban", 
-    "Ramadhan", "Syawal", "Dzulqa'dah", "Dzulhijjah"
-  ]
-  const monthName = islamicMonths[m - 1] || "Rabiul Awal"
-  return `${day} ${monthName} ${year} H`
+  const monthMap: Record<string, string> = {
+    'muharram': 'Muharram',
+    'safar': 'Safar',
+    'rabiulawal': 'Rabiul Awal',
+    'rabiul awal': 'Rabiul Awal',
+    'rabi\'ul awal': 'Rabiul Awal',
+    'rabiulakhir': 'Rabiul Akhir',
+    'rabiul akhir': 'Rabiul Akhir',
+    'rabi\'ul akhir': 'Rabiul Akhir',
+    'rabiul tsani': 'Rabiul Akhir',
+    'jumadilawal': 'Jumadil Awal',
+    'jumadil awal': 'Jumadil Awal',
+    'jumadilakhir': 'Jumadil Akhir',
+    'jumadil akhir': 'Jumadil Akhir',
+    'jumadil tsani': 'Jumadil Akhir',
+    'rajab': 'Rajab',
+    'syaban': 'Sya\'ban',
+    'sya\'ban': 'Sya\'ban',
+    'ramadhan': 'Ramadhan',
+    'ramadan': 'Ramadhan',
+    'syawal': 'Syawal',
+    'dzulqadah': 'Dzulqa\'dah',
+    'dzulqa\'dah': 'Dzulqa\'dah',
+    'zulkaidah': 'Dzulqa\'dah',
+    'dzulhijjah': 'Dzulhijjah',
+    'dzulhijah': 'Dzulhijjah',
+    'zulhijah': 'Dzulhijjah'
+  }
+
+  const calendars = ['islamic-umalqura', 'islamic', 'islamic-civil']
+
+  for (const cal of calendars) {
+    try {
+      const formatter = new Intl.DateTimeFormat(`id-ID-u-ca-${cal}`, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      })
+      const parts = formatter.formatToParts(date)
+      const day = parts.find(p => p.type === 'day')?.value || ''
+      const rawMonth = parts.find(p => p.type === 'month')?.value || ''
+      const rawYear = parts.find(p => p.type === 'year')?.value || ''
+
+      const cleanMonthKey = rawMonth.toLowerCase().replace(/[^a-z']/g, '')
+      const monthName = monthMap[cleanMonthKey] || rawMonth
+      const cleanYear = rawYear.replace(/\D/g, '')
+
+      if (day && monthName && cleanYear) {
+        return `${day} ${monthName} ${cleanYear} H`
+      }
+    } catch (e) {
+      continue
+    }
+  }
+
+  return ''
 }
 
 export function PrayerTopBar({ 
