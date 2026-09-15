@@ -141,7 +141,7 @@ export async function POST(req: Request) {
     if (data && data.id) {
       const isLocal = process.env.NODE_ENV === 'development'
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || (isLocal ? 'http://localhost:3000' : 'https://event.kubahtimah.com')
-      const adminUrl = `${appUrl}/admin/pengajuan/${data.id}`
+      const adminUrl = `${appUrl}/admin/pengajuan/${data.nomor_pengajuan || data.id}`
       const statusUrl = `${appUrl}/cek-status?nomor=${data.nomor_pengajuan}`
       
       // 1. To Admin

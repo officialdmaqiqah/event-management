@@ -184,41 +184,47 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
         setCurrentUserProfile(profileData)
       }
 
-      // Validasi id harus berupa UUID, jika tidak, tampilkan error atau anggap tidak ditemukan
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(id)) {
-        setLoading(false);
-        setErrorMsg("ID pengajuan tidak valid. Pastikan tautan yang Anda buka benar.");
-        return;
-      }
+      // Mendukung ID berupa UUID maupun nomor_pengajuan (misal: PJM-20260915-0001)
+      const cleanParam = decodeURIComponent(id || '').trim()
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      const isUuid = uuidRegex.test(cleanParam)
 
       // Get Application Detail
-      const { data: pData, error: pError } = await supabase
-        .from("pengajuan_peminjaman")
-        .select("*")
-        .eq("id", id)
-        .single()
+      let query = supabase.from("pengajuan_peminjaman").select("*")
+      if (isUuid) {
+        query = query.eq("id", cleanParam)
+      } else {
+        query = query.eq("nomor_pengajuan", cleanParam.toUpperCase())
+      }
+
+      const { data: pData, error: pError } = await query.maybeSingle()
 
       if (pError) throw pError
+      if (!pData) {
+        setLoading(false)
+        setErrorMsg("Data pengajuan tidak ditemukan. Pastikan tautan atau nomor pengajuan benar.")
+        return
+      }
+
       setPengajuan(pData as Pengajuan)
       setCatatanAdmin(pData.catatan_admin || "")
       setPrivacyEvent(pData.privacy_event || "detail_publik")
 
-      // Get Timeline List
+      // Get Timeline List (gunakan UUID asli dari pData.id)
       const { data: tData, error: tError } = await supabase
         .from("pengajuan_timeline")
         .select("*")
-        .eq("pengajuan_id", id)
+        .eq("pengajuan_id", pData.id)
         .order("created_at", { ascending: false })
 
       if (tError) throw tError
       setTimeline(tData || [])
 
-      // Get Approvals List
+      // Get Approvals List (gunakan UUID asli dari pData.id)
       const { data: appData } = await supabase
         .from("pengajuan_approvals")
         .select("*")
-        .eq("pengajuan_id", id)
+        .eq("pengajuan_id", pData.id)
         .order("workflow_level", { ascending: true })
       setApprovalsList(appData || [])
 
@@ -553,7 +559,7 @@ export default function AdminPengajuanDetailPage({ params }: { params: { id: str
       try {
         const appUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
         const statusUrl = `${appUrl}/cek-status?nomor=${pengajuan.nomor_pengajuan}`
-        const adminUrl = `${appUrl}/admin/pengajuan/${pengajuan.id}`
+        const adminUrl = `${appUrl}/admin/pengajuan/${pengajuan.nomor_pengajuan || pengajuan.id}`
         const waNumber = pengajuan.whatsapp
 
         if (waNumber) {

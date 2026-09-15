@@ -99,7 +99,7 @@ export async function submitRevisiAction(data: {
     // 6. Send WA Notification to Admin/Approver
     const isLocal = process.env.NODE_ENV === 'development'
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || (isLocal ? 'http://localhost:3000' : 'https://event.kubahtimah.com')
-    const adminUrl = `${appUrl}/admin/pengajuan/${pData.id}`
+    const adminUrl = `${appUrl}/admin/pengajuan/${pData.nomor_pengajuan || pData.id}`
 
     let adminPhone = process.env.ADMIN_WHATSAPP_NUMBER || "081234567890" 
     let adminName = "Admin MAKT"

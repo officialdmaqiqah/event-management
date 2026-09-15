@@ -456,7 +456,7 @@ export default function AdminPengajuanPage() {
                           </span>
                         </TableCell>
                         <TableCell className="text-right pr-6">
-                          <Link href={`/admin/pengajuan/${item.id}`}>
+                          <Link href={`/admin/pengajuan/${item.nomor_pengajuan || item.id}`}>
                             <Button variant="outline" size="sm" className="h-8 text-xs font-semibold gap-1 hover:text-primary hover:border-emerald-200 hover:bg-emerald-50/50">
                               <Eye className="h-3.5 w-3.5" /> Detail
                             </Button>
